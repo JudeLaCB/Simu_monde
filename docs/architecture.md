@@ -2,7 +2,7 @@
 
 ## 1. Objectif
 
-Construire d'abord un monde **2D** progressivement plus riche, sans rendre les règles de simulation dépendantes du rendu ou du nombre d'images par seconde.
+Construire d'abord un monde **2D continu** progressivement plus riche, sans rendre les règles de simulation dépendantes du rendu ou du nombre d'images par seconde.
 
 Le système doit pouvoir :
 
@@ -92,15 +92,28 @@ La visualisation reçoit idéalement un snapshot immuable ou une vue contrôlée
 
 ## 4. Espace V1
 
-Décision actuelle : **2D uniquement**.
+Décisions actuelles :
+
+- monde **2D** ;
+- espace **continu** ;
+- chaque entité spatiale utilise des coordonnées réelles `(x, y)`.
+
+Exemple conceptuel :
+
+```text
+position = (12.4 m, 37.8 m)
+```
+
+La position logique n'est donc pas une case entière d'une grille.
 
 Non décidé à ce stade :
 
-- espace discret ou continu ;
 - dimensions du monde ;
 - topologie des frontières ;
-- coordonnées et conventions spatiales détaillées ;
-- structures d'indexation spatiale.
+- type numérique exact des coordonnées ;
+- origine et orientation des axes ;
+- structures d'indexation spatiale ;
+- éventuelle grille secondaire pour des champs environnementaux.
 
 Aucune de ces décisions ne doit être inventée pendant l'implémentation.
 
