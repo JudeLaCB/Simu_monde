@@ -24,8 +24,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install development dependencies
-        run: python -m pip install -e ".[dev]"
+      - name: Install development and viewer dependencies
+        run: python -m pip install -e ".[dev,viewer]"
 
       - name: Run tests
         run: python -m pytest
