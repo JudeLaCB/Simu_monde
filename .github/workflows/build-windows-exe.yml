@@ -1,0 +1,60 @@
+name: Build Windows executable
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/build-windows-exe.yml"
+      - "pyproject.toml"
+      - "scripts/**"
+      - "src/simu_monde/adapters/**"
+      - "src/simu_monde/core/**"
+      - "tests/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install viewer, build, and test dependencies
+        run: python -m pip install -e ".[dev,viewer,build]"
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: Run Ruff
+        run: python -m ruff check src tests scripts
+
+      - name: Run mypy
+        run: python -m mypy src tests
+
+      - name: Build SimuMonde.exe
+        shell: pwsh
+        run: ./scripts/build_windows_exe.ps1
+
+      - name: Verify executable output
+        shell: pwsh
+        run: |
+          if (-not (Test-Path -LiteralPath dist/SimuMonde.exe -PathType Leaf)) {
+            throw "Expected dist/SimuMonde.exe to exist"
+          }
+
+      - name: Upload SimuMonde executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimuMonde-windows
+          path: dist/SimuMonde.exe
+          if-no-files-found: error

@@ -1,0 +1,60 @@
+"""Pygame primitive rendering for the world viewer."""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+
+import pygame
+
+from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
+from simu_monde.core.geometry import Position2D
+
+BACKGROUND_COLOR = (24, 28, 36)
+WORLD_BORDER_COLOR = (205, 215, 230)
+MARKER_COLOR = (94, 201, 157)
+TEXT_COLOR = (245, 245, 245)
+MARKER_RADIUS_PX = 6
+
+
+def render(
+    screen: pygame.Surface,
+    font: pygame.font.Font,
+    transform: WorldToScreenTransform,
+    positions: Sequence[Position2D],
+    tick_index: int,
+    time_seconds: float,
+    is_running: bool,
+) -> None:
+    """Draw the world border, simple core positions, and minimal viewer UI."""
+    screen.fill(BACKGROUND_COLOR)
+    world_viewport = transform.world_viewport
+    world_rect = pygame.Rect(
+        round(world_viewport.left_px),
+        round(world_viewport.top_px),
+        round(world_viewport.width_px),
+        round(world_viewport.height_px),
+    )
+    pygame.draw.rect(screen, WORLD_BORDER_COLOR, world_rect, width=2)
+
+    for position in positions:
+        screen_position = transform.to_screen(position)
+        pygame.draw.circle(
+            screen,
+            MARKER_COLOR,
+            (round(screen_position[0]), round(screen_position[1])),
+            MARKER_RADIUS_PX,
+        )
+
+    state_label = "running" if is_running else "paused"
+    status_text = font.render(
+        f"Tick: {tick_index}   Time: {time_seconds:.2f} s   State: {state_label}",
+        True,
+        TEXT_COLOR,
+    )
+    controls_text = font.render(
+        "Space: run/pause   Right Arrow: single step while paused",
+        True,
+        TEXT_COLOR,
+    )
+    screen.blit(status_text, (16, 14))
+    screen.blit(controls_text, (16, 42))
