@@ -6,57 +6,67 @@
 
 ## Vision actuelle
 
-Construire un simulateur 3D d'écosystème par complexité progressive.
+Construire un simulateur d'écosystème par complexité progressive.
 
-Le premier monde visé comprend à terme :
-
-- eau ;
-- végétation ;
-- animal herbivore ;
-- faim/soif/énergie ;
-- rejets ;
-- évaporation / retour de l'eau ;
-- métriques de cycle.
+La V1 est volontairement **strictement 2D, continue et bornée**.
 
 ## Décisions déjà prises
 
-1. Le core de simulation doit fonctionner headless.
-2. La 3D est un adapter, pas l'autorité sur l'état écologique.
-3. Le temps de simulation utilise un fixed timestep.
-4. Le hasard doit être seedé et reproductible.
-5. Les unités, sources, puits et invariants sont explicites.
-6. On commence avec des modèles simples puis on les raffine.
-7. Le moteur 3D n'est pas encore choisi.
+1. Le premier monde est 2D.
+2. L'espace est continu, pas une grille de cases.
+3. Les entités spatiales utilisent des coordonnées réelles `(x, y)`.
+4. Le monde V1 mesure par défaut **1000 m × 1000 m**.
+5. Les dimensions appartiennent à la configuration du monde afin de pouvoir évoluer plus tard.
+6. Les limites du monde se comportent comme des murs infranchissables en V1.
+7. La politique de frontière pourra être remplacée plus tard par des comportements plus riches ou punitifs, sans que ces variantes appartiennent à la V1.
+8. Le core de simulation doit fonctionner headless.
+9. La visualisation est un adapter, pas l'autorité sur l'état écologique.
+10. Le temps de simulation utilise un fixed timestep.
+11. Le hasard doit être seedé et reproductible.
+12. Les unités, sources, puits et invariants sont explicites.
+13. On commence avec des modèles simples puis on les raffine.
+14. Le projet vise une **intelligence émergente/adaptative** : le déterminisme garantit la reproductibilité, pas des comportements simplistes.
+
+## Principe d'intelligence du monde
+
+Une entité doit pouvoir réagir au contexte à partir de règles locales, de son état, de ses perceptions et plus tard de sa mémoire.
+
+Exemple :
+
+```text
+même seed + même état initial
+=> même histoire
+
+mais
+
+état local différent
+=> décision différente
+```
+
+Les comportements complexes doivent autant que possible émerger de boucles de rétroaction plutôt que de scripts globaux.
+
+## Décisions volontairement non prises
+
+- réaction dynamique exacte lorsqu'une entité touche un mur ;
+- origine/orientation visuelle des axes ;
+- représentation spatiale de l'eau ;
+- éventuelle grille secondaire pour le sol/climat ;
+- moteur de visualisation 2D ;
+- architecture précise de décision/mémoire des animaux.
+
+Chaque sujet sera traité séparément.
 
 ## Stack Phase 0
 
 - Python >= 3.11 ;
 - pytest ;
-- Hypothesis pour property/invariant tests ;
+- Hypothesis ;
 - Ruff ;
 - mypy ;
 - GitHub Actions.
 
-Pas de dépendance 3D dans le bootstrap.
+## Prochaine décision conceptuelle
 
-## Prochaine étape recommandée
+Le cadre spatial de base est désormais suffisamment défini pour préparer l'espace continu.
 
-Préparer puis implémenter **Phase 1A — Clock + resource ledger**.
-
-Scope cible :
-
-- `SimulationConfig` minimal ;
-- `SimulationClock` à fixed timestep ;
-- `World` minimal ;
-- RNG seedé ;
-- plusieurs réservoirs d'eau ;
-- transferts explicites ;
-- métrique `total_water_kg` ;
-- invariant de conservation ;
-- runner headless court.
-
-Ne pas ajouter encore plantes, animaux ou rendu 3D dans la même PR.
-
-## Point de décision après Phase 1
-
-Une fois le core minimal stable, évaluer le moteur 3D à partir d'un besoin réel d'intégration, plutôt que de verrouiller l'architecture prématurément.
+Le prochain sujet comportemental important sera de définir comment obtenir des comportements adaptatifs sans perdre le déterminisme.

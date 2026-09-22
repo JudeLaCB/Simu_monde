@@ -2,7 +2,7 @@
 
 ## 1. Objectif
 
-Construire un monde 3D progressivement plus riche sans rendre les règles de simulation dépendantes du rendu, du moteur physique ou du nombre d'images par seconde.
+Construire d'abord un monde **2D continu** progressivement plus riche, sans rendre les règles de simulation dépendantes du rendu ou du nombre d'images par seconde.
 
 Le système doit pouvoir :
 
@@ -10,7 +10,7 @@ Le système doit pouvoir :
 - reproduire un scénario avec une seed fixe ;
 - observer les bilans de ressources ;
 - remplacer un modèle simple par un modèle plus réaliste ;
-- brancher une visualisation 3D sans déplacer la logique métier ;
+- brancher une visualisation 2D sans déplacer la logique métier ;
 - monter progressivement en nombre d'entités.
 
 ## 2. Architecture logique cible
@@ -37,13 +37,13 @@ Le système doit pouvoir :
                               |
              +----------------+----------------+
              |                                 |
-      Headless Adapter                      3D Adapter
-   batch / tests / metrics            scene / camera / input
+      Headless Adapter                 Visualisation 2D
+   batch / tests / metrics            scene / input / UI
              |                                 |
-        CSV / JSON / plots              future 3D engine
+        CSV / JSON / plots              future 2D adapter
 ```
 
-## 3. Frontières
+## 3. Frontières architecturales
 
 ### Core
 
@@ -57,7 +57,7 @@ Le core possède :
 - les événements simulés ;
 - les métriques et bilans.
 
-Le core ne doit pas importer un moteur 3D.
+Le core ne doit pas importer un moteur de rendu.
 
 ### Systems
 
@@ -74,27 +74,58 @@ Exemples futurs :
 - ClimateSystem
 - ReproductionSystem
 
-Un système ne doit pas modifier arbitrairement l'état d'un autre domaine sans contrat de flux clair.
-
 ### Models
 
 Les modèles portent les équations/approximations remplaçables : évaporation, croissance, métabolisme, vision, coût de locomotion, etc.
-
-Un modèle simple peut être remplacé sans réécrire l'orchestration globale.
 
 ### Adapters
 
 Les adapters connectent le core à l'extérieur :
 
 - runner headless ;
-- visualisation 3D ;
+- visualisation 2D ;
 - sauvegarde/chargement ;
 - export métriques ;
 - interface utilisateur.
 
-La 3D reçoit idéalement un snapshot immuable ou une vue contrôlée du monde.
+La visualisation reçoit idéalement un snapshot immuable ou une vue contrôlée du monde.
 
-## 4. Temps
+## 4. Espace V1
+
+Décisions actuelles :
+
+- monde **2D** ;
+- espace **continu** ;
+- chaque entité spatiale utilise des coordonnées réelles `(x, y)` ;
+- dimensions initiales : **1000 m × 1000 m** ;
+- les dimensions doivent rester un paramètre de monde, même si la V1 utilise cette valeur par défaut ;
+- les limites agissent comme des **murs infranchissables**.
+
+Domaine spatial initial :
+
+```text
+0 <= x <= world_width_m
+0 <= y <= world_height_m
+
+world_width_m  = 1000
+world_height_m = 1000
+```
+
+Une entité ne peut pas sortir du domaine. Le comportement exact de collision/réaction au mur sera défini avant implémentation du mouvement.
+
+La politique de frontière doit rester remplaçable à terme. Des variantes futures pourront introduire par exemple une zone dangereuse, un coût énergétique, des dégâts ou une autre conséquence écologique. Ces comportements ne font pas partie de la V1.
+
+Non décidé à ce stade :
+
+- type numérique exact des coordonnées ;
+- orientation visuelle des axes ;
+- comportement dynamique exact lors d'un contact avec un mur ;
+- structures d'indexation spatiale ;
+- éventuelle grille secondaire pour des champs environnementaux.
+
+Aucune de ces décisions ne doit être inventée pendant l'implémentation.
+
+## 5. Temps
 
 La simulation utilise un **fixed timestep**.
 
@@ -104,15 +135,11 @@ run systems(dt)
 emit metrics/snapshot
 ```
 
-Le rendu peut être à 30, 60 ou 144 FPS sans changer la trajectoire scientifique du monde.
+Le rendu ne doit pas changer la trajectoire scientifique du monde.
 
-Les décisions futures sur sous-stepping, intégrateurs avancés ou multi-rate systems seront HIGH-RISK.
-
-## 5. Déterminisme
+## 6. Déterminisme
 
 Le hasard passe par un service RNG seedé appartenant au core.
-
-Les appels aléatoires ne doivent pas être dispersés derrière des APIs globales non contrôlées.
 
 Objectif :
 
@@ -121,7 +148,9 @@ same version + same config + same seed + same inputs
 => same observable simulation trajectory
 ```
 
-## 6. Données et unités
+Le déterminisme est une propriété de reproductibilité, pas une obligation de comportement simple. Des décisions complexes et adaptatives peuvent rester déterministes si elles dépendent uniquement de l'état du monde, de la mémoire de l'entité et d'un RNG seedé.
+
+## 7. Données et unités
 
 Convention initiale :
 
@@ -129,26 +158,7 @@ Convention initiale :
 - distance : mètre ;
 - masse : kilogramme ;
 - énergie : joule lorsque nécessaire ;
-- eau : kilogramme d'eau par défaut, car 1 kg ≈ 1 L aux conditions ordinaires, avec conversion explicite si des litres sont affichés.
-
-Les quantités biologiques qui ne peuvent pas encore être exprimées physiquement peuvent utiliser une unité abstraite nommée, mais jamais une valeur sans unité documentée.
-
-## 7. 3D
-
-Le choix du moteur 3D reste volontairement différé jusqu'au premier vertical slice headless.
-
-Critères de décision :
-
-- simplicité d'intégration avec le core ;
-- capacité 3D et physique ;
-- exécution headless ;
-- tests/automatisation ;
-- performances ;
-- tooling ;
-- coût/licence ;
-- facilité de travail avec Codex.
-
-La première visualisation utilisera des primitives simples. Aucun asset complexe n'est requis pour valider l'architecture.
+- eau : kilogramme d'eau par défaut.
 
 ## 8. Performance
 
@@ -161,25 +171,3 @@ Ordre de priorité :
 5. performance mesurée.
 
 Pas d'ECS, multiprocessing, GPU compute ou spatial partitioning avant qu'un profilage montre un besoin.
-
-## 9. Direction long terme
-
-L'architecture doit permettre d'aller vers :
-
-```text
-eau + climat
-    ↓
-sol / nutriments
-    ↓
-végétation
-    ↓
-herbivores
-    ↓
-prédateurs
-    ↓
-décomposition
-    ↓
-reproduction / génétique / évolution
-```
-
-sans exiger que toutes ces couches existent au départ.
