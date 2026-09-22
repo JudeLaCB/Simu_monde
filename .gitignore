@@ -27,3 +27,7 @@ Thumbs.db
 outputs/
 artifacts/
 *.prof
+
+# Windows executable build output
+build/
+dist/
