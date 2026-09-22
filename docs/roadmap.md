@@ -4,30 +4,22 @@
 
 Chaque phase doit produire un monde observable plus riche sans casser les invariants déjà validés.
 
-```text
-cycle minimal
-→ visualisation
-→ nouvelles boucles
-→ physique
-→ complexité
-→ échelle
-```
+La complexité recherchée doit émerger autant que possible de règles locales, de contraintes et de rétroactions, tout en restant reproductible avec une seed donnée.
 
 ## Phase 0 — Fondations
 
 Objectif : rendre le projet prêt pour un développement multi-agent propre.
 
-Livrables :
+Décisions spatiales actuelles :
 
-- gouvernance légère ;
-- architecture core / adapters ;
-- principes de simulation ;
-- Python package minimal ;
-- tests ;
-- CI ;
-- template de spec.
+- V1 en 2D ;
+- espace continu ;
+- positions réelles `(x, y)` ;
+- taille par défaut 1000 m × 1000 m ;
+- dimensions configurables à terme ;
+- frontières V1 = murs infranchissables.
 
-Critère de sortie : un clone neuf peut installer les dépendances et faire passer les checks.
+Les autres détails restent à décider un sujet à la fois.
 
 ## Phase 1 — Premier monde headless
 
@@ -42,119 +34,43 @@ Créer :
 - métriques ;
 - test de conservation.
 
-### 1B — Végétation minimale
+### 1B — Espace 2D continu minimal
 
-Ajouter :
+Créer ensuite :
 
-- plante ;
-- absorption d'eau ;
-- croissance simplifiée ;
-- transpiration/évapotranspiration ;
-- mort simple si condition extrême.
+- dimensions configurées du monde ;
+- position 2D continue ;
+- validation d'appartenance au domaine ;
+- frontière de type mur ;
+- tests de bornes.
 
-### 1C — Animal minimal
+Le comportement précis d'une entité mobile contre un mur sera spécifié avec le système de mouvement.
 
-Ajouter :
+### 1C — Végétation minimale
 
-- position ;
-- soif ;
-- faim ;
-- énergie ;
-- boire ;
-- manger ;
-- rejets ;
-- mort.
+Ajouter ensuite une végétation simple dans l'espace 2D continu approuvé.
 
-Comportement initial :
+### 1D — Animal minimal
 
-```text
-si soif prioritaire -> chercher/boire
-sinon si faim prioritaire -> chercher/manger
-sinon -> déplacement simple
-```
+Ajouter ensuite un animal simple avec position continue et besoins.
 
-### 1D — Boucle fermée observable
+Le comportement ne doit pas être réduit à une animation scriptée : les décisions doivent dépendre de l'état et des perceptions du monde.
 
-Objectif :
+## Phase 2 — Première visualisation 2D
 
-```text
-eau → sol → plante → animal → rejets/décomposition
-  ↘ évaporation → atmosphère → retour d'eau
-```
+Choisir le moyen de visualisation uniquement après que l'espace logique 2D soit défini.
 
-Le monde doit tourner headless sur une durée longue avec métriques et invariants.
+Première vue envisagée :
 
-## Phase 2 — Première visualisation 3D
+- monde ;
+- eau ;
+- plantes ;
+- animaux ;
+- pause / vitesse ;
+- métriques.
 
-Choisir le moteur 3D à partir des besoins réellement observés.
+La visualisation reste un adapter du core.
 
-Première scène :
+## Phases suivantes
 
-- terrain simple ;
-- zone d'eau ;
-- plantes = primitives ;
-- animaux = primitives ;
-- caméra ;
-- pause / vitesse de simulation ;
-- panneau de métriques.
-
-La 3D reste un adapter du core.
-
-## Phase 3 — Environnement
-
-Ajouter progressivement :
-
-- cycle jour/nuit ;
-- température ;
-- pluie ;
-- humidité du sol ;
-- saisons simples ;
-- topographie si utile.
-
-## Phase 4 — Écologie
-
-Ajouter selon intérêt :
-
-- espèces de plantes ;
-- compétition ;
-- reproduction ;
-- graines ;
-- décomposition ;
-- nutriments ;
-- herbivores multiples ;
-- prédateurs.
-
-## Phase 5 — Physique et espace
-
-Seulement lorsque nécessaire :
-
-- locomotion plus physique ;
-- pente ;
-- collisions ;
-- coût énergétique du mouvement ;
-- spatial indexing ;
-- terrain plus riche.
-
-## Phase 6 — Génétique et évolution
-
-Ajouter :
-
-- traits héritables ;
-- mutation ;
-- reproduction ;
-- coût/bénéfice des traits ;
-- sélection naturelle observable.
-
-Critère important : l'évolution doit émerger des règles et contraintes, pas d'un score "fitness" arbitraire ajouté uniquement pour forcer un résultat.
-
-## Phase 7 — Échelle et performance
-
-Après profilage :
-
-- ECS si justifié ;
-- partition spatiale ;
-- parallélisme ;
-- simulations batch ;
-- accélération éventuelle.
-
-Aucune optimisation majeure n'est prévue avant mesure.
+Environnement, mémoire/comportement plus riche, écologie, physique, reproduction, génétique et optimisation seront détaillés progressivement à partir des limites observées.
