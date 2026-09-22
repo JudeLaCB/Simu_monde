@@ -9,6 +9,8 @@ Primary Pilot — analyse + modèle + architecture + tests
         ↓
 contrat/spec approuvé
         ↓
+Primary Pilot — recommandation modèle Codex + reasoning
+        ↓
 Codex — code + tests + self-review + PR
         ↓
 Primary Pilot — review indépendante
@@ -34,6 +36,8 @@ Pour une feature scientifique ou comportementale, le Primary répond avant code 
 12. quels non-goals ?
 
 Le but est que Codex implémente un contrat, pas qu'il invente le modèle en codant.
+
+Avant de fournir le prompt Codex, le Primary doit toujours annoncer le **modèle recommandé + niveau de reasoning**. La recommandation tient compte du risque, de la taille du diff, de l'ambiguïté résiduelle, du besoin de raisonnement architectural et du coût/quota.
 
 ## 3. Taille des incréments
 
