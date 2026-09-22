@@ -43,7 +43,7 @@ Le système doit pouvoir :
         CSV / JSON / plots              future 2D adapter
 ```
 
-## 3. Frontières
+## 3. Frontières architecturales
 
 ### Core
 
@@ -96,22 +96,30 @@ Décisions actuelles :
 
 - monde **2D** ;
 - espace **continu** ;
-- chaque entité spatiale utilise des coordonnées réelles `(x, y)`.
+- chaque entité spatiale utilise des coordonnées réelles `(x, y)` ;
+- dimensions initiales : **1000 m × 1000 m** ;
+- les dimensions doivent rester un paramètre de monde, même si la V1 utilise cette valeur par défaut ;
+- les limites agissent comme des **murs infranchissables**.
 
-Exemple conceptuel :
+Domaine spatial initial :
 
 ```text
-position = (12.4 m, 37.8 m)
+0 <= x <= world_width_m
+0 <= y <= world_height_m
+
+world_width_m  = 1000
+world_height_m = 1000
 ```
 
-La position logique n'est donc pas une case entière d'une grille.
+Une entité ne peut pas sortir du domaine. Le comportement exact de collision/réaction au mur sera défini avant implémentation du mouvement.
+
+La politique de frontière doit rester remplaçable à terme. Des variantes futures pourront introduire par exemple une zone dangereuse, un coût énergétique, des dégâts ou une autre conséquence écologique. Ces comportements ne font pas partie de la V1.
 
 Non décidé à ce stade :
 
-- dimensions du monde ;
-- topologie des frontières ;
 - type numérique exact des coordonnées ;
-- origine et orientation des axes ;
+- orientation visuelle des axes ;
+- comportement dynamique exact lors d'un contact avec un mur ;
 - structures d'indexation spatiale ;
 - éventuelle grille secondaire pour des champs environnementaux.
 
@@ -139,6 +147,8 @@ Objectif :
 same version + same config + same seed + same inputs
 => same observable simulation trajectory
 ```
+
+Le déterminisme est une propriété de reproductibilité, pas une obligation de comportement simple. Des décisions complexes et adaptatives peuvent rester déterministes si elles dépendent uniquement de l'état du monde, de la mémoire de l'entité et d'un RNG seedé.
 
 ## 7. Données et unités
 
