@@ -8,9 +8,13 @@ Chaque phase doit produire un monde observable plus riche sans casser les invari
 
 Objectif : rendre le projet prêt pour un développement multi-agent propre.
 
-Décision spatiale actuelle : **la V1 est un monde 2D**.
+Décisions spatiales actuelles :
 
-Les détails spatiaux restent à décider un sujet à la fois.
+- V1 en 2D ;
+- espace continu ;
+- positions réelles `(x, y)`.
+
+Les autres détails spatiaux restent à décider un sujet à la fois.
 
 ## Phase 1 — Premier monde headless
 
@@ -25,22 +29,24 @@ Créer :
 - métriques ;
 - test de conservation.
 
-### 1B — Espace 2D minimal
+### 1B — Espace 2D continu minimal
 
-À définir seulement après décision explicite sur :
+Définir ensuite :
 
-- grille ou continu ;
 - dimensions ;
 - frontières ;
-- coordonnées.
+- convention des coordonnées ;
+- représentation minimale d'une position `(x, y)`.
+
+Aucune grille de cases ne doit être imposée comme espace principal du monde.
 
 ### 1C — Végétation minimale
 
-Ajouter ensuite une végétation simple dans l'espace 2D approuvé.
+Ajouter ensuite une végétation simple dans l'espace 2D continu approuvé.
 
 ### 1D — Animal minimal
 
-Ajouter ensuite un animal simple avec position et besoins.
+Ajouter ensuite un animal simple avec position continue et besoins.
 
 ## Phase 2 — Première visualisation 2D
 
