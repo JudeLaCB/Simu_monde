@@ -1,6 +1,6 @@
 # Simu_monde
 
-Simu_monde est un laboratoire de simulation d'un monde 3D évolutif : des ressources circulent entre l'environnement, les végétaux et les animaux, puis les modèles gagnent progressivement en réalisme, en physique et en complexité.
+Simu_monde est un laboratoire de simulation d'un monde écologique évolutif. La V1 est volontairement **strictement 2D** : des ressources circulent entre l'environnement, les végétaux et les animaux, puis les modèles gagnent progressivement en réalisme et en complexité.
 
 ## Principe central
 
@@ -12,12 +12,12 @@ La simulation du monde est indépendante de son rendu.
                      |
           +----------+----------+
           |                     |
-      Headless runner        3D adapter
-   tests / métriques /       rendu / caméra /
-   accélération temporelle   interaction
+      Headless runner       Visualisation 2D
+   tests / métriques /      rendu / caméra /
+   accélération temporelle  interaction
 ```
 
-Le coeur doit pouvoir simuler le monde sans fenêtre graphique. La 3D observe et représente l'état du monde ; elle ne devient pas la source de vérité des règles écologiques.
+Le coeur doit pouvoir simuler le monde sans fenêtre graphique. La visualisation 2D observe et représente l'état du monde ; elle ne devient pas la source de vérité des règles écologiques.
 
 ## Philosophie
 
@@ -29,19 +29,18 @@ Le coeur doit pouvoir simuler le monde sans fenêtre graphique. La 3D observe et
 6. mesurer avant d'optimiser ;
 7. garder les modèles remplaçables.
 
-Exemple de progression :
+## Décision spatiale V1
 
-```text
-eau
- ↓
-sol → plante → animal
- ↑       ↓        ↓
- └── décomposition / rejets
-        ↓
-    atmosphère
-        ↓
-       pluie
-```
+La première version du monde est **2D**.
+
+Aucune décision n'est encore figée sur :
+- grille ou espace continu ;
+- taille du monde ;
+- frontières ;
+- représentation de l'eau ;
+- moteur de visualisation.
+
+Ces sujets seront décidés séparément.
 
 ## Méthode de travail
 
@@ -74,40 +73,17 @@ python -m ruff check src tests
 python -m mypy src tests
 ```
 
-Sous Linux/WSL, activer l'environnement avec :
+Sous Linux/WSL :
 
 ```bash
 source .venv/bin/activate
-```
-
-## Structure initiale
-
-```text
-Simu_monde/
-├── AGENTS.md
-├── docs/
-│   ├── architecture.md
-│   ├── development_workflow.md
-│   ├── project_handoff_report.md
-│   ├── roadmap.md
-│   └── simulation_principles.md
-├── specs/
-│   └── template.md
-├── src/simu_monde/
-│   ├── core/
-│   └── adapters/
-├── tests/
-├── pyproject.toml
-└── .github/workflows/ci.yml
 ```
 
 ## État
 
 **Phase 0 — fondations.**
 
-Le premier objectif n'est pas encore de construire un monde riche, mais de mettre en place un noyau de simulation testable, déterministe et extensible.
-
-La première milestone fonctionnelle sera un **vertical slice écologique minimal** exécuté en headless, puis visualisé en 3D avec des formes simples.
+La première milestone fonctionnelle sera un **vertical slice écologique minimal 2D**, d'abord exécuté en headless puis visualisé simplement.
 
 ## Documentation
 
