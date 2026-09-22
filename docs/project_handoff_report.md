@@ -1,72 +1,66 @@
 # Project Handoff — Simu_monde
 
-**Phase :** 0 — fondations  
-**État :** bootstrap initial en préparation  
+**Phase :** 1 — noyau initial  
 **Source de vérité live :** GitHub
 
 ## Vision actuelle
 
-Construire un simulateur d'écosystème par complexité progressive.
-
-La V1 est volontairement **strictement 2D, continue et bornée**.
+Construire un simulateur d'écosystème 2D continu où des comportements complexes émergent de règles locales, de l'environnement et plus tard de la mémoire.
 
 ## Décisions déjà prises
 
-1. Le premier monde est 2D.
-2. L'espace est continu, pas une grille de cases.
-3. Les entités spatiales utilisent des coordonnées réelles `(x, y)`.
-4. Le monde V1 mesure par défaut **1000 m × 1000 m**.
-5. Les dimensions appartiennent à la configuration du monde afin de pouvoir évoluer plus tard.
-6. Les limites du monde se comportent comme des murs infranchissables en V1.
-7. La politique de frontière pourra être remplacée plus tard par des comportements plus riches ou punitifs, sans que ces variantes appartiennent à la V1.
-8. Le core de simulation doit fonctionner headless.
-9. La visualisation est un adapter, pas l'autorité sur l'état écologique.
-10. Le temps de simulation utilise un fixed timestep.
-11. Le hasard doit être seedé et reproductible.
-12. Les unités, sources, puits et invariants sont explicites.
-13. On commence avec des modèles simples puis on les raffine.
-14. Le projet vise une **intelligence émergente/adaptative** : le déterminisme garantit la reproductibilité, pas des comportements simplistes.
+1. Monde 2D continu.
+2. Coordonnées réelles `(x, y)` en mètres.
+3. Taille par défaut 1000 m × 1000 m, configurable.
+4. Frontières V1 = murs infranchissables.
+5. Core exécutable headless.
+6. Fixed timestep.
+7. RNG seedé et reproductible.
+8. Déterminisme = replay reproductible, pas comportement simpliste.
+9. L'intelligence recherchée est émergente/adaptative.
+10. **Pygame est le viewer V1**, strictement séparé du core.
+11. Le core stocke les positions en mètres ; l'adapter convertit en pixels.
+12. L'orientation visuelle V1 utilise une origine logique bas-gauche, X vers la droite, Y vers le haut.
 
-## Principe d'intelligence du monde
-
-Une entité doit pouvoir réagir au contexte à partir de règles locales, de son état, de ses perceptions et plus tard de sa mémoire.
-
-Exemple :
+## Frontière core / interface
 
 ```text
-même seed + même état initial
-=> même histoire
-
-mais
-
-état local différent
-=> décision différente
+CORE
+position = (x_m, y_m)
+simulation time
+world state
+rules
+    |
+    | lecture / snapshot
+    v
+PYGAME ADAPTER
+camera
+meters -> pixels
+drawing
+input controls
 ```
 
-Les comportements complexes doivent autant que possible émerger de boucles de rétroaction plutôt que de scripts globaux.
+Aucune loi du monde ne doit dépendre de Pygame ou du framerate.
 
-## Décisions volontairement non prises
+## État du code
 
-- réaction dynamique exacte lorsqu'une entité touche un mur ;
-- origine/orientation visuelle des axes ;
-- représentation spatiale de l'eau ;
-- éventuelle grille secondaire pour le sol/climat ;
-- moteur de visualisation 2D ;
-- architecture précise de décision/mémoire des animaux.
+Le world kernel déterministe a été mergé via PR #5 :
 
-Chaque sujet sera traité séparément.
+- `SimulationConfig`;
+- `Position2D`;
+- `WorldBounds`;
+- `SimulationClock`;
+- `SeededRNG`;
+- `World`;
+- `Simulation.step()`.
 
-## Stack Phase 0
+## Prochaine interface minimale
 
-- Python >= 3.11 ;
-- pytest ;
-- Hypothesis ;
-- Ruff ;
-- mypy ;
-- GitHub Actions.
+Créer un viewer Pygame capable d'afficher :
 
-## Prochaine décision conceptuelle
+- le rectangle du monde ;
+- une ou plusieurs positions de test provenant du core ;
+- tick / temps ;
+- transformation réversible et testable mètres -> pixels.
 
-Le cadre spatial de base est désormais suffisamment défini pour préparer l'espace continu.
-
-Le prochain sujet comportemental important sera de définir comment obtenir des comportements adaptatifs sans perdre le déterminisme.
+Pas encore d'eau, plante ou animal nécessaire à cette étape.

@@ -37,10 +37,8 @@ Le système doit pouvoir :
                               |
              +----------------+----------------+
              |                                 |
-      Headless Adapter                 Visualisation 2D
-   batch / tests / metrics            scene / input / UI
-             |                                 |
-        CSV / JSON / plots              future 2D adapter
+      Headless Adapter                  Pygame Adapter
+   batch / tests / metrics          camera / drawing / input
 ```
 
 ## 3. Frontières architecturales
@@ -57,22 +55,11 @@ Le core possède :
 - les événements simulés ;
 - les métriques et bilans.
 
-Le core ne doit pas importer un moteur de rendu.
+Le core ne doit pas importer Pygame ni aucun autre moteur de rendu.
 
 ### Systems
 
 Chaque système transforme une partie explicite du monde.
-
-Exemples futurs :
-
-- WaterCycleSystem
-- PlantGrowthSystem
-- AnimalNeedsSystem
-- FeedingSystem
-- WasteSystem
-- DecompositionSystem
-- ClimateSystem
-- ReproductionSystem
 
 ### Models
 
@@ -88,7 +75,7 @@ Les adapters connectent le core à l'extérieur :
 - export métriques ;
 - interface utilisateur.
 
-La visualisation reçoit idéalement un snapshot immuable ou une vue contrôlée du monde.
+La visualisation lit l'état du core et le transforme en pixels. Elle n'est jamais la source de vérité des coordonnées ou des règles.
 
 ## 4. Espace V1
 
@@ -98,61 +85,62 @@ Décisions actuelles :
 - espace **continu** ;
 - chaque entité spatiale utilise des coordonnées réelles `(x, y)` ;
 - dimensions initiales : **1000 m × 1000 m** ;
-- les dimensions doivent rester un paramètre de monde, même si la V1 utilise cette valeur par défaut ;
-- les limites agissent comme des **murs infranchissables**.
+- dimensions configurables ;
+- limites = **murs infranchissables**.
 
 Domaine spatial initial :
 
 ```text
 0 <= x <= world_width_m
 0 <= y <= world_height_m
-
-world_width_m  = 1000
-world_height_m = 1000
 ```
 
-Une entité ne peut pas sortir du domaine. Le comportement exact de collision/réaction au mur sera défini avant implémentation du mouvement.
+## 5. Visualisation V1
 
-La politique de frontière doit rester remplaçable à terme. Des variantes futures pourront introduire par exemple une zone dangereuse, un coût énergétique, des dégâts ou une autre conséquence écologique. Ces comportements ne font pas partie de la V1.
+Décision : utiliser **Pygame** pour la première interface réelle.
 
-Non décidé à ce stade :
+Pygame appartient uniquement à `src/simu_monde/adapters/`.
 
-- type numérique exact des coordonnées ;
-- orientation visuelle des axes ;
-- comportement dynamique exact lors d'un contact avec un mur ;
-- structures d'indexation spatiale ;
-- éventuelle grille secondaire pour des champs environnementaux.
-
-Aucune de ces décisions ne doit être inventée pendant l'implémentation.
-
-## 5. Temps
-
-La simulation utilise un **fixed timestep**.
+Le core conserve les coordonnées en mètres. Le viewer applique une transformation explicite vers les pixels :
 
 ```text
-simulation_time += dt
-run systems(dt)
-emit metrics/snapshot
+screen_x = world_x / world_width * viewport_width
+screen_y = viewport_height - (world_y / world_height * viewport_height)
 ```
 
-Le rendu ne doit pas changer la trajectoire scientifique du monde.
+Convention de visualisation V1 :
 
-## 6. Déterminisme
+- origine logique du monde : bas-gauche ;
+- axe X vers la droite ;
+- axe Y vers le haut ;
+- inversion de Y uniquement dans l'adapter Pygame, car l'écran utilise une origine en haut-gauche.
 
-Le hasard passe par un service RNG seedé appartenant au core.
+La première interface doit seulement pouvoir afficher :
 
-Objectif :
+- les limites du monde ;
+- des positions 2D fournies par le core ;
+- le tick et le temps de simulation ;
+- éventuellement pause/step si cela reste dans l'adapter.
 
-```text
-same version + same config + same seed + same inputs
-=> same observable simulation trajectory
-```
+La visualisation ne doit pas :
 
-Le déterminisme est une propriété de reproductibilité, pas une obligation de comportement simple. Des décisions complexes et adaptatives peuvent rester déterministes si elles dépendent uniquement de l'état du monde, de la mémoire de l'entité et d'un RNG seedé.
+- modifier directement les coordonnées internes ;
+- contenir des règles d'écologie ;
+- contenir les décisions des animaux ;
+- déterminer le temps de simulation à partir du framerate ;
+- devenir nécessaire pour exécuter les tests du core.
 
-## 7. Données et unités
+## 6. Temps
 
-Convention initiale :
+La simulation utilise un **fixed timestep**. Le framerate Pygame est indépendant du temps du monde.
+
+## 7. Déterminisme
+
+Même version + même configuration + même état initial + même seed + mêmes entrées => même trajectoire observable.
+
+La présence ou l'absence du viewer Pygame ne doit pas modifier cette trajectoire.
+
+## 8. Données et unités
 
 - temps : seconde ;
 - distance : mètre ;
@@ -160,14 +148,6 @@ Convention initiale :
 - énergie : joule lorsque nécessaire ;
 - eau : kilogramme d'eau par défaut.
 
-## 8. Performance
+## 9. Performance
 
-Ordre de priorité :
-
-1. exactitude du comportement défini ;
-2. déterminisme ;
-3. observabilité ;
-4. simplicité ;
-5. performance mesurée.
-
-Pas d'ECS, multiprocessing, GPU compute ou spatial partitioning avant qu'un profilage montre un besoin.
+Priorité : exactitude, déterminisme, observabilité, simplicité, puis performance mesurée.
