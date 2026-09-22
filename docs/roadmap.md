@@ -4,73 +4,74 @@
 
 Chaque phase doit produire un monde observable plus riche sans casser les invariants déjà validés.
 
-La complexité recherchée doit émerger autant que possible de règles locales, de contraintes et de rétroactions, tout en restant reproductible avec une seed donnée.
+La complexité recherchée doit émerger de règles locales, de contraintes, de mémoire et de rétroactions, tout en restant reproductible pour une seed donnée.
 
 ## Phase 0 — Fondations
 
-Objectif : rendre le projet prêt pour un développement multi-agent propre.
+Terminé :
 
-Décisions spatiales actuelles :
+- gouvernance ;
+- architecture headless ;
+- tests/CI ;
+- monde 2D continu ;
+- 1000 m × 1000 m configurables ;
+- murs V1 ;
+- principe d'émergence.
 
-- V1 en 2D ;
-- espace continu ;
-- positions réelles `(x, y)` ;
-- taille par défaut 1000 m × 1000 m ;
-- dimensions configurables à terme ;
-- frontières V1 = murs infranchissables.
+## Phase 1A — Deterministic world kernel
 
-Les autres détails restent à décider un sujet à la fois.
+Terminé via PR #5 :
 
-## Phase 1 — Premier monde headless
+- `SimulationConfig`;
+- `Position2D`;
+- `WorldBounds`;
+- `SimulationClock`;
+- `SeededRNG`;
+- `World`;
+- `Simulation.step()`.
 
-### 1A — Clock + resource ledger
+## Phase 1V — Première visualisation 2D
 
-Créer :
+Viewer Pygame minimal :
 
-- World ;
-- fixed timestep ;
-- RNG seedé ;
-- ledger d'eau ;
-- métriques ;
-- test de conservation.
+- fenêtre 2D ;
+- monde rendu comme rectangle ;
+- conversion mètres -> pixels ;
+- origine logique bas-gauche ;
+- affichage de positions fournies par le core ;
+- tick et temps ;
+- séparation stricte core / interface.
 
-### 1B — Espace 2D continu minimal
+Aucune règle d'écologie dans le viewer.
 
-Créer ensuite :
+## Phase 1B — Première ressource : eau
 
-- dimensions configurées du monde ;
-- position 2D continue ;
-- validation d'appartenance au domaine ;
-- frontière de type mur ;
-- tests de bornes.
+Ensuite :
 
-Le comportement précis d'une entité mobile contre un mur sera spécifié avec le système de mouvement.
-
-### 1C — Végétation minimale
-
-Ajouter ensuite une végétation simple dans l'espace 2D continu approuvé.
-
-### 1D — Animal minimal
-
-Ajouter ensuite un animal simple avec position continue et besoins.
-
-Le comportement ne doit pas être réduit à une animation scriptée : les décisions doivent dépendre de l'état et des perceptions du monde.
-
-## Phase 2 — Première visualisation 2D
-
-Choisir le moyen de visualisation uniquement après que l'espace logique 2D soit défini.
-
-Première vue envisagée :
-
-- monde ;
-- eau ;
-- plantes ;
-- animaux ;
-- pause / vitesse ;
+- réservoirs d'eau ;
+- transferts explicites ;
+- conservation ;
 - métriques.
 
-La visualisation reste un adapter du core.
+## Phase 1C — Végétation minimale
+
+Ajouter une végétation simple.
+
+## Phase 1D — Animal minimal
+
+Ajouter un animal avec position continue et besoins.
+
+## Phase 1E — Mémoire minimale
+
+Première mémoire individuelle utile :
+
+- souvenir d'une ressource ou d'un danger ;
+- ancienneté du souvenir ;
+- confiance simple ;
+- décision dépendant à la fois de la perception actuelle et de la mémoire.
+
+Objectif : produire les premiers comportements adaptatifs sans script global.
 
 ## Phases suivantes
 
-Environnement, mémoire/comportement plus riche, écologie, physique, reproduction, génétique et optimisation seront détaillés progressivement à partir des limites observées.
+Cycles écologiques, mémoire plus riche, interactions, reproduction, évolution, environnement, puis optimisation selon les limites observées.
