@@ -6,57 +6,43 @@
 
 ## Vision actuelle
 
-Construire un simulateur 3D d'écosystème par complexité progressive.
+Construire un simulateur d'écosystème par complexité progressive.
 
-Le premier monde visé comprend à terme :
-
-- eau ;
-- végétation ;
-- animal herbivore ;
-- faim/soif/énergie ;
-- rejets ;
-- évaporation / retour de l'eau ;
-- métriques de cycle.
+La V1 est volontairement **strictement 2D**.
 
 ## Décisions déjà prises
 
-1. Le core de simulation doit fonctionner headless.
-2. La 3D est un adapter, pas l'autorité sur l'état écologique.
-3. Le temps de simulation utilise un fixed timestep.
-4. Le hasard doit être seedé et reproductible.
-5. Les unités, sources, puits et invariants sont explicites.
-6. On commence avec des modèles simples puis on les raffine.
-7. Le moteur 3D n'est pas encore choisi.
+1. Le premier monde est 2D.
+2. Le core de simulation doit fonctionner headless.
+3. La visualisation est un adapter, pas l'autorité sur l'état écologique.
+4. Le temps de simulation utilise un fixed timestep.
+5. Le hasard doit être seedé et reproductible.
+6. Les unités, sources, puits et invariants sont explicites.
+7. On commence avec des modèles simples puis on les raffine.
+
+## Décisions volontairement non prises
+
+- grille ou espace continu ;
+- taille du monde ;
+- frontières ;
+- représentation spatiale de l'eau ;
+- moteur de visualisation 2D.
+
+Chaque sujet sera traité séparément.
 
 ## Stack Phase 0
 
 - Python >= 3.11 ;
 - pytest ;
-- Hypothesis pour property/invariant tests ;
+- Hypothesis ;
 - Ruff ;
 - mypy ;
 - GitHub Actions.
 
-Pas de dépendance 3D dans le bootstrap.
-
 ## Prochaine étape recommandée
 
-Préparer puis implémenter **Phase 1A — Clock + resource ledger**.
+Avant d'implémenter l'espace, décider **un seul sujet spatial à la fois**.
 
-Scope cible :
+Le prochain sujet naturel est : **grille discrète ou espace 2D continu ?**
 
-- `SimulationConfig` minimal ;
-- `SimulationClock` à fixed timestep ;
-- `World` minimal ;
-- RNG seedé ;
-- plusieurs réservoirs d'eau ;
-- transferts explicites ;
-- métrique `total_water_kg` ;
-- invariant de conservation ;
-- runner headless court.
-
-Ne pas ajouter encore plantes, animaux ou rendu 3D dans la même PR.
-
-## Point de décision après Phase 1
-
-Une fois le core minimal stable, évaluer le moteur 3D à partir d'un besoin réel d'intégration, plutôt que de verrouiller l'architecture prématurément.
+La Phase 1A technique (clock + resource ledger) reste préparée, mais l'espace ne doit pas être inventé par Codex avant validation.
