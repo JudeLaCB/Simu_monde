@@ -31,35 +31,17 @@ Un modèle V1 peut être volontairement faux dans le détail s'il est :
 - remplaçable ;
 - suffisant pour observer le phénomène recherché.
 
-Exemple d'évaporation initiale :
-
-```text
-evaporation = k * exposed_water * dt
-```
-
 Une formule plus réaliste n'est ajoutée que lorsqu'elle répond à une limite observée.
 
 ## 3. Unités obligatoires
 
 Chaque variable importante documente son unité.
 
-Éviter :
-
-```text
-water = 50
-energy = 80
-```
-
-Préférer un contrat clair :
+Préférer :
 
 ```text
 water_kg = 50.0
 energy_j = 80.0
-```
-
-ou, si l'unité est abstraite :
-
-```text
 hunger_level = 0.7  # dimensionless [0, 1]
 ```
 
@@ -71,7 +53,7 @@ Le rendu n'appelle pas directement les lois biologiques selon son framerate.
 
 Tout changement de `dt` doit être testé sur les observables principaux.
 
-## 5. Déterminisme
+## 5. Déterminisme reproductible
 
 Toute stochasticité doit pouvoir être reproduite par seed.
 
@@ -82,11 +64,52 @@ Les scénarios de régression stockent au minimum :
 - durée ;
 - métriques attendues ou bornes attendues.
 
-## 6. Bilans et invariants
+Le déterminisme signifie :
 
-Exemples futurs :
+```text
+même version
++ même configuration
++ même état initial
++ même seed
++ mêmes entrées
+= même trajectoire observable
+```
 
-### Eau
+Il ne signifie pas que les entités doivent suivre des comportements rigides ou triviaux.
+
+## 6. Intelligence émergente et adaptation
+
+Le projet vise une nature qui puisse paraître **adaptative et intelligente** sans sacrifier la reproductibilité.
+
+La complexité doit venir principalement de :
+
+- perception locale ;
+- besoins internes ;
+- choix dépendant du contexte ;
+- mémoire lorsque nécessaire ;
+- coûts et bénéfices concurrents ;
+- rétroactions environnementales ;
+- interactions entre entités ;
+- apprentissage ou évolution uniquement lorsqu'ils deviennent utiles.
+
+Exemple d'un animal déterministe mais adaptatif :
+
+```text
+soif élevée
++ eau A proche mais zone risquée
++ eau B plus loin mais connue comme sûre
++ énergie disponible
++ mémoire récente
+→ choix calculé à partir du contexte
+```
+
+Avec la même seed et le même historique, le choix est reproductible. Si l'état du monde change, la décision peut changer.
+
+Les comportements complexes doivent autant que possible **émerger de règles locales** plutôt que d'être imposés par un script global.
+
+## 7. Bilans et invariants
+
+Exemple futur pour l'eau :
 
 ```text
 W_total =
@@ -98,45 +121,13 @@ W_total =
   + W_waste
 ```
 
-### Biomasse
+Pour la biomasse, ne pas prétendre à une conservation physique si le modèle simplifié ne la représente pas.
 
-Selon le niveau de modélisation, la biomasse pourra être suivie comme stock simplifié avec des sources externes déclarées, par exemple photosynthèse, et des pertes explicites.
-
-Ne pas prétendre à une conservation physique si le modèle simplifié ne la représente pas.
-
-## 7. Ordre des systèmes
+## 8. Ordre des systèmes
 
 L'ordre d'exécution influence le résultat. Il doit donc être explicite.
 
-Exemple futur :
-
-```text
-climate
-→ water transfer
-→ plant growth
-→ animal decisions
-→ movement
-→ feeding/drinking
-→ metabolism
-→ waste/death
-→ decomposition
-→ metrics
-```
-
-Cet ordre n'est pas encore autorité pour l'implémentation ; il sert d'exemple. La spec du vertical slice fixera l'ordre exact.
-
-## 8. Émergence
-
-Les comportements complexes doivent autant que possible émerger de règles locales simples plutôt que d'être scriptés globalement.
-
-Exemple :
-
-- soif augmente ;
-- l'animal cherche de l'eau ;
-- l'eau est spatialement limitée ;
-- déplacement coûte de l'énergie.
-
-Une migration peut alors émerger sans écrire une règle "migrer".
+L'ordre exact sera défini par les specs des systèmes concernés.
 
 ## 9. Validation scientifique proportionnelle
 
@@ -146,7 +137,7 @@ Trois niveaux possibles :
 2. **plausibilité** — ordre de grandeur et comportement qualitatif ;
 3. **validation externe** — comparaison à données ou littérature.
 
-La plupart des premières features viseront 1 puis 2. Ne pas présenter un modèle plausible comme scientifiquement validé.
+Ne pas présenter un modèle plausible comme scientifiquement validé.
 
 ## 10. Observabilité
 
@@ -162,4 +153,4 @@ Exemples :
 - morts par cause ;
 - temps CPU par tick.
 
-Un bug de simulation doit pouvoir être diagnostiqué sans regarder uniquement l'animation 3D.
+Un bug de simulation doit pouvoir être diagnostiqué sans regarder uniquement la visualisation.
