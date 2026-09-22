@@ -60,6 +60,47 @@ Jude
 
 GitHub est la mémoire durable du projet ; le chat sert au raisonnement interactif.
 
+## Quick start
+
+Pré-requis : Python 3.11+.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+python -m pytest
+python -m ruff check src tests
+python -m mypy src tests
+```
+
+Sous Linux/WSL, activer l'environnement avec :
+
+```bash
+source .venv/bin/activate
+```
+
+## Structure initiale
+
+```text
+Simu_monde/
+├── AGENTS.md
+├── docs/
+│   ├── architecture.md
+│   ├── development_workflow.md
+│   ├── project_handoff_report.md
+│   ├── roadmap.md
+│   └── simulation_principles.md
+├── specs/
+│   └── template.md
+├── src/simu_monde/
+│   ├── core/
+│   └── adapters/
+├── tests/
+├── pyproject.toml
+└── .github/workflows/ci.yml
+```
+
 ## État
 
 **Phase 0 — fondations.**
