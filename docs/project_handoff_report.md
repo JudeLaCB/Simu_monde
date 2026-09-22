@@ -23,6 +23,7 @@ Construire un simulateur 2D continu où des comportements surprenants émergent 
 12. L'orientation visuelle V1 utilise une origine logique bas-gauche, X vers la droite, Y vers le haut.
 13. `SimuMonde.exe` est produit par le workflow Windows.
 14. La première expérience d'émergence suit l'ordre : **plantes -> herbivore -> mémoire -> eau**.
+15. Avant chaque délégation Codex, le pilote doit proposer à Jude le **modèle + niveau de raisonnement** adaptés, avec une justification courte et en privilégiant l'efficacité de quota. Cette règle s'applique à tous les futurs pilotes.
 
 ## État du code
 
