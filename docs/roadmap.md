@@ -2,36 +2,33 @@
 
 ## Philosophie
 
-Chaque phase doit produire un monde observable plus riche sans casser les invariants déjà validés.
+Chaque phase doit enrichir le monde sans programmer directement les phénomènes que l'on souhaite observer.
 
-La complexité recherchée doit émerger de règles locales, de contraintes, de mémoire et de rétroactions, tout en restant reproductible pour une seed donnée.
+Le projet cherche désormais à faire émerger les comportements à partir de :
+
+- contraintes physiques ;
+- ressources ;
+- homéostasie ;
+- mortalité ;
+- cycles de matière ;
+- interactions entre espèces ;
+- puis mémoire et apprentissage.
+
+Le replay reste déterministe pour une seed donnée.
 
 ## Phases terminées
 
 ### Phase 0 — Fondations
 
-Terminé :
-
-- gouvernance ;
-- architecture headless ;
-- tests/CI ;
-- monde 2D continu ;
-- 1000 m × 1000 m configurables ;
-- murs V1 ;
-- principe d'émergence.
+Terminé.
 
 ### Phase 1A — Deterministic world kernel
 
 Terminé via PR #5.
 
-### Phase 1V — Première visualisation 2D
+### Phase 1V — Viewer Pygame
 
-Terminé via PR #9 :
-
-- viewer Pygame ;
-- pause / run / single-step ;
-- affichage tick / temps ;
-- build Windows `SimuMonde.exe`.
+Terminé via PR #9.
 
 ### Phase 1C — Végétation minimale
 
@@ -39,79 +36,120 @@ Terminé via PR #12.
 
 ### Phase 1D — Herbivore minimal
 
-Terminé via PR #15 :
+Terminé via PR #15.
 
-- faim ;
-- perception locale ;
-- recherche de plante ;
-- alimentation ;
-- exploration seedée ;
-- réflexion aux murs ;
-- plusieurs herbivores sans règle sociale.
+### Phase 1F — Closed Water Cycle V1
 
-## Priorité actuelle — fermer le cycle de l'eau
+Terminé via PR #17 :
 
-Nouvel ordre décidé :
+- atmosphère ;
+- eau du sol ;
+- points d'eau spatiaux ;
+- eau corporelle ;
+- pluie ;
+- évaporation ;
+- croissance végétale limitée par l'eau ;
+- soif ;
+- conservation stricte de l'eau.
 
-```text
-végétation
-    ↓
-herbivores
-    ↓
-cycle fermé de l'eau + soif
-    ↓
-observer les limites écologiques
-    ↓
-mémoire
-    ↓
-complexité supplémentaire
-```
+## Observation actuelle
 
-Le but est désormais de voir comment un deuxième besoin concurrent et une ressource strictement conservée modifient spontanément les comportements existants.
+Les règles à seuil créent des attracteurs forts :
 
-## Phase 1F — Closed Water Cycle V1
+- d'abord autour des plantes ;
+- puis autour des points d'eau.
 
-Étape active — Issue #2.
+Plutôt que d'ajouter des exceptions comportementales, la prochaine étape remplace ces seuils par une régulation interne inspirée d'un PID.
+
+## Phase 1G — Homéostasie, vieillissement, mort et cadavres
+
+**Étape active — Issue #18**
 
 Ajouter :
 
-- eau atmosphérique globale ;
-- eau du sol globale ;
-- points d'eau spatiaux ;
-- eau corporelle des herbivores ;
-- pluie déterministe ;
-- évaporation ;
-- croissance des plantes limitée par l'eau ;
-- transpiration simplifiée ;
-- soif et boisson ;
-- invariant strict de conservation de l'eau.
+- réserve énergétique explicite en joules ;
+- coût métabolique basal ;
+- coût énergétique du mouvement ;
+- énergie récupérée par alimentation ;
+- régulateur homéostatique PID-inspired pour nourriture et eau ;
+- vieillissement des plantes et herbivores ;
+- mort des herbivores par famine ou vieillesse ;
+- mort des plantes par vieillesse ;
+- cadavres spatiaux persistants ;
+- conservation de l'eau incluant l'eau des cadavres.
 
-Invariant central :
+La consigne conceptuelle est :
 
 ```text
-atmosphère
-+ sol
-+ surface
-+ eau corporelle
-= constante
+survie / maintien des réserves
 ```
 
-La pluie n'a pas besoin d'être représentée graphiquement.
+Le contrôleur ne programme pas directement "manger" ou "boire" ; il produit des urgences internes concurrentes.
 
-La disparition d'eau accessible peut bloquer croissance et abreuvement même si la quantité totale d'eau du monde reste constante.
+## Phase 1H — Décomposition et cycle local des nutriments
 
-## Phase suivante — Mémoire minimale
+**Préparée — Issue #19**
 
-Après observation du système eau + faim :
+Après validation de 1G :
 
-- souvenir d'une ressource ;
-- ancienneté ;
-- confiance ;
-- oubli ;
-- décision influencée par perception actuelle + mémoire.
+```text
+cadavre
+   ↓
+décomposition
+   ↓
+nutriments locaux + retour d'eau au sol
+   ↓
+croissance végétale
+```
 
-La mémoire ne doit pas être ajoutée avant d'avoir observé les limites du système actuel à deux besoins.
+Un champ spatial déterministe de nutriments permettra à la mort de modifier la géographie future du monde.
 
-## Phases ultérieures
+## Phase 1I — Reproduction minimale
 
-Cycles de vie, reproduction, mort, ressources supplémentaires, environnement plus riche, évolution puis optimisation selon les limites réellement observées.
+Ajouter seulement après que mortalité et matière recyclée soient stables.
+
+Objectif :
+
+- renouveler les populations ;
+- éviter une extinction mathématiquement garantie ;
+- permettre l'observation de dynamiques de population durables.
+
+## Phase 1J — Prédateur minimal
+
+Introduire ensuite un prédateur soumis au même principe de survie :
+
+- énergie ;
+- eau ;
+- âge ;
+- perception locale ;
+- urgence alimentaire ;
+- poursuite ;
+- capture.
+
+L'herbivore recevra alors un signal de danger concurrent de faim/soif.
+
+Aucune règle de troupeau, migration ou territoire ne sera codée explicitement.
+
+## Mémoire
+
+La mémoire reste prévue, mais volontairement après l'observation des dynamiques de survie, mortalité, recyclage, reproduction et prédation.
+
+## Direction générale
+
+```text
+eau + végétation + herbivores
+        ↓
+homéostasie
+        ↓
+mort
+        ↓
+cadavres
+        ↓
+nutriments locaux
+        ↓
+reproduction
+        ↓
+prédateur
+        ↓
+mémoire / apprentissage
+```
