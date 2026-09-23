@@ -23,57 +23,69 @@ Construire un simulateur 2D continu où des comportements surprenants émergent 
 12. L'orientation visuelle V1 utilise une origine logique bas-gauche, X vers la droite, Y vers le haut.
 13. `SimuMonde.exe` est produit par le workflow Windows.
 14. La première expérience d'émergence suit l'ordre : **plantes -> herbivore -> mémoire -> eau**.
-15. Avant chaque délégation Codex, le pilote doit proposer à Jude le **modèle + niveau de raisonnement** adaptés, avec une justification courte et en privilégiant l'efficacité de quota. Cette règle s'applique à tous les futurs pilotes.
+15. Avant chaque délégation Codex, le pilote doit proposer à Jude le **modèle + niveau de raisonnement** adaptés, avec une justification courte et en privilégiant l'efficacité de quota.
 
 ## État du code
 
 Mergé :
 
 - world kernel déterministe (#5) ;
-- viewer Pygame + executable Windows (#9).
+- viewer Pygame + executable Windows (#9) ;
+- végétation minimale (#12).
 
-Le viewer permet déjà :
+La végétation actuelle possède :
 
-- pause / run ;
-- single-step ;
-- tick / temps ;
-- monde redimensionnable sans modifier l'état du core.
-
-## Étape active — végétation minimale
-
-Issue #10.
-
-La première entité écologique sera une plante avec :
-
-- ID stable ;
 - position continue ;
-- biomasse comestible en kg ;
+- biomasse comestible ;
 - biomasse maximale ;
-- vitesse de repousse ;
-- placement initial déterministe à partir du RNG du monde.
+- repousse déterministe ;
+- placement seedé ;
+- rendu depuis le core.
 
-La croissance est volontairement simplifiée comme un apport externe de biomasse. Aucun cycle de l'eau ou de nutriments n'est encore modélisé.
+## Étape active — herbivore minimal
 
-## Expérience cible
+Issue #13.
 
-Après les plantes, ajouter un herbivore très simple puis sa mémoire.
+Le premier animal doit posséder uniquement les mécanismes nécessaires à la boucle locale :
 
-On ne programmera pas directement :
+```text
+faim
+  ↓
+perception locale
+  ↓
+plante visible la plus proche
+  ↓
+déplacement ou alimentation
+  ↓
+biomasse végétale modifiée
+  ↓
+décision suivante modifiée
+```
 
-- migration ;
+Sans plante visible ou lorsqu'il n'a pas suffisamment faim, il explore via une direction persistante légèrement perturbée par le RNG seedé.
+
+Le contact avec les murs utilise maintenant une réflexion simple de la direction.
+
+## Règles volontairement absentes
+
+Ne pas programmer directement :
+
+- mémoire ;
 - troupeau ;
+- migration ;
 - territoire ;
-- habitudes ;
-- chemins préférés.
+- attraction sociale ;
+- chemins préférés ;
+- reproduction ;
+- mort ;
+- eau.
 
-On programmera seulement les mécanismes locaux nécessaires et on observera si ces phénomènes apparaissent d'eux-mêmes.
+Ces comportements ne doivent apparaître que plus tard, soit par nouveaux mécanismes locaux explicites, soit comme phénomènes émergents.
 
 ## Ordre immédiat
 
 ```text
-#10 plantes
-  ↓
-herbivore minimal
+#13 herbivore minimal
   ↓
 mémoire minimale
   ↓
@@ -81,3 +93,7 @@ observer / mesurer l'émergence
   ↓
 #2 eau (deferred)
 ```
+
+## Modèle Codex
+
+Avant chaque délégation Codex, le pilote annonce le modèle et le niveau de reasoning recommandés selon la tâche actuelle. Pour l'implémentation de #13, recommandation actuelle : **GPT-5.6 Sol — Medium reasoning**.

@@ -62,7 +62,7 @@ Le but n'est pas de reproduire tout de suite un écosystème réaliste. Le but e
 
 ## Phase 1C — Végétation minimale
 
-Créer une ressource spatiale vivante simple :
+Terminé via PR #12 :
 
 - plante avec ID stable ;
 - position continue ;
@@ -76,7 +76,7 @@ Aucun besoin en eau, reproduction ou mort à ce stade.
 
 ## Phase 1D — Herbivore minimal
 
-Ensuite :
+Étape active :
 
 - position ;
 - faim ;
