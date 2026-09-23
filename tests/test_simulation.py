@@ -9,6 +9,7 @@ import pytest
 from simu_monde.core.config import SimulationConfig
 from simu_monde.core.geometry import Position2D, WorldBounds
 from simu_monde.core.herbivore import Herbivore, HerbivoreBehaviorSystem
+from simu_monde.core.lifecycle import MortalitySystem
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.simulation import Simulation
 from simu_monde.core.vegetation import Plant, PlantGrowthSystem
@@ -23,6 +24,8 @@ def make_plant(*, biomass: float = 0.5, growth_rate: float = 0.2) -> Plant:
         edible_biomass_kg=biomass,
         max_edible_biomass_kg=1.0,
         growth_rate_kg_per_s=growth_rate,
+        age_s=0.0,
+        lifespan_s=100.0,
     )
 
 
@@ -203,6 +206,15 @@ class RecordingEvaporationSystem(EvaporationSystem):
         super().step(water, dt_seconds)
 
 
+class RecordingMortalitySystem(MortalitySystem):
+    def __init__(self, events: list[str]) -> None:
+        self._events = events
+
+    def step(self, *, world: World, dt_seconds: float) -> None:
+        self._events.append("mortality")
+        super().step(world=world, dt_seconds=dt_seconds)
+
+
 def test_simulation_uses_exact_approved_system_order_before_clock() -> None:
     events: list[str] = []
     world = World(
@@ -216,11 +228,12 @@ def test_simulation_uses_exact_approved_system_order_before_clock() -> None:
         plant_growth_system=RecordingPlantGrowthSystem(events),
         herbivore_behavior_system=RecordingHerbivoreBehaviorSystem(events),
         evaporation_system=RecordingEvaporationSystem(events),
+        mortality_system=RecordingMortalitySystem(events),
     )
 
     simulation.step()
 
-    assert events == ["rain", "growth", "behavior", "evaporation"]
+    assert events == ["rain", "growth", "behavior", "mortality", "evaporation"]
     assert world.clock.tick_index == 1
 
 

@@ -3,10 +3,15 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from math import atan2, cos, dist, isfinite, pi, sin
 
 from simu_monde.core.geometry import Position2D, WorldBounds
+from simu_monde.core.homeostasis import (
+    HomeostasisController,
+    HomeostasisState,
+    create_default_homeostasis_controller,
+)
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.vegetation import Plant
 from simu_monde.core.water import WaterSource, WaterState
@@ -44,21 +49,25 @@ class Herbivore:
 
     herbivore_id: int
     position: Position2D
-    hunger: float
     heading_rad: float
     speed_m_per_s: float
     perception_radius_m: float
     feeding_radius_m: float
-    hunger_rate_per_s: float
     feeding_rate_kg_per_s: float
-    food_capacity_kg: float
-    seek_food_hunger_threshold: float
     body_water_kg: float
     max_body_water_kg: float
     water_loss_kg_per_s: float
     drinking_rate_kg_per_s: float
     drinking_radius_m: float
-    drink_thirst_threshold: float
+    energy_j: float
+    max_energy_j: float
+    basal_power_w: float
+    movement_energy_j_per_m: float
+    food_energy_j_per_kg: float
+    age_s: float
+    lifespan_s: float
+    recoverable_nutrient_kg: float
+    homeostasis: HomeostasisState = field(default_factory=HomeostasisState)
 
     def __post_init__(self) -> None:
         if isinstance(self.herbivore_id, bool) or not isinstance(self.herbivore_id, int):
@@ -68,27 +77,15 @@ class Herbivore:
         if not isinstance(self.position, Position2D):
             raise TypeError("position must be a Position2D")
 
-        self.hunger = _require_finite(self.hunger, "hunger")
-        if not 0.0 <= self.hunger <= 1.0:
-            raise ValueError("hunger must be between 0 and 1")
         self.heading_rad = normalize_heading(self.heading_rad)
         self.speed_m_per_s = _require_non_negative(self.speed_m_per_s, "speed_m_per_s")
         self.perception_radius_m = _require_non_negative(
             self.perception_radius_m, "perception_radius_m"
         )
         self.feeding_radius_m = _require_non_negative(self.feeding_radius_m, "feeding_radius_m")
-        self.hunger_rate_per_s = _require_non_negative(self.hunger_rate_per_s, "hunger_rate_per_s")
         self.feeding_rate_kg_per_s = _require_non_negative(
             self.feeding_rate_kg_per_s, "feeding_rate_kg_per_s"
         )
-        self.food_capacity_kg = _require_finite(self.food_capacity_kg, "food_capacity_kg")
-        if self.food_capacity_kg <= 0.0:
-            raise ValueError("food_capacity_kg must be positive")
-        self.seek_food_hunger_threshold = _require_finite(
-            self.seek_food_hunger_threshold, "seek_food_hunger_threshold"
-        )
-        if not 0.0 <= self.seek_food_hunger_threshold <= 1.0:
-            raise ValueError("seek_food_hunger_threshold must be between 0 and 1")
 
         self.max_body_water_kg = _require_finite(self.max_body_water_kg, "max_body_water_kg")
         if self.max_body_water_kg <= 0.0:
@@ -103,11 +100,35 @@ class Herbivore:
             self.drinking_rate_kg_per_s, "drinking_rate_kg_per_s"
         )
         self.drinking_radius_m = _require_non_negative(self.drinking_radius_m, "drinking_radius_m")
-        self.drink_thirst_threshold = _require_finite(
-            self.drink_thirst_threshold, "drink_thirst_threshold"
+        self.max_energy_j = _require_finite(self.max_energy_j, "max_energy_j")
+        if self.max_energy_j <= 0.0:
+            raise ValueError("max_energy_j must be positive")
+        self.energy_j = _require_non_negative(self.energy_j, "energy_j")
+        if self.energy_j > self.max_energy_j:
+            raise ValueError("energy_j must not exceed max_energy_j")
+        self.basal_power_w = _require_non_negative(self.basal_power_w, "basal_power_w")
+        self.movement_energy_j_per_m = _require_non_negative(
+            self.movement_energy_j_per_m, "movement_energy_j_per_m"
         )
-        if not 0.0 <= self.drink_thirst_threshold <= 1.0:
-            raise ValueError("drink_thirst_threshold must be between 0 and 1")
+        self.food_energy_j_per_kg = _require_finite(
+            self.food_energy_j_per_kg, "food_energy_j_per_kg"
+        )
+        if self.food_energy_j_per_kg <= 0.0:
+            raise ValueError("food_energy_j_per_kg must be positive")
+        self.age_s = _require_non_negative(self.age_s, "age_s")
+        self.lifespan_s = _require_finite(self.lifespan_s, "lifespan_s")
+        if self.lifespan_s <= 0.0:
+            raise ValueError("lifespan_s must be positive")
+        self.recoverable_nutrient_kg = _require_non_negative(
+            self.recoverable_nutrient_kg, "recoverable_nutrient_kg"
+        )
+        if not isinstance(self.homeostasis, HomeostasisState):
+            raise TypeError("homeostasis must be a HomeostasisState")
+
+    @property
+    def energy_fraction(self) -> float:
+        """Return the dimensionless energy reserve fraction in [0, 1]."""
+        return min(1.0, max(0.0, self.energy_j / self.max_energy_j))
 
     @property
     def thirst(self) -> float:
@@ -189,11 +210,18 @@ def _nearest_visible_water_source(
 
 
 class HerbivoreBehaviorSystem:
-    """Apply hunger, local food seeking, feeding, and bounded exploration."""
+    """Regulate energy and hydration through feasible locally perceived actions."""
 
-    def __init__(self, exploration_turn_rate_rad_per_s: float = 0.8) -> None:
+    def __init__(
+        self,
+        exploration_turn_rate_rad_per_s: float = 0.8,
+        controller: HomeostasisController | None = None,
+    ) -> None:
         self._exploration_turn_rate_rad_per_s = _require_non_negative(
             exploration_turn_rate_rad_per_s, "exploration_turn_rate_rad_per_s"
+        )
+        self._controller = (
+            controller if controller is not None else create_default_homeostasis_controller()
         )
 
     def step(
@@ -206,9 +234,10 @@ class HerbivoreBehaviorSystem:
         rng: SeededRNG,
         dt_seconds: float,
     ) -> None:
-        """Advance herbivores in stored order, including sequential consumption."""
+        """Pay metabolism, update control state, arbitrate, and act in world order."""
         for herbivore in herbivores:
-            herbivore.hunger = min(1.0, herbivore.hunger + herbivore.hunger_rate_per_s * dt_seconds)
+            basal_cost_j = herbivore.basal_power_w * dt_seconds
+            herbivore.energy_j = max(0.0, herbivore.energy_j - basal_cost_j)
             water_lost_kg = min(
                 herbivore.body_water_kg,
                 herbivore.water_loss_kg_per_s * dt_seconds,
@@ -216,11 +245,31 @@ class HerbivoreBehaviorSystem:
             herbivore.body_water_kg = max(0.0, herbivore.body_water_kg - water_lost_kg)
             water.atmosphere_water_kg += water_lost_kg
 
-            if herbivore.thirst >= herbivore.drink_thirst_threshold:
-                water_target = _nearest_visible_water_source(herbivore, water.surface_sources)
-                if water_target is None:
-                    self._explore(herbivore, bounds, rng, dt_seconds)
-                    continue
+            signals = self._controller.update(
+                state=herbivore.homeostasis,
+                energy_fraction=herbivore.energy_fraction,
+                water_fraction=1.0 - herbivore.thirst,
+                dt_seconds=dt_seconds,
+            )
+            if herbivore.energy_j <= 0.0:
+                continue
+
+            food_target = _nearest_visible_plant(herbivore, plants)
+            water_target = _nearest_visible_water_source(herbivore, water.surface_sources)
+            food_active = (
+                food_target is not None
+                and signals.food_urgency >= self._controller.action_activation_urgency
+            )
+            water_active = (
+                water_target is not None
+                and signals.water_urgency >= self._controller.action_activation_urgency
+            )
+
+            if (
+                water_target is not None
+                and water_active
+                and (not food_active or signals.water_urgency >= signals.food_urgency)
+            ):
                 distance_to_water = dist(
                     (herbivore.position.x_m, herbivore.position.y_m),
                     (water_target.position.x_m, water_target.position.y_m),
@@ -228,37 +277,36 @@ class HerbivoreBehaviorSystem:
                 if distance_to_water <= herbivore.drinking_radius_m:
                     self._drink(herbivore, water_target, dt_seconds)
                 else:
-                    self._seek_position(
+                    distance_travelled_m = self._seek_position(
                         herbivore,
                         water_target.position,
                         distance_to_water,
                         herbivore.drinking_radius_m,
                         dt_seconds,
                     )
+                    self._pay_movement_cost(herbivore, distance_travelled_m)
                 continue
 
-            target = None
-            if herbivore.hunger >= herbivore.seek_food_hunger_threshold:
-                target = _nearest_visible_plant(herbivore, plants)
-
-            if target is None:
-                self._explore(herbivore, bounds, rng, dt_seconds)
-                continue
-
-            distance_to_target = dist(
-                (herbivore.position.x_m, herbivore.position.y_m),
-                (target.position.x_m, target.position.y_m),
-            )
-            if distance_to_target <= herbivore.feeding_radius_m:
-                self._feed(herbivore, target, dt_seconds)
-            else:
-                self._seek_position(
-                    herbivore,
-                    target.position,
-                    distance_to_target,
-                    herbivore.feeding_radius_m,
-                    dt_seconds,
+            if food_target is not None and food_active:
+                distance_to_target = dist(
+                    (herbivore.position.x_m, herbivore.position.y_m),
+                    (food_target.position.x_m, food_target.position.y_m),
                 )
+                if distance_to_target <= herbivore.feeding_radius_m:
+                    self._feed(herbivore, food_target, dt_seconds)
+                else:
+                    distance_travelled_m = self._seek_position(
+                        herbivore,
+                        food_target.position,
+                        distance_to_target,
+                        herbivore.feeding_radius_m,
+                        dt_seconds,
+                    )
+                    self._pay_movement_cost(herbivore, distance_travelled_m)
+                continue
+
+            distance_travelled_m = self._explore(herbivore, bounds, rng, dt_seconds)
+            self._pay_movement_cost(herbivore, distance_travelled_m)
 
     def _explore(
         self,
@@ -266,17 +314,19 @@ class HerbivoreBehaviorSystem:
         bounds: WorldBounds,
         rng: SeededRNG,
         dt_seconds: float,
-    ) -> None:
+    ) -> float:
         random_turn = (
             (2.0 * rng.random() - 1.0) * self._exploration_turn_rate_rad_per_s * dt_seconds
         )
         herbivore.heading_rad = normalize_heading(herbivore.heading_rad + random_turn)
+        distance_travelled_m = herbivore.speed_m_per_s * dt_seconds
         herbivore.position, herbivore.heading_rad = reflect_travel(
             position=herbivore.position,
             heading_rad=herbivore.heading_rad,
-            distance_m=herbivore.speed_m_per_s * dt_seconds,
+            distance_m=distance_travelled_m,
             bounds=bounds,
         )
+        return distance_travelled_m
 
     @staticmethod
     def _seek_position(
@@ -285,7 +335,7 @@ class HerbivoreBehaviorSystem:
         distance_to_target: float,
         stopping_radius_m: float,
         dt_seconds: float,
-    ) -> None:
+    ) -> float:
         dx_m = target_position.x_m - herbivore.position.x_m
         dy_m = target_position.y_m - herbivore.position.y_m
         heading = normalize_heading(atan2(dy_m, dx_m))
@@ -298,14 +348,20 @@ class HerbivoreBehaviorSystem:
             y_m=herbivore.position.y_m + sin(heading) * travel_distance,
         )
         herbivore.heading_rad = heading
+        return travel_distance
 
     @staticmethod
     def _feed(herbivore: Herbivore, target: Plant, dt_seconds: float) -> None:
         bite_kg = herbivore.feeding_rate_kg_per_s * dt_seconds
-        needed_kg = herbivore.hunger * herbivore.food_capacity_kg
-        eaten_kg = min(bite_kg, target.edible_biomass_kg, needed_kg)
+        food_needed_kg = (
+            herbivore.max_energy_j - herbivore.energy_j
+        ) / herbivore.food_energy_j_per_kg
+        eaten_kg = min(bite_kg, target.edible_biomass_kg, food_needed_kg)
         target.edible_biomass_kg = max(0.0, target.edible_biomass_kg - eaten_kg)
-        herbivore.hunger = max(0.0, herbivore.hunger - eaten_kg / herbivore.food_capacity_kg)
+        herbivore.energy_j = min(
+            herbivore.max_energy_j,
+            herbivore.energy_j + eaten_kg * herbivore.food_energy_j_per_kg,
+        )
 
     @staticmethod
     def _drink(herbivore: Herbivore, source: WaterSource, dt_seconds: float) -> None:
@@ -318,26 +374,34 @@ class HerbivoreBehaviorSystem:
             herbivore.body_water_kg + drunk_kg,
         )
 
+    @staticmethod
+    def _pay_movement_cost(herbivore: Herbivore, distance_travelled_m: float) -> None:
+        movement_cost_j = distance_travelled_m * herbivore.movement_energy_j_per_m
+        herbivore.energy_j = max(0.0, herbivore.energy_j - movement_cost_j)
+
 
 def create_uniform_herbivores(
     *,
     rng: SeededRNG,
     bounds: WorldBounds,
     count: int,
-    hunger: float,
     speed_m_per_s: float,
     perception_radius_m: float,
     feeding_radius_m: float,
-    hunger_rate_per_s: float,
     feeding_rate_kg_per_s: float,
-    food_capacity_kg: float,
-    seek_food_hunger_threshold: float,
     body_water_kg: float,
     max_body_water_kg: float,
     water_loss_kg_per_s: float,
     drinking_rate_kg_per_s: float,
     drinking_radius_m: float,
-    drink_thirst_threshold: float,
+    energy_j: float,
+    max_energy_j: float,
+    basal_power_w: float,
+    movement_energy_j_per_m: float,
+    food_energy_j_per_kg: float,
+    age_s: float,
+    lifespan_s: float,
+    recoverable_nutrient_kg: float,
 ) -> tuple[Herbivore, ...]:
     """Create herbivores with deterministic x, y, then heading draws per animal."""
     if isinstance(count, bool) or not isinstance(count, int):
@@ -354,21 +418,24 @@ def create_uniform_herbivores(
                     x_m=rng.random() * bounds.width_m,
                     y_m=rng.random() * bounds.height_m,
                 ),
-                hunger=hunger,
                 heading_rad=rng.random() * TAU,
                 speed_m_per_s=speed_m_per_s,
                 perception_radius_m=perception_radius_m,
                 feeding_radius_m=feeding_radius_m,
-                hunger_rate_per_s=hunger_rate_per_s,
                 feeding_rate_kg_per_s=feeding_rate_kg_per_s,
-                food_capacity_kg=food_capacity_kg,
-                seek_food_hunger_threshold=seek_food_hunger_threshold,
                 body_water_kg=body_water_kg,
                 max_body_water_kg=max_body_water_kg,
                 water_loss_kg_per_s=water_loss_kg_per_s,
                 drinking_rate_kg_per_s=drinking_rate_kg_per_s,
                 drinking_radius_m=drinking_radius_m,
-                drink_thirst_threshold=drink_thirst_threshold,
+                energy_j=energy_j,
+                max_energy_j=max_energy_j,
+                basal_power_w=basal_power_w,
+                movement_energy_j_per_m=movement_energy_j_per_m,
+                food_energy_j_per_kg=food_energy_j_per_kg,
+                age_s=age_s,
+                lifespan_s=lifespan_s,
+                recoverable_nutrient_kg=recoverable_nutrient_kg,
             )
         )
     return tuple(herbivores)

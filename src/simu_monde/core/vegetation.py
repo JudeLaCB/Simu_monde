@@ -35,6 +35,8 @@ class Plant:
     edible_biomass_kg: float
     max_edible_biomass_kg: float
     growth_rate_kg_per_s: float
+    age_s: float
+    lifespan_s: float
 
     def __post_init__(self) -> None:
         if isinstance(self.plant_id, bool) or not isinstance(self.plant_id, int):
@@ -64,6 +66,14 @@ class Plant:
         self.edible_biomass_kg = biomass
         self.max_edible_biomass_kg = max_biomass
         self.growth_rate_kg_per_s = growth_rate
+        age_s = _require_finite(self.age_s, "age_s")
+        if age_s < 0.0:
+            raise ValueError("age_s must be non-negative")
+        lifespan_s = _require_finite(self.lifespan_s, "lifespan_s")
+        if lifespan_s <= 0.0:
+            raise ValueError("lifespan_s must be positive")
+        self.age_s = age_s
+        self.lifespan_s = lifespan_s
 
 
 class PlantGrowthSystem:
@@ -107,6 +117,8 @@ def create_uniform_plants(
     initial_biomass_kg: float,
     max_biomass_kg: float,
     growth_rate_kg_per_s: float,
+    age_s: float,
+    lifespan_s: float,
 ) -> tuple[Plant, ...]:
     """Create a replayable uniformly placed plant collection using ``rng``."""
     if isinstance(count, bool) or not isinstance(count, int):
@@ -125,6 +137,8 @@ def create_uniform_plants(
                 edible_biomass_kg=initial_biomass_kg,
                 max_edible_biomass_kg=max_biomass_kg,
                 growth_rate_kg_per_s=growth_rate_kg_per_s,
+                age_s=age_s,
+                lifespan_s=lifespan_s,
             )
         )
     return tuple(plants)

@@ -7,6 +7,7 @@ import pytest
 
 from simu_monde.adapters.pygame_viewer.app import ViewerController, create_default_simulation
 from simu_monde.adapters.pygame_viewer.renderer import (
+    CARCASS_COLOR,
     HERBIVORE_COLOR,
     PLANT_COLOR,
     WATER_SOURCE_COLOR,
@@ -161,21 +162,24 @@ def test_render_update_frequency_does_not_change_core_trajectory() -> None:
         herbivore = Herbivore(
             herbivore_id=0,
             position=Position2D(50.0, 25.0),
-            hunger=0.0,
             heading_rad=0.5,
             speed_m_per_s=1.0,
             perception_radius_m=0.0,
             feeding_radius_m=0.0,
-            hunger_rate_per_s=0.0,
             feeding_rate_kg_per_s=0.0,
-            food_capacity_kg=1.0,
-            seek_food_hunger_threshold=0.5,
             body_water_kg=1.0,
             max_body_water_kg=1.0,
             water_loss_kg_per_s=0.0,
             drinking_rate_kg_per_s=0.0,
             drinking_radius_m=0.0,
-            drink_thirst_threshold=0.5,
+            energy_j=100.0,
+            max_energy_j=100.0,
+            basal_power_w=0.0,
+            movement_energy_j_per_m=0.0,
+            food_energy_j_per_kg=100.0,
+            age_s=0.0,
+            lifespan_s=100.0,
+            recoverable_nutrient_kg=0.02,
         )
         return Simulation(
             World(
@@ -252,9 +256,14 @@ def test_renderer_draws_real_core_plants_and_herbivores() -> None:
         transform=transform,
         plants=simulation.world.plants,
         herbivores=simulation.world.herbivores,
+        carcasses=simulation.world.carcasses,
         water=simulation.world.water,
         total_water_kg=simulation.world.total_water_kg,
         animal_body_water_kg=sum(item.body_water_kg for item in simulation.world.herbivores),
+        average_energy_fraction=sum(item.energy_fraction for item in simulation.world.herbivores)
+        / len(simulation.world.herbivores),
+        average_hydration_fraction=sum(1.0 - item.thirst for item in simulation.world.herbivores)
+        / len(simulation.world.herbivores),
         tick_index=0,
         time_seconds=0.0,
         is_running=False,
@@ -292,6 +301,118 @@ def test_default_viewer_scenario_has_deterministic_conserved_water() -> None:
     assert first.world.total_water_kg == pytest.approx(initial_total, abs=1e-8)
 
 
+def test_renderer_reads_real_carcass_and_metrics_without_mutating_core() -> None:
+    simulation = create_default_simulation()
+    simulation.world.herbivores[0].energy_j = 0.0
+    simulation.step()
+    carcass = simulation.world.carcasses[0]
+    state_before = (
+        tuple(
+            (
+                item.plant_id,
+                item.position,
+                item.edible_biomass_kg,
+                item.age_s,
+                item.lifespan_s,
+            )
+            for item in simulation.world.plants
+        ),
+        tuple(
+            (
+                item.herbivore_id,
+                item.position,
+                item.energy_j,
+                item.body_water_kg,
+                item.age_s,
+                item.lifespan_s,
+                item.homeostasis.food_integral_s,
+                item.homeostasis.water_integral_s,
+                item.homeostasis.previous_food_error,
+                item.homeostasis.previous_water_error,
+            )
+            for item in simulation.world.herbivores
+        ),
+        tuple(
+            (
+                item.carcass_id,
+                item.source_herbivore_id,
+                item.position,
+                item.death_cause,
+                item.water_kg,
+                item.recoverable_nutrient_kg,
+                item.age_s,
+            )
+            for item in simulation.world.carcasses
+        ),
+    )
+    surface = pygame.Surface((1000, 700))
+    pygame.font.init()
+    transform = WorldToScreenTransform(simulation.world.bounds, 1000, 700, 24.0)
+
+    render(
+        screen=surface,
+        font=pygame.font.Font(None, 24),
+        transform=transform,
+        plants=simulation.world.plants,
+        herbivores=simulation.world.herbivores,
+        carcasses=simulation.world.carcasses,
+        water=simulation.world.water,
+        total_water_kg=simulation.world.total_water_kg,
+        animal_body_water_kg=sum(item.body_water_kg for item in simulation.world.herbivores),
+        average_energy_fraction=sum(item.energy_fraction for item in simulation.world.herbivores)
+        / len(simulation.world.herbivores),
+        average_hydration_fraction=sum(1.0 - item.thirst for item in simulation.world.herbivores)
+        / len(simulation.world.herbivores),
+        tick_index=simulation.world.clock.tick_index,
+        time_seconds=simulation.world.clock.time_seconds,
+        is_running=False,
+    )
+
+    carcass_px = transform.to_screen(carcass.position)
+    assert surface.get_at((round(carcass_px[0]), round(carcass_px[1]))) == pygame.Color(
+        *CARCASS_COLOR, 255
+    )
+    assert (
+        tuple(
+            (
+                item.plant_id,
+                item.position,
+                item.edible_biomass_kg,
+                item.age_s,
+                item.lifespan_s,
+            )
+            for item in simulation.world.plants
+        ),
+        tuple(
+            (
+                item.herbivore_id,
+                item.position,
+                item.energy_j,
+                item.body_water_kg,
+                item.age_s,
+                item.lifespan_s,
+                item.homeostasis.food_integral_s,
+                item.homeostasis.water_integral_s,
+                item.homeostasis.previous_food_error,
+                item.homeostasis.previous_water_error,
+            )
+            for item in simulation.world.herbivores
+        ),
+        tuple(
+            (
+                item.carcass_id,
+                item.source_herbivore_id,
+                item.position,
+                item.death_cause,
+                item.water_kg,
+                item.recoverable_nutrient_kg,
+                item.age_s,
+            )
+            for item in simulation.world.carcasses
+        ),
+    ) == state_before
+
+
 def test_resize_does_not_mutate_plant_biomass() -> None:
     simulation = create_default_simulation()
     biomass_before = tuple(plant.edible_biomass_kg for plant in simulation.world.plants)
@@ -313,7 +434,7 @@ def test_resize_does_not_mutate_plant_biomass() -> None:
 def test_resize_does_not_mutate_herbivore_state() -> None:
     simulation = create_default_simulation()
     state_before = tuple(
-        (item.position, item.hunger, item.heading_rad) for item in simulation.world.herbivores
+        (item.position, item.energy_j, item.heading_rad) for item in simulation.world.herbivores
     )
 
     WorldToScreenTransform(simulation.world.bounds, 200, 200)
@@ -321,7 +442,7 @@ def test_resize_does_not_mutate_herbivore_state() -> None:
 
     assert (
         tuple(
-            (item.position, item.hunger, item.heading_rad) for item in simulation.world.herbivores
+            (item.position, item.energy_j, item.heading_rad) for item in simulation.world.herbivores
         )
         == state_before
     )
@@ -343,9 +464,14 @@ def test_resize_and_render_do_not_mutate_water() -> None:
         transform=WorldToScreenTransform(simulation.world.bounds, 400, 300),
         plants=simulation.world.plants,
         herbivores=simulation.world.herbivores,
+        carcasses=simulation.world.carcasses,
         water=simulation.world.water,
         total_water_kg=simulation.world.total_water_kg,
         animal_body_water_kg=sum(item.body_water_kg for item in simulation.world.herbivores),
+        average_energy_fraction=sum(item.energy_fraction for item in simulation.world.herbivores)
+        / len(simulation.world.herbivores),
+        average_hydration_fraction=sum(1.0 - item.thirst for item in simulation.world.herbivores)
+        / len(simulation.world.herbivores),
         tick_index=0,
         time_seconds=0.0,
         is_running=False,

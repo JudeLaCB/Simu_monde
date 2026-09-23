@@ -5,6 +5,7 @@ from __future__ import annotations
 from math import isfinite
 
 from simu_monde.core.herbivore import HerbivoreBehaviorSystem
+from simu_monde.core.lifecycle import MortalitySystem
 from simu_monde.core.vegetation import PlantGrowthSystem
 from simu_monde.core.water import (
     WATER_CONSERVATION_ABS_TOL_KG,
@@ -24,6 +25,7 @@ class Simulation:
         herbivore_behavior_system: HerbivoreBehaviorSystem | None = None,
         rainfall_system: RainfallSystem | None = None,
         evaporation_system: EvaporationSystem | None = None,
+        mortality_system: MortalitySystem | None = None,
     ) -> None:
         self._world = world
         self._rainfall_system = (
@@ -46,6 +48,9 @@ class Simulation:
                 soil_evaporation_rate_kg_per_s=0.0,
                 surface_evaporation_rate_kg_per_s_per_source=0.0,
             )
+        )
+        self._mortality_system = (
+            mortality_system if mortality_system is not None else MortalitySystem()
         )
 
     @property
@@ -71,6 +76,7 @@ class Simulation:
             rng=self._world.rng,
             dt_seconds=dt_seconds,
         )
+        self._mortality_system.step(world=self._world, dt_seconds=dt_seconds)
         self._evaporation_system.step(self._world.water, dt_seconds)
         total_water_after_kg = self._world.total_water_kg
         if (

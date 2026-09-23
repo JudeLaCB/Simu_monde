@@ -8,6 +8,7 @@ import pygame
 
 from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
 from simu_monde.core.herbivore import Herbivore
+from simu_monde.core.lifecycle import Carcass
 from simu_monde.core.vegetation import Plant
 from simu_monde.core.water import WaterState
 
@@ -16,10 +17,12 @@ WORLD_BORDER_COLOR = (205, 215, 230)
 PLANT_COLOR = (94, 201, 157)
 HERBIVORE_COLOR = (242, 174, 73)
 WATER_SOURCE_COLOR = (65, 155, 245)
+CARCASS_COLOR = (150, 145, 140)
 TEXT_COLOR = (245, 245, 245)
 PLANT_RADIUS_PX = 6
 HERBIVORE_RADIUS_PX = 8
 WATER_SOURCE_RADIUS_PX = 10
+CARCASS_RADIUS_PX = 7
 
 
 def render(
@@ -28,9 +31,12 @@ def render(
     transform: WorldToScreenTransform,
     plants: Sequence[Plant],
     herbivores: Sequence[Herbivore],
+    carcasses: Sequence[Carcass],
     water: WaterState,
     total_water_kg: float,
     animal_body_water_kg: float,
+    average_energy_fraction: float,
+    average_hydration_fraction: float,
     tick_index: int,
     time_seconds: float,
     is_running: bool,
@@ -73,6 +79,15 @@ def render(
             WATER_SOURCE_RADIUS_PX,
         )
 
+    for carcass in carcasses:
+        screen_position = transform.to_screen(carcass.position)
+        pygame.draw.circle(
+            screen,
+            CARCASS_COLOR,
+            (round(screen_position[0]), round(screen_position[1])),
+            CARCASS_RADIUS_PX,
+        )
+
     state_label = "running" if is_running else "paused"
     status_text = font.render(
         f"Tick: {tick_index}   Time: {time_seconds:.2f} s   State: {state_label}",
@@ -97,7 +112,21 @@ def render(
         True,
         TEXT_COLOR,
     )
+    population_text = font.render(
+        f"Living plants: {len(plants)}   Living herbivores: {len(herbivores)}   "
+        f"Carcasses: {len(carcasses)}",
+        True,
+        TEXT_COLOR,
+    )
+    homeostasis_text = font.render(
+        f"Average herbivore energy: {average_energy_fraction:.1%}   "
+        f"Average herbivore hydration: {average_hydration_fraction:.1%}",
+        True,
+        TEXT_COLOR,
+    )
     screen.blit(status_text, (16, 14))
     screen.blit(controls_text, (16, 42))
     screen.blit(water_text, (16, 70))
     screen.blit(accessible_water_text, (16, 98))
+    screen.blit(population_text, (16, 126))
+    screen.blit(homeostasis_text, (16, 154))
