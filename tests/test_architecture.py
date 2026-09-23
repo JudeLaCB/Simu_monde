@@ -6,15 +6,29 @@ import ast
 from pathlib import Path
 
 
-def test_core_modules_do_not_import_pygame() -> None:
-    core_directory = Path(__file__).parents[1] / "src" / "simu_monde" / "core"
+def _imported_modules(module_path: Path) -> set[str]:
+    module_tree = ast.parse(module_path.read_text(encoding="utf-8"), filename=str(module_path))
+    imported_modules: set[str] = set()
+    for node in ast.walk(module_tree):
+        if isinstance(node, ast.Import):
+            imported_modules.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module is not None:
+            imported_modules.add(node.module)
+    return imported_modules
 
+
+def test_core_modules_do_not_import_rendering_or_packaging() -> None:
+    core_directory = Path(__file__).parents[1] / "src" / "simu_monde" / "core"
     for module_path in core_directory.rglob("*.py"):
-        module_tree = ast.parse(module_path.read_text(encoding="utf-8"), filename=str(module_path))
-        imported_roots = {
-            alias.name.split(".")[0]
-            for node in ast.walk(module_tree)
-            if isinstance(node, (ast.Import, ast.ImportFrom))
-            for alias in node.names
-        }
-        assert "pygame" not in imported_roots, module_path
+        imported_roots = {module.split(".")[0] for module in _imported_modules(module_path)}
+        assert imported_roots.isdisjoint({"pygame", "PyInstaller"}), module_path
+
+
+def test_vegetation_module_does_not_import_adapters() -> None:
+    vegetation_module = (
+        Path(__file__).parents[1] / "src" / "simu_monde" / "core" / "vegetation.py"
+    )
+
+    assert not any(
+        module.startswith("simu_monde.adapters") for module in _imported_modules(vegetation_module)
+    )

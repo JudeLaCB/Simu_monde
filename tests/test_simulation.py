@@ -2,9 +2,25 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
+
+import pytest
+
 from simu_monde.core.config import SimulationConfig
+from simu_monde.core.geometry import Position2D
 from simu_monde.core.simulation import Simulation
+from simu_monde.core.vegetation import Plant, PlantGrowthSystem
 from simu_monde.core.world import World
+
+
+def make_plant(*, biomass: float = 0.5, growth_rate: float = 0.2) -> Plant:
+    return Plant(
+        plant_id=0,
+        position=Position2D(1.0, 2.0),
+        edible_biomass_kg=biomass,
+        max_edible_biomass_kg=1.0,
+        growth_rate_kg_per_s=growth_rate,
+    )
 
 
 def test_step_advances_exactly_one_tick() -> None:
@@ -53,3 +69,51 @@ def test_equal_configurations_replay_equal_rng_and_step_sequences() -> None:
 
     assert simulation_a.world.clock.tick_index == simulation_b.world.clock.tick_index
     assert simulation_a.world.clock.time_seconds == simulation_b.world.clock.time_seconds
+
+
+def test_one_step_grows_plant_by_rate_times_fixed_timestep() -> None:
+    plant = make_plant()
+    simulation = Simulation(
+        World(SimulationConfig(dt_seconds=0.25, seed=1), plants=(plant,))
+    )
+
+    simulation.step()
+
+    assert plant.edible_biomass_kg == pytest.approx(0.55)
+    assert simulation.world.clock.tick_index == 1
+
+
+def test_multiple_steps_grow_plant_until_cap() -> None:
+    plant = make_plant(biomass=0.8, growth_rate=0.3)
+    simulation = Simulation(
+        World(SimulationConfig(dt_seconds=0.5, seed=1), plants=(plant,))
+    )
+
+    for _ in range(5):
+        simulation.step()
+
+    assert plant.edible_biomass_kg == 1.0
+    assert simulation.world.clock.tick_index == 5
+
+
+class ObservingPlantGrowthSystem(PlantGrowthSystem):
+    def __init__(self, world: World) -> None:
+        self._world = world
+        self.tick_seen: int | None = None
+
+    def step(self, plants: Sequence[Plant], dt_seconds: float) -> None:
+        self.tick_seen = self._world.clock.tick_index
+        super().step(plants, dt_seconds)
+
+
+def test_simulation_grows_plants_before_advancing_clock() -> None:
+    world = World(
+        SimulationConfig(dt_seconds=0.25, seed=1),
+        plants=(make_plant(),),
+    )
+    growth_system = ObservingPlantGrowthSystem(world)
+
+    Simulation(world, plant_growth_system=growth_system).step()
+
+    assert growth_system.tick_seen == 0
+    assert world.clock.tick_index == 1

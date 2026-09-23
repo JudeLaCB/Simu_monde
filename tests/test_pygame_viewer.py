@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from simu_monde.adapters.pygame_viewer.app import ViewerController
+from simu_monde.adapters.pygame_viewer.app import ViewerController, create_default_simulation
 from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
 from simu_monde.core.config import SimulationConfig
 from simu_monde.core.geometry import Position2D, WorldBounds
@@ -111,22 +111,28 @@ def test_resize_changes_only_view_mapping_not_core_state() -> None:
 
 
 def test_single_step_advances_exactly_one_core_tick_while_paused() -> None:
-    simulation = Simulation(World(SimulationConfig(dt_seconds=0.1, seed=42)))
+    simulation = create_default_simulation()
     controller = ViewerController(simulation)
+    initial_biomass = simulation.world.plants[0].edible_biomass_kg
 
     controller.step_once()
 
     assert simulation.world.clock.tick_index == 1
     assert simulation.world.clock.time_seconds == 0.1
+    assert simulation.world.plants[0].edible_biomass_kg == pytest.approx(
+        initial_biomass + 0.02 * 0.1
+    )
 
 
 def test_paused_viewer_does_not_advance_core_state() -> None:
-    simulation = Simulation(World(SimulationConfig(dt_seconds=0.1, seed=42)))
+    simulation = create_default_simulation()
     controller = ViewerController(simulation)
+    biomass_before = tuple(plant.edible_biomass_kg for plant in simulation.world.plants)
 
     controller.update(elapsed_seconds=10.0)
 
     assert simulation.world.clock.tick_index == 0
+    assert tuple(plant.edible_biomass_kg for plant in simulation.world.plants) == biomass_before
 
 
 def test_running_viewer_uses_fixed_core_ticks_and_pauses_cleanly() -> None:
@@ -140,3 +146,36 @@ def test_running_viewer_uses_fixed_core_ticks_and_pauses_cleanly() -> None:
 
     assert simulation.world.clock.tick_index == 2
     assert simulation.world.clock.time_seconds == 0.2
+
+
+def test_default_viewer_scenario_contains_deterministic_core_plants() -> None:
+    first = create_default_simulation()
+    second = create_default_simulation()
+
+    assert len(first.world.plants) == 100
+    assert [plant.plant_id for plant in first.world.plants] == list(range(100))
+    assert [plant.position for plant in first.world.plants] == [
+        plant.position for plant in second.world.plants
+    ]
+    assert all(first.world.bounds.contains(plant.position) for plant in first.world.plants)
+    assert all(plant.edible_biomass_kg == 0.5 for plant in first.world.plants)
+    assert all(plant.max_edible_biomass_kg == 1.0 for plant in first.world.plants)
+    assert all(plant.growth_rate_kg_per_s == 0.02 for plant in first.world.plants)
+
+
+def test_resize_does_not_mutate_plant_biomass() -> None:
+    simulation = create_default_simulation()
+    biomass_before = tuple(plant.edible_biomass_kg for plant in simulation.world.plants)
+
+    WorldToScreenTransform(
+        simulation.world.bounds,
+        viewport_width_px=200,
+        viewport_height_px=200,
+    )
+    WorldToScreenTransform(
+        simulation.world.bounds,
+        viewport_width_px=400,
+        viewport_height_px=200,
+    )
+
+    assert tuple(plant.edible_biomass_kg for plant in simulation.world.plants) == biomass_before
