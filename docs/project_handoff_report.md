@@ -1,99 +1,132 @@
 # Project Handoff — Simu_monde
 
-**Phase :** 1 — première expérience d'émergence  
+**Phase :** 1F — Closed Water Cycle V1  
 **Source de vérité live :** GitHub
 
 ## Vision actuelle
 
-Construire un simulateur 2D continu où des comportements surprenants émergent de règles locales simples, de contraintes environnementales et de mémoire, tout en restant parfaitement rejouables avec la même seed.
+Construire un simulateur 2D continu où des comportements complexes émergent de règles locales simples et de ressources contraintes, tout en restant parfaitement rejouables avec une seed donnée.
 
-## Décisions déjà prises
+## État mergé
 
-1. Monde 2D continu.
-2. Coordonnées réelles `(x, y)` en mètres.
-3. Taille par défaut 1000 m × 1000 m, configurable.
-4. Frontières V1 = murs infranchissables.
-5. Core exécutable headless.
-6. Fixed timestep.
-7. RNG seedé et reproductible.
-8. Déterminisme = replay reproductible, pas comportement simpliste.
-9. L'intelligence recherchée est émergente/adaptative.
-10. Pygame est le viewer V1, strictement séparé du core.
-11. Le core stocke les positions en mètres ; l'adapter convertit en pixels.
-12. L'orientation visuelle V1 utilise une origine logique bas-gauche, X vers la droite, Y vers le haut.
-13. `SimuMonde.exe` est produit par le workflow Windows.
-14. La première expérience d'émergence suit l'ordre : **plantes -> herbivore -> mémoire -> eau**.
-15. Avant chaque délégation Codex, le pilote doit proposer à Jude le **modèle + niveau de raisonnement** adaptés, avec une justification courte et en privilégiant l'efficacité de quota.
+Le projet possède maintenant :
 
-## État du code
+- noyau déterministe ;
+- viewer Pygame + `SimuMonde.exe` ;
+- végétation spatiale avec biomasse ;
+- herbivores autonomes avec faim ;
+- perception locale ;
+- alimentation ;
+- exploration seedée ;
+- réflexion aux murs.
 
-Mergé :
+PR principales mergées :
 
-- world kernel déterministe (#5) ;
-- viewer Pygame + executable Windows (#9) ;
-- végétation minimale (#12).
+- #5 world kernel ;
+- #9 viewer ;
+- #12 végétation ;
+- #15 herbivore.
 
-La végétation actuelle possède :
+## Observation actuelle
 
-- position continue ;
-- biomasse comestible ;
-- biomasse maximale ;
-- repousse déterministe ;
-- placement seedé ;
-- rendu depuis le core.
+Les herbivores peuvent finir par rester près d'une plante renouvelable et exploiter continuellement sa repousse.
 
-## Étape active — herbivore minimal
+Ce comportement n'est pas corrigé artificiellement. Il sert de baseline pour observer comment un second besoin concurrent modifie la dynamique.
 
-Issue #13.
+## Décision actuelle
 
-Le premier animal doit posséder uniquement les mécanismes nécessaires à la boucle locale :
+Avant d'ajouter la mémoire, introduire un **cycle fermé de l'eau**.
+
+L'eau totale modélisée doit être conservée :
 
 ```text
-faim
-  ↓
-perception locale
-  ↓
-plante visible la plus proche
-  ↓
-déplacement ou alimentation
-  ↓
-biomasse végétale modifiée
-  ↓
-décision suivante modifiée
+W_total =
+    atmosphère
+  + sol
+  + sources de surface
+  + eau corporelle des herbivores
 ```
 
-Sans plante visible ou lorsqu'il n'a pas suffisamment faim, il explore via une direction persistante légèrement perturbée par le RNG seedé.
+L'eau peut devenir inaccessible sans disparaître.
 
-Le contact avec les murs utilise maintenant une réflexion simple de la direction.
+Exemple :
+
+```text
+eau totale constante
+mais
+surface ≈ 0
+sol ≈ 0
+atmosphère élevée
+→ plantes ne poussent plus
+→ herbivores ne peuvent plus boire localement
+```
+
+## Phase active — Issue #2
+
+La V1 du cycle d'eau comprend :
+
+- pluie déterministe atmosphère -> sol/surface ;
+- évaporation sol/surface -> atmosphère ;
+- croissance végétale limitée par l'eau du sol ;
+- transpiration simplifiée sol -> atmosphère pendant la croissance ;
+- eau corporelle de l'herbivore ;
+- perte d'eau corporelle -> atmosphère ;
+- boisson surface -> corps ;
+- soif prioritaire sur la faim au-dessus d'un seuil ;
+- points d'eau spatiaux visibles ;
+- conservation contrôlée à chaque tick.
+
+## Ordre global approuvé
+
+```text
+1. total water before
+2. rain
+3. plant growth + transpiration
+4. herbivore behavior
+   - hunger
+   - body-water loss
+   - thirst priority
+   - drinking / feeding / movement
+5. evaporation
+6. conservation check
+7. clock
+```
 
 ## Règles volontairement absentes
 
-Ne pas programmer directement :
+Ne pas ajouter dans cette phase :
 
 - mémoire ;
-- troupeau ;
-- migration ;
-- territoire ;
-- attraction sociale ;
-- chemins préférés ;
+- mort par déshydratation ;
 - reproduction ;
-- mort ;
-- eau.
+- cycle du carbone ;
+- eau stockée dans les plantes ;
+- météo réaliste ;
+- rivières ;
+- nappes phréatiques ;
+- humidité locale du sol ;
+- pathfinding ;
+- ECS.
 
-Ces comportements ne doivent apparaître que plus tard, soit par nouveaux mécanismes locaux explicites, soit comme phénomènes émergents.
+## Prochaine observation recherchée
 
-## Ordre immédiat
+Voir si la concurrence **faim vs soif** provoque spontanément :
 
-```text
-#13 herbivore minimal
-  ↓
-mémoire minimale
-  ↓
-observer / mesurer l'émergence
-  ↓
-#2 eau (deferred)
-```
+- départ des plantes campées ;
+- trajets nourriture <-> eau ;
+- concentration autour de certains points d'eau ;
+- surexploitation locale ;
+- périodes de faible croissance ;
+- pénuries d'eau accessible malgré une eau totale constante.
+
+Aucun de ces phénomènes ne doit être programmé explicitement.
 
 ## Modèle Codex
 
-Avant chaque délégation Codex, le pilote annonce le modèle et le niveau de reasoning recommandés selon la tâche actuelle. Pour l'implémentation de #13, recommandation actuelle : **GPT-5.6 Sol — Medium reasoning**.
+Règle permanente : avant chaque délégation, le pilote recommande modèle + niveau de reasoning.
+
+Pour l'implémentation de #2 :
+
+**GPT-5.6 Sol — High reasoning**
+
+Motif : changement HIGH-RISK touchant une quantité conservée, plusieurs transferts couplés, le comportement animal, la croissance végétale et l'ordre global de simulation.

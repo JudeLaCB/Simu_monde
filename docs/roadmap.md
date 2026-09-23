@@ -6,7 +6,9 @@ Chaque phase doit produire un monde observable plus riche sans casser les invari
 
 La complexité recherchée doit émerger de règles locales, de contraintes, de mémoire et de rétroactions, tout en restant reproductible pour une seed donnée.
 
-## Phase 0 — Fondations
+## Phases terminées
+
+### Phase 0 — Fondations
 
 Terminé :
 
@@ -18,94 +20,98 @@ Terminé :
 - murs V1 ;
 - principe d'émergence.
 
-## Phase 1A — Deterministic world kernel
+### Phase 1A — Deterministic world kernel
 
-Terminé via PR #5 :
+Terminé via PR #5.
 
-- `SimulationConfig`;
-- `Position2D`;
-- `WorldBounds`;
-- `SimulationClock`;
-- `SeededRNG`;
-- `World`;
-- `Simulation.step()`.
-
-## Phase 1V — Première visualisation 2D
+### Phase 1V — Première visualisation 2D
 
 Terminé via PR #9 :
 
 - viewer Pygame ;
-- transformation mètres -> pixels ;
-- fenêtre redimensionnable ;
 - pause / run / single-step ;
 - affichage tick / temps ;
-- build Windows `SimuMonde.exe`;
-- séparation stricte core / interface.
+- build Windows `SimuMonde.exe`.
 
-## Première expérience d'émergence
+### Phase 1C — Végétation minimale
 
-Priorité actuelle :
+Terminé via PR #12.
+
+### Phase 1D — Herbivore minimal
+
+Terminé via PR #15 :
+
+- faim ;
+- perception locale ;
+- recherche de plante ;
+- alimentation ;
+- exploration seedée ;
+- réflexion aux murs ;
+- plusieurs herbivores sans règle sociale.
+
+## Priorité actuelle — fermer le cycle de l'eau
+
+Nouvel ordre décidé :
 
 ```text
 végétation
     ↓
-herbivore
+herbivores
+    ↓
+cycle fermé de l'eau + soif
+    ↓
+observer les limites écologiques
     ↓
 mémoire
     ↓
-premiers comportements émergents
-    ↓
-eau / deuxième besoin concurrent
+complexité supplémentaire
 ```
 
-Le but n'est pas de reproduire tout de suite un écosystème réaliste. Le but est d'obtenir le plus tôt possible un comportement collectif ou individuel intéressant qui n'a pas été scripté explicitement.
+Le but est désormais de voir comment un deuxième besoin concurrent et une ressource strictement conservée modifient spontanément les comportements existants.
 
-## Phase 1C — Végétation minimale
+## Phase 1F — Closed Water Cycle V1
 
-Terminé via PR #12 :
+Étape active — Issue #2.
 
-- plante avec ID stable ;
-- position continue ;
-- biomasse comestible ;
-- biomasse maximale ;
-- repousse déterministe ;
-- placement initial seedé ;
-- rendu Pygame depuis l'état du core.
+Ajouter :
 
-Aucun besoin en eau, reproduction ou mort à ce stade.
+- eau atmosphérique globale ;
+- eau du sol globale ;
+- points d'eau spatiaux ;
+- eau corporelle des herbivores ;
+- pluie déterministe ;
+- évaporation ;
+- croissance des plantes limitée par l'eau ;
+- transpiration simplifiée ;
+- soif et boisson ;
+- invariant strict de conservation de l'eau.
 
-## Phase 1D — Herbivore minimal
+Invariant central :
 
-Étape active :
+```text
+atmosphère
++ sol
++ surface
++ eau corporelle
+= constante
+```
 
-- position ;
-- faim ;
-- vitesse ;
-- rayon de perception ;
-- déplacement ;
-- alimentation ;
-- exploration lorsqu'aucune nourriture n'est perçue.
+La pluie n'a pas besoin d'être représentée graphiquement.
 
-Pas de règle de troupeau, migration ou territoire.
+La disparition d'eau accessible peut bloquer croissance et abreuvement même si la quantité totale d'eau du monde reste constante.
 
-## Phase 1E — Mémoire minimale
+## Phase suivante — Mémoire minimale
 
-Ajouter ensuite la première mémoire individuelle :
+Après observation du système eau + faim :
 
 - souvenir d'une ressource ;
 - ancienneté ;
-- confiance simple ;
+- confiance ;
 - oubli ;
 - décision influencée par perception actuelle + mémoire.
 
-Objectif : observer si des habitudes, trajets, préférences ou abandons de zones émergent sans règle globale correspondante.
+La mémoire ne doit pas être ajoutée avant d'avoir observé les limites du système actuel à deux besoins.
 
-## Phase 1F — Eau / deuxième besoin
+## Phases ultérieures
 
-L'eau est volontairement différée jusque-là.
-
-Son introduction ajoutera un second besoin spatial concurrent (faim vs soif), ce qui enrichira les décisions sans être nécessaire au premier test d'émergence.
-
-## Phases suivantes
-
-Interactions plus riches, ressources multiples, reproduction, évolution, environnement, puis optimisation selon les limites observées.
+Cycles de vie, reproduction, mort, ressources supplémentaires, environnement plus riche, évolution puis optimisation selon les limites réellement observées.
