@@ -7,7 +7,9 @@ from collections.abc import Sequence
 import pytest
 
 from simu_monde.core.config import SimulationConfig
-from simu_monde.core.geometry import Position2D
+from simu_monde.core.geometry import Position2D, WorldBounds
+from simu_monde.core.herbivore import Herbivore, HerbivoreBehaviorSystem
+from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.simulation import Simulation
 from simu_monde.core.vegetation import Plant, PlantGrowthSystem
 from simu_monde.core.world import World
@@ -73,9 +75,7 @@ def test_equal_configurations_replay_equal_rng_and_step_sequences() -> None:
 
 def test_one_step_grows_plant_by_rate_times_fixed_timestep() -> None:
     plant = make_plant()
-    simulation = Simulation(
-        World(SimulationConfig(dt_seconds=0.25, seed=1), plants=(plant,))
-    )
+    simulation = Simulation(World(SimulationConfig(dt_seconds=0.25, seed=1), plants=(plant,)))
 
     simulation.step()
 
@@ -85,9 +85,7 @@ def test_one_step_grows_plant_by_rate_times_fixed_timestep() -> None:
 
 def test_multiple_steps_grow_plant_until_cap() -> None:
     plant = make_plant(biomass=0.8, growth_rate=0.3)
-    simulation = Simulation(
-        World(SimulationConfig(dt_seconds=0.5, seed=1), plants=(plant,))
-    )
+    simulation = Simulation(World(SimulationConfig(dt_seconds=0.5, seed=1), plants=(plant,)))
 
     for _ in range(5):
         simulation.step()
@@ -116,4 +114,52 @@ def test_simulation_grows_plants_before_advancing_clock() -> None:
     Simulation(world, plant_growth_system=growth_system).step()
 
     assert growth_system.tick_seen == 0
+    assert world.clock.tick_index == 1
+
+
+class RecordingPlantGrowthSystem(PlantGrowthSystem):
+    def __init__(self, events: list[str]) -> None:
+        self._events = events
+
+    def step(self, plants: Sequence[Plant], dt_seconds: float) -> None:
+        self._events.append("growth")
+        super().step(plants, dt_seconds)
+
+
+class RecordingHerbivoreBehaviorSystem(HerbivoreBehaviorSystem):
+    def __init__(self, events: list[str]) -> None:
+        super().__init__()
+        self._events = events
+
+    def step(
+        self,
+        *,
+        herbivores: Sequence[Herbivore],
+        plants: Sequence[Plant],
+        bounds: WorldBounds,
+        rng: SeededRNG,
+        dt_seconds: float,
+    ) -> None:
+        self._events.append("behavior")
+        assert plants[0].edible_biomass_kg == pytest.approx(0.55)
+        assert rng is not None
+        assert bounds is not None
+        assert herbivores == ()
+
+
+def test_simulation_order_is_growth_then_behavior_then_clock() -> None:
+    events: list[str] = []
+    world = World(
+        SimulationConfig(dt_seconds=0.25, seed=1),
+        plants=(make_plant(),),
+    )
+    simulation = Simulation(
+        world,
+        plant_growth_system=RecordingPlantGrowthSystem(events),
+        herbivore_behavior_system=RecordingHerbivoreBehaviorSystem(events),
+    )
+
+    simulation.step()
+
+    assert events == ["growth", "behavior"]
     assert world.clock.tick_index == 1

@@ -5,6 +5,7 @@ from __future__ import annotations
 from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
 from simu_monde.core.config import SimulationConfig
 from simu_monde.core.geometry import WorldBounds
+from simu_monde.core.herbivore import create_uniform_herbivores
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.simulation import Simulation
 from simu_monde.core.vegetation import create_uniform_plants
@@ -51,17 +52,32 @@ class ViewerController:
 
 
 def create_default_simulation() -> Simulation:
-    """Build the minimal approved core scenario used by the viewer."""
+    """Build the approved scenario with one seeded plant-then-herbivore placement stream."""
     config = SimulationConfig(dt_seconds=0.1, seed=42)
+    placement_rng = SeededRNG(config.seed)
+    bounds = WorldBounds(config.width_m, config.height_m)
     plants = create_uniform_plants(
-        rng=SeededRNG(config.seed),
-        bounds=WorldBounds(config.width_m, config.height_m),
+        rng=placement_rng,
+        bounds=bounds,
         count=100,
         initial_biomass_kg=0.5,
         max_biomass_kg=1.0,
         growth_rate_kg_per_s=0.02,
     )
-    return Simulation(World(config, plants=plants))
+    herbivores = create_uniform_herbivores(
+        rng=placement_rng,
+        bounds=bounds,
+        count=12,
+        hunger=0.60,
+        speed_m_per_s=15.0,
+        perception_radius_m=150.0,
+        feeding_radius_m=8.0,
+        hunger_rate_per_s=0.003,
+        feeding_rate_kg_per_s=0.05,
+        food_capacity_kg=0.25,
+        seek_food_hunger_threshold=0.35,
+    )
+    return Simulation(World(config, plants=plants, herbivores=herbivores))
 
 
 def main() -> int:
@@ -106,6 +122,7 @@ def main() -> int:
                 font=font,
                 transform=transform,
                 plants=simulation.world.plants,
+                herbivores=simulation.world.herbivores,
                 tick_index=simulation.world.clock.tick_index,
                 time_seconds=simulation.world.clock.time_seconds,
                 is_running=controller.is_running,

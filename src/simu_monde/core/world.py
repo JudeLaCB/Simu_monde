@@ -7,6 +7,7 @@ from collections.abc import Iterable
 from simu_monde.core.clock import SimulationClock
 from simu_monde.core.config import SimulationConfig
 from simu_monde.core.geometry import WorldBounds
+from simu_monde.core.herbivore import Herbivore
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.vegetation import Plant
 
@@ -14,12 +15,18 @@ from simu_monde.core.vegetation import Plant
 class World:
     """Own the core services derived from one simulation configuration."""
 
-    def __init__(self, config: SimulationConfig, plants: Iterable[Plant] = ()) -> None:
+    def __init__(
+        self,
+        config: SimulationConfig,
+        plants: Iterable[Plant] = (),
+        herbivores: Iterable[Herbivore] = (),
+    ) -> None:
         self._config = config
         self._bounds = WorldBounds(width_m=config.width_m, height_m=config.height_m)
         self._clock = SimulationClock(dt_seconds=config.dt_seconds)
         self._rng = SeededRNG(seed=config.seed)
         self._plants = tuple(plants)
+        self._herbivores = tuple(herbivores)
 
         plant_ids: set[int] = set()
         for plant in self._plants:
@@ -28,6 +35,16 @@ class World:
             if not self._bounds.contains(plant.position):
                 raise ValueError(f"plant {plant.plant_id} position is outside world bounds")
             plant_ids.add(plant.plant_id)
+
+        herbivore_ids: set[int] = set()
+        for herbivore in self._herbivores:
+            if herbivore.herbivore_id in herbivore_ids:
+                raise ValueError(f"duplicate herbivore_id: {herbivore.herbivore_id}")
+            if not self._bounds.contains(herbivore.position):
+                raise ValueError(
+                    f"herbivore {herbivore.herbivore_id} position is outside world bounds"
+                )
+            herbivore_ids.add(herbivore.herbivore_id)
 
     @property
     def config(self) -> SimulationConfig:
@@ -53,3 +70,8 @@ class World:
     def plants(self) -> tuple[Plant, ...]:
         """The ordered plant collection, structurally exposed as an immutable tuple."""
         return self._plants
+
+    @property
+    def herbivores(self) -> tuple[Herbivore, ...]:
+        """The ordered herbivore collection, structurally exposed as an immutable tuple."""
+        return self._herbivores
