@@ -1,132 +1,140 @@
 # Project Handoff — Simu_monde
 
-**Phase :** 1F — Closed Water Cycle V1  
+**Phase active :** 1G — Homeostasis, Ageing, Death and Carcasses  
 **Source de vérité live :** GitHub
 
-## Vision actuelle
+## Vision
 
-Construire un simulateur 2D continu où des comportements complexes émergent de règles locales simples et de ressources contraintes, tout en restant parfaitement rejouables avec une seed donnée.
+Construire un simulateur 2D continu où les comportements émergent de besoins internes, de contraintes physiques et de cycles de matière, plutôt que de règles comportementales globales.
 
 ## État mergé
 
-Le projet possède maintenant :
+Principales étapes :
 
-- noyau déterministe ;
-- viewer Pygame + `SimuMonde.exe` ;
-- végétation spatiale avec biomasse ;
-- herbivores autonomes avec faim ;
+- #5 world kernel ;
+- #9 viewer Pygame ;
+- #12 végétation ;
+- #15 herbivores ;
+- #17 cycle fermé de l'eau.
+
+Le monde possède maintenant :
+
+- plantes spatiales ;
+- herbivores mobiles ;
 - perception locale ;
 - alimentation ;
 - exploration seedée ;
-- réflexion aux murs.
+- eau atmosphérique ;
+- eau du sol ;
+- points d'eau ;
+- pluie/évaporation ;
+- eau corporelle ;
+- invariant strict de conservation de l'eau.
 
-PR principales mergées :
+## Observation ayant motivé la nouvelle phase
 
-- #5 world kernel ;
-- #9 viewer ;
-- #12 végétation ;
-- #15 herbivore.
+Les herbivores développent naturellement des attracteurs spatiaux :
 
-## Observation actuelle
+1. camping près des plantes ;
+2. après introduction de la soif, camping près des points d'eau.
 
-Les herbivores peuvent finir par rester près d'une plante renouvelable et exploiter continuellement sa repousse.
+Ce comportement n'est pas corrigé par une règle "quitte la ressource".
 
-Ce comportement n'est pas corrigé artificiellement. Il sert de baseline pour observer comment un second besoin concurrent modifie la dynamique.
+À la place, les besoins sont transformés en boucle de régulation interne.
 
-## Décision actuelle
+## Phase 1G — Issue #18
 
-Avant d'ajouter la mémoire, introduire un **cycle fermé de l'eau**.
+L'herbivore remplace le scalar abstrait de faim par une réserve énergétique.
 
-L'eau totale modélisée doit être conservée :
-
-```text
-W_total =
-    atmosphère
-  + sol
-  + sources de surface
-  + eau corporelle des herbivores
-```
-
-L'eau peut devenir inaccessible sans disparaître.
-
-Exemple :
+Concept :
 
 ```text
-eau totale constante
-mais
-surface ≈ 0
-sol ≈ 0
-atmosphère élevée
-→ plantes ne poussent plus
-→ herbivores ne peuvent plus boire localement
+réserve cible
+   ↓
+erreur actuelle
+   ↓
+P : déficit actuel
+I : déficit accumulé
+D : vitesse de dégradation
+   ↓
+urgence nourriture / eau
+   ↓
+action locale réalisable
 ```
 
-## Phase active — Issue #2
+Le PID-inspired controller arbitre entre les besoins, mais seules les ressources réellement perçues peuvent être ciblées.
 
-La V1 du cycle d'eau comprend :
+## Mortalité
 
-- pluie déterministe atmosphère -> sol/surface ;
-- évaporation sol/surface -> atmosphère ;
-- croissance végétale limitée par l'eau du sol ;
-- transpiration simplifiée sol -> atmosphère pendant la croissance ;
-- eau corporelle de l'herbivore ;
-- perte d'eau corporelle -> atmosphère ;
-- boisson surface -> corps ;
-- soif prioritaire sur la faim au-dessus d'un seuil ;
-- points d'eau spatiaux visibles ;
-- conservation contrôlée à chaque tick.
+Herbivore :
 
-## Ordre global approuvé
+- famine si énergie = 0 ;
+- vieillesse si âge >= durée de vie ;
+- pas encore de mort par déshydratation.
+
+Plante :
+
+- durée de vie ;
+- mort par vieillesse.
+
+La mort d'un herbivore crée un cadavre spatial persistant.
+
+Le cadavre conserve :
+
+- l'eau corporelle ;
+- un stock de nutriment récupérable préparant le cycle suivant.
+
+## Eau
+
+La mort ne détruit pas l'eau :
 
 ```text
-1. total water before
-2. rain
-3. plant growth + transpiration
-4. herbivore behavior
-   - hunger
-   - body-water loss
-   - thirst priority
-   - drinking / feeding / movement
-5. evaporation
-6. conservation check
-7. clock
+animal.body_water
+→ carcass.water
 ```
 
-## Règles volontairement absentes
+`World.total_water_kg` doit donc inclure l'eau des cadavres.
 
-Ne pas ajouter dans cette phase :
+La tolérance de conservation reste `1e-8 kg`.
 
-- mémoire ;
-- mort par déshydratation ;
-- reproduction ;
-- cycle du carbone ;
-- eau stockée dans les plantes ;
-- météo réaliste ;
-- rivières ;
-- nappes phréatiques ;
-- humidité locale du sol ;
-- pathfinding ;
-- ECS.
+## Étape suivante — Issue #19
 
-## Prochaine observation recherchée
+Après merge de 1G :
 
-Voir si la concurrence **faim vs soif** provoque spontanément :
+- champ local de nutriments ;
+- décomposition progressive ;
+- eau des cadavres -> sol ;
+- nutriments des cadavres -> cellule locale ;
+- nutriments des plantes/herbivores suivis explicitement ;
+- croissance végétale limitée par eau + nutriments.
 
-- départ des plantes campées ;
-- trajets nourriture <-> eau ;
-- concentration autour de certains points d'eau ;
-- surexploitation locale ;
-- périodes de faible croissance ;
-- pénuries d'eau accessible malgré une eau totale constante.
+## Puis
 
-Aucun de ces phénomènes ne doit être programmé explicitement.
+```text
+#18 homéostasie / mortalité
+   ↓
+#19 décomposition / nutriments
+   ↓
+reproduction minimale
+   ↓
+prédateur
+   ↓
+mémoire
+```
 
-## Modèle Codex
-
-Règle permanente : avant chaque délégation, le pilote recommande modèle + niveau de reasoning.
-
-Pour l'implémentation de #2 :
+## Modèle Codex recommandé pour #18
 
 **GPT-5.6 Sol — High reasoning**
 
-Motif : changement HIGH-RISK touchant une quantité conservée, plusieurs transferts couplés, le comportement animal, la croissance végétale et l'ordre global de simulation.
+Raison : migration du modèle comportemental, nouvel état persistant PID, coûts énergétiques, mutations de collections, mortalité et conservation de l'eau doivent rester cohérents ensemble.
+
+## Règles toujours actives
+
+- pas d'ECS prématuré ;
+- pas de scheduler générique ;
+- pas de mémoire dans 1G ;
+- pas de reproduction ;
+- pas de prédateur ;
+- pas de décomposition avant #19 ;
+- Pygame reste présentation-only ;
+- tout nouveau comportement doit rester local et rejouable.
