@@ -25,10 +25,16 @@ def test_core_modules_do_not_import_rendering_or_packaging() -> None:
 
 
 def test_vegetation_module_does_not_import_adapters() -> None:
-    vegetation_module = (
-        Path(__file__).parents[1] / "src" / "simu_monde" / "core" / "vegetation.py"
-    )
+    vegetation_module = Path(__file__).parents[1] / "src" / "simu_monde" / "core" / "vegetation.py"
 
     assert not any(
         module.startswith("simu_monde.adapters") for module in _imported_modules(vegetation_module)
+    )
+
+
+def test_herbivore_module_does_not_import_adapters() -> None:
+    herbivore_module = Path(__file__).parents[1] / "src" / "simu_monde" / "core" / "herbivore.py"
+
+    assert not any(
+        module.startswith("simu_monde.adapters") for module in _imported_modules(herbivore_module)
     )

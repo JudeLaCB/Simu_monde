@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
+import pygame
 import pytest
 
 from simu_monde.adapters.pygame_viewer.app import ViewerController, create_default_simulation
+from simu_monde.adapters.pygame_viewer.renderer import (
+    HERBIVORE_COLOR,
+    PLANT_COLOR,
+    render,
+)
 from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
 from simu_monde.core.config import SimulationConfig
 from simu_monde.core.geometry import Position2D, WorldBounds
+from simu_monde.core.herbivore import Herbivore
 from simu_monde.core.simulation import Simulation
 from simu_monde.core.world import World
 
@@ -148,6 +155,51 @@ def test_running_viewer_uses_fixed_core_ticks_and_pauses_cleanly() -> None:
     assert simulation.world.clock.time_seconds == 0.2
 
 
+def test_render_update_frequency_does_not_change_core_trajectory() -> None:
+    def make_simulation() -> Simulation:
+        herbivore = Herbivore(
+            herbivore_id=0,
+            position=Position2D(50.0, 25.0),
+            hunger=0.0,
+            heading_rad=0.5,
+            speed_m_per_s=1.0,
+            perception_radius_m=0.0,
+            feeding_radius_m=0.0,
+            hunger_rate_per_s=0.0,
+            feeding_rate_kg_per_s=0.0,
+            food_capacity_kg=1.0,
+            seek_food_hunger_threshold=0.5,
+        )
+        return Simulation(
+            World(
+                SimulationConfig(
+                    dt_seconds=0.25,
+                    seed=42,
+                    width_m=100.0,
+                    height_m=50.0,
+                ),
+                herbivores=(herbivore,),
+            )
+        )
+
+    frequent_simulation = make_simulation()
+    infrequent_simulation = make_simulation()
+    frequent = ViewerController(frequent_simulation)
+    infrequent = ViewerController(infrequent_simulation)
+    frequent.toggle_running()
+    infrequent.toggle_running()
+
+    for _ in range(4):
+        frequent.update(elapsed_seconds=0.25)
+    infrequent.update(elapsed_seconds=1.0)
+
+    frequent_world = frequent_simulation.world
+    infrequent_world = infrequent_simulation.world
+    assert frequent_world.clock.tick_index == infrequent_world.clock.tick_index == 4
+    assert frequent_world.herbivores[0].position == infrequent_world.herbivores[0].position
+    assert frequent_world.herbivores[0].heading_rad == infrequent_world.herbivores[0].heading_rad
+
+
 def test_default_viewer_scenario_contains_deterministic_core_plants() -> None:
     first = create_default_simulation()
     second = create_default_simulation()
@@ -161,6 +213,51 @@ def test_default_viewer_scenario_contains_deterministic_core_plants() -> None:
     assert all(plant.edible_biomass_kg == 0.5 for plant in first.world.plants)
     assert all(plant.max_edible_biomass_kg == 1.0 for plant in first.world.plants)
     assert all(plant.growth_rate_kg_per_s == 0.02 for plant in first.world.plants)
+
+
+def test_default_viewer_scenario_contains_deterministic_core_herbivores() -> None:
+    first = create_default_simulation()
+    second = create_default_simulation()
+
+    assert len(first.world.herbivores) == 12
+    assert [item.herbivore_id for item in first.world.herbivores] == list(range(12))
+    assert [(item.position, item.heading_rad) for item in first.world.herbivores] == [
+        (item.position, item.heading_rad) for item in second.world.herbivores
+    ]
+    assert all(first.world.bounds.contains(item.position) for item in first.world.herbivores)
+
+
+def test_renderer_draws_real_core_plants_and_herbivores() -> None:
+    simulation = create_default_simulation()
+    surface = pygame.Surface((1000, 700))
+    pygame.font.init()
+    font = pygame.font.Font(None, 24)
+    transform = WorldToScreenTransform(
+        bounds=simulation.world.bounds,
+        viewport_width_px=1000,
+        viewport_height_px=700,
+        padding_px=24.0,
+    )
+
+    render(
+        screen=surface,
+        font=font,
+        transform=transform,
+        plants=simulation.world.plants,
+        herbivores=simulation.world.herbivores,
+        tick_index=0,
+        time_seconds=0.0,
+        is_running=False,
+    )
+
+    plant_px = transform.to_screen(simulation.world.plants[0].position)
+    herbivore_px = transform.to_screen(simulation.world.herbivores[0].position)
+    assert surface.get_at((round(plant_px[0]), round(plant_px[1]))) == pygame.Color(
+        *PLANT_COLOR, 255
+    )
+    assert surface.get_at((round(herbivore_px[0]), round(herbivore_px[1]))) == pygame.Color(
+        *HERBIVORE_COLOR, 255
+    )
 
 
 def test_resize_does_not_mutate_plant_biomass() -> None:
@@ -179,3 +276,20 @@ def test_resize_does_not_mutate_plant_biomass() -> None:
     )
 
     assert tuple(plant.edible_biomass_kg for plant in simulation.world.plants) == biomass_before
+
+
+def test_resize_does_not_mutate_herbivore_state() -> None:
+    simulation = create_default_simulation()
+    state_before = tuple(
+        (item.position, item.hunger, item.heading_rad) for item in simulation.world.herbivores
+    )
+
+    WorldToScreenTransform(simulation.world.bounds, 200, 200)
+    WorldToScreenTransform(simulation.world.bounds, 400, 200)
+
+    assert (
+        tuple(
+            (item.position, item.hunger, item.heading_rad) for item in simulation.world.herbivores
+        )
+        == state_before
+    )
