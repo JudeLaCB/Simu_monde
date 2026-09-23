@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
 from simu_monde.core.config import SimulationConfig
-from simu_monde.core.geometry import Position2D, WorldBounds
+from simu_monde.core.geometry import WorldBounds
+from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.simulation import Simulation
+from simu_monde.core.vegetation import create_uniform_plants
 from simu_monde.core.world import World
 
 WINDOW_SIZE_PX = (1000, 700)
@@ -51,16 +53,15 @@ class ViewerController:
 def create_default_simulation() -> Simulation:
     """Build the minimal approved core scenario used by the viewer."""
     config = SimulationConfig(dt_seconds=0.1, seed=42)
-    return Simulation(World(config))
-
-
-def default_marker_positions(bounds: WorldBounds) -> tuple[Position2D, ...]:
-    """Return visual-only sample positions expressed in core meters."""
-    return (
-        Position2D(bounds.width_m * 0.2, bounds.height_m * 0.2),
-        Position2D(bounds.width_m * 0.5, bounds.height_m * 0.5),
-        Position2D(bounds.width_m * 0.8, bounds.height_m * 0.7),
+    plants = create_uniform_plants(
+        rng=SeededRNG(config.seed),
+        bounds=WorldBounds(config.width_m, config.height_m),
+        count=100,
+        initial_biomass_kg=0.5,
+        max_biomass_kg=1.0,
+        growth_rate_kg_per_s=0.02,
     )
+    return Simulation(World(config, plants=plants))
 
 
 def main() -> int:
@@ -71,7 +72,6 @@ def main() -> int:
 
     simulation = create_default_simulation()
     controller = ViewerController(simulation)
-    positions = default_marker_positions(simulation.world.bounds)
 
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE_PX, pygame.RESIZABLE)
@@ -105,7 +105,7 @@ def main() -> int:
                 screen=screen,
                 font=font,
                 transform=transform,
-                positions=positions,
+                plants=simulation.world.plants,
                 tick_index=simulation.world.clock.tick_index,
                 time_seconds=simulation.world.clock.time_seconds,
                 is_running=controller.is_running,

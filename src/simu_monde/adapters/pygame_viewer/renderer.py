@@ -7,25 +7,25 @@ from collections.abc import Sequence
 import pygame
 
 from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
-from simu_monde.core.geometry import Position2D
+from simu_monde.core.vegetation import Plant
 
 BACKGROUND_COLOR = (24, 28, 36)
 WORLD_BORDER_COLOR = (205, 215, 230)
-MARKER_COLOR = (94, 201, 157)
+PLANT_COLOR = (94, 201, 157)
 TEXT_COLOR = (245, 245, 245)
-MARKER_RADIUS_PX = 6
+PLANT_RADIUS_PX = 6
 
 
 def render(
     screen: pygame.Surface,
     font: pygame.font.Font,
     transform: WorldToScreenTransform,
-    positions: Sequence[Position2D],
+    plants: Sequence[Plant],
     tick_index: int,
     time_seconds: float,
     is_running: bool,
 ) -> None:
-    """Draw the world border, simple core positions, and minimal viewer UI."""
+    """Draw the world border, core plants, and minimal viewer UI."""
     screen.fill(BACKGROUND_COLOR)
     world_viewport = transform.world_viewport
     world_rect = pygame.Rect(
@@ -36,13 +36,13 @@ def render(
     )
     pygame.draw.rect(screen, WORLD_BORDER_COLOR, world_rect, width=2)
 
-    for position in positions:
-        screen_position = transform.to_screen(position)
+    for plant in plants:
+        screen_position = transform.to_screen(plant.position)
         pygame.draw.circle(
             screen,
-            MARKER_COLOR,
+            PLANT_COLOR,
             (round(screen_position[0]), round(screen_position[1])),
-            MARKER_RADIUS_PX,
+            PLANT_RADIUS_PX,
         )
 
     state_label = "running" if is_running else "paused"
