@@ -9,6 +9,7 @@ from simu_monde.adapters.pygame_viewer.app import ViewerController, create_defau
 from simu_monde.adapters.pygame_viewer.renderer import (
     HERBIVORE_COLOR,
     PLANT_COLOR,
+    WATER_SOURCE_COLOR,
     render,
 )
 from simu_monde.adapters.pygame_viewer.transform import WorldToScreenTransform
@@ -169,6 +170,12 @@ def test_render_update_frequency_does_not_change_core_trajectory() -> None:
             feeding_rate_kg_per_s=0.0,
             food_capacity_kg=1.0,
             seek_food_hunger_threshold=0.5,
+            body_water_kg=1.0,
+            max_body_water_kg=1.0,
+            water_loss_kg_per_s=0.0,
+            drinking_rate_kg_per_s=0.0,
+            drinking_radius_m=0.0,
+            drink_thirst_threshold=0.5,
         )
         return Simulation(
             World(
@@ -245,6 +252,9 @@ def test_renderer_draws_real_core_plants_and_herbivores() -> None:
         transform=transform,
         plants=simulation.world.plants,
         herbivores=simulation.world.herbivores,
+        water=simulation.world.water,
+        total_water_kg=simulation.world.total_water_kg,
+        animal_body_water_kg=sum(item.body_water_kg for item in simulation.world.herbivores),
         tick_index=0,
         time_seconds=0.0,
         is_running=False,
@@ -252,12 +262,34 @@ def test_renderer_draws_real_core_plants_and_herbivores() -> None:
 
     plant_px = transform.to_screen(simulation.world.plants[0].position)
     herbivore_px = transform.to_screen(simulation.world.herbivores[0].position)
+    water_source_px = transform.to_screen(simulation.world.water.surface_sources[0].position)
     assert surface.get_at((round(plant_px[0]), round(plant_px[1]))) == pygame.Color(
         *PLANT_COLOR, 255
     )
     assert surface.get_at((round(herbivore_px[0]), round(herbivore_px[1]))) == pygame.Color(
         *HERBIVORE_COLOR, 255
     )
+    assert surface.get_at((round(water_source_px[0]), round(water_source_px[1]))) == pygame.Color(
+        *WATER_SOURCE_COLOR, 255
+    )
+
+
+def test_default_viewer_scenario_has_deterministic_conserved_water() -> None:
+    first = create_default_simulation()
+    second = create_default_simulation()
+
+    assert first.world.total_water_kg == pytest.approx(448.4)
+    assert first.world.water.atmosphere_water_kg == 200.0
+    assert first.world.water.soil_water_kg == 120.0
+    assert len(first.world.water.surface_sources) == 3
+    assert [source.position for source in first.world.water.surface_sources] == [
+        source.position for source in second.world.water.surface_sources
+    ]
+
+    initial_total = first.world.total_water_kg
+    for _ in range(100):
+        first.step()
+    assert first.world.total_water_kg == pytest.approx(initial_total, abs=1e-8)
 
 
 def test_resize_does_not_mutate_plant_biomass() -> None:
@@ -293,3 +325,35 @@ def test_resize_does_not_mutate_herbivore_state() -> None:
         )
         == state_before
     )
+
+
+def test_resize_and_render_do_not_mutate_water() -> None:
+    simulation = create_default_simulation()
+    water_before = (
+        simulation.world.water.atmosphere_water_kg,
+        simulation.world.water.soil_water_kg,
+        tuple(source.water_kg for source in simulation.world.water.surface_sources),
+        tuple(item.body_water_kg for item in simulation.world.herbivores),
+    )
+    surface = pygame.Surface((400, 300))
+    pygame.font.init()
+    render(
+        screen=surface,
+        font=pygame.font.Font(None, 24),
+        transform=WorldToScreenTransform(simulation.world.bounds, 400, 300),
+        plants=simulation.world.plants,
+        herbivores=simulation.world.herbivores,
+        water=simulation.world.water,
+        total_water_kg=simulation.world.total_water_kg,
+        animal_body_water_kg=sum(item.body_water_kg for item in simulation.world.herbivores),
+        tick_index=0,
+        time_seconds=0.0,
+        is_running=False,
+    )
+
+    assert (
+        simulation.world.water.atmosphere_water_kg,
+        simulation.world.water.soil_water_kg,
+        tuple(source.water_kg for source in simulation.world.water.surface_sources),
+        tuple(item.body_water_kg for item in simulation.world.herbivores),
+    ) == water_before

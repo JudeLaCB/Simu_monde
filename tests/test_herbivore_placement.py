@@ -22,6 +22,12 @@ def create_herbivores(seed: int, count: int = 5) -> tuple[Herbivore, ...]:
         feeding_rate_kg_per_s=0.2,
         food_capacity_kg=0.5,
         seek_food_hunger_threshold=0.4,
+        body_water_kg=1.0,
+        max_body_water_kg=1.0,
+        water_loss_kg_per_s=0.0,
+        drinking_rate_kg_per_s=0.2,
+        drinking_radius_m=1.0,
+        drink_thirst_threshold=0.5,
     )
 
 
@@ -61,6 +67,12 @@ def test_placement_draws_x_then_y_then_heading_from_caller_rng() -> None:
         feeding_rate_kg_per_s=0.2,
         food_capacity_kg=0.5,
         seek_food_hunger_threshold=0.4,
+        body_water_kg=1.0,
+        max_body_water_kg=1.0,
+        water_loss_kg_per_s=0.0,
+        drinking_rate_kg_per_s=0.2,
+        drinking_radius_m=1.0,
+        drink_thirst_threshold=0.5,
     )
     expected = [
         (replay_rng.random() * 100.0, replay_rng.random() * 50.0, replay_rng.random())

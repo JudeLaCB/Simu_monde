@@ -10,6 +10,7 @@ from simu_monde.core.geometry import WorldBounds
 from simu_monde.core.herbivore import Herbivore
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.vegetation import Plant
+from simu_monde.core.water import WaterState
 
 
 class World:
@@ -20,6 +21,7 @@ class World:
         config: SimulationConfig,
         plants: Iterable[Plant] = (),
         herbivores: Iterable[Herbivore] = (),
+        water_state: WaterState | None = None,
     ) -> None:
         self._config = config
         self._bounds = WorldBounds(width_m=config.width_m, height_m=config.height_m)
@@ -27,6 +29,11 @@ class World:
         self._rng = SeededRNG(seed=config.seed)
         self._plants = tuple(plants)
         self._herbivores = tuple(herbivores)
+        self._water = (
+            water_state
+            if water_state is not None
+            else WaterState(atmosphere_water_kg=0.0, soil_water_kg=0.0, surface_sources=())
+        )
 
         plant_ids: set[int] = set()
         for plant in self._plants:
@@ -45,6 +52,12 @@ class World:
                     f"herbivore {herbivore.herbivore_id} position is outside world bounds"
                 )
             herbivore_ids.add(herbivore.herbivore_id)
+
+        for source in self._water.surface_sources:
+            if not self._bounds.contains(source.position):
+                raise ValueError(
+                    f"water source {source.water_source_id} position is outside world bounds"
+                )
 
     @property
     def config(self) -> SimulationConfig:
@@ -75,3 +88,18 @@ class World:
     def herbivores(self) -> tuple[Herbivore, ...]:
         """The ordered herbivore collection, structurally exposed as an immutable tuple."""
         return self._herbivores
+
+    @property
+    def water(self) -> WaterState:
+        """The world's atmosphere, soil, and ordered surface water state."""
+        return self._water
+
+    @property
+    def total_water_kg(self) -> float:
+        """Return all modeled water across the four approved reservoirs."""
+        return (
+            self._water.atmosphere_water_kg
+            + self._water.soil_water_kg
+            + sum(source.water_kg for source in self._water.surface_sources)
+            + sum(herbivore.body_water_kg for herbivore in self._herbivores)
+        )

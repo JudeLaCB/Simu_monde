@@ -23,6 +23,12 @@ def make_herbivore(**overrides: object) -> Herbivore:
         "feeding_rate_kg_per_s": 0.2,
         "food_capacity_kg": 0.5,
         "seek_food_hunger_threshold": 0.4,
+        "body_water_kg": 1.0,
+        "max_body_water_kg": 1.0,
+        "water_loss_kg_per_s": 0.0,
+        "drinking_rate_kg_per_s": 0.2,
+        "drinking_radius_m": 1.0,
+        "drink_thirst_threshold": 0.5,
     }
     arguments.update(overrides)
     return Herbivore(**arguments)  # type: ignore[arg-type]
@@ -71,6 +77,15 @@ def test_entity_rejects_negative_id_and_non_position() -> None:
         ("feeding_rate_kg_per_s", -0.1),
         ("food_capacity_kg", 0.0),
         ("food_capacity_kg", -0.1),
+        ("body_water_kg", -0.1),
+        ("body_water_kg", 1.1),
+        ("max_body_water_kg", 0.0),
+        ("max_body_water_kg", -0.1),
+        ("water_loss_kg_per_s", -0.1),
+        ("drinking_rate_kg_per_s", -0.1),
+        ("drinking_radius_m", -0.1),
+        ("drink_thirst_threshold", -0.1),
+        ("drink_thirst_threshold", 1.1),
     ],
 )
 def test_entity_rejects_out_of_range_values(field: str, value: float) -> None:
@@ -91,8 +106,18 @@ def test_entity_rejects_out_of_range_values(field: str, value: float) -> None:
         "feeding_rate_kg_per_s",
         "food_capacity_kg",
         "seek_food_hunger_threshold",
+        "body_water_kg",
+        "max_body_water_kg",
+        "water_loss_kg_per_s",
+        "drinking_rate_kg_per_s",
+        "drinking_radius_m",
+        "drink_thirst_threshold",
     ],
 )
 def test_entity_rejects_non_finite_values(field: str, value: float) -> None:
     with pytest.raises(ValueError):
         make_herbivore(**{field: value})
+
+
+def test_thirst_is_computed_from_body_water_deficit() -> None:
+    assert make_herbivore(body_water_kg=0.25, max_body_water_kg=1.0).thirst == 0.75
