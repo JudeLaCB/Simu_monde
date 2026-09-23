@@ -12,6 +12,7 @@ from simu_monde.core.herbivore import Herbivore, HerbivoreBehaviorSystem
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.simulation import Simulation
 from simu_monde.core.vegetation import Plant, PlantGrowthSystem
+from simu_monde.core.water import EvaporationSystem, RainfallSystem, WaterState
 from simu_monde.core.world import World
 
 
@@ -22,6 +23,14 @@ def make_plant(*, biomass: float = 0.5, growth_rate: float = 0.2) -> Plant:
         edible_biomass_kg=biomass,
         max_edible_biomass_kg=1.0,
         growth_rate_kg_per_s=growth_rate,
+    )
+
+
+def make_water(*, atmosphere: float = 0.0, soil: float = 10.0) -> WaterState:
+    return WaterState(
+        atmosphere_water_kg=atmosphere,
+        soil_water_kg=soil,
+        surface_sources=(),
     )
 
 
@@ -75,7 +84,13 @@ def test_equal_configurations_replay_equal_rng_and_step_sequences() -> None:
 
 def test_one_step_grows_plant_by_rate_times_fixed_timestep() -> None:
     plant = make_plant()
-    simulation = Simulation(World(SimulationConfig(dt_seconds=0.25, seed=1), plants=(plant,)))
+    simulation = Simulation(
+        World(
+            SimulationConfig(dt_seconds=0.25, seed=1),
+            plants=(plant,),
+            water_state=make_water(),
+        )
+    )
 
     simulation.step()
 
@@ -85,7 +100,13 @@ def test_one_step_grows_plant_by_rate_times_fixed_timestep() -> None:
 
 def test_multiple_steps_grow_plant_until_cap() -> None:
     plant = make_plant(biomass=0.8, growth_rate=0.3)
-    simulation = Simulation(World(SimulationConfig(dt_seconds=0.5, seed=1), plants=(plant,)))
+    simulation = Simulation(
+        World(
+            SimulationConfig(dt_seconds=0.5, seed=1),
+            plants=(plant,),
+            water_state=make_water(),
+        )
+    )
 
     for _ in range(5):
         simulation.step()
@@ -96,18 +117,25 @@ def test_multiple_steps_grow_plant_until_cap() -> None:
 
 class ObservingPlantGrowthSystem(PlantGrowthSystem):
     def __init__(self, world: World) -> None:
+        super().__init__()
         self._world = world
         self.tick_seen: int | None = None
 
-    def step(self, plants: Sequence[Plant], dt_seconds: float) -> None:
+    def step(
+        self,
+        plants: Sequence[Plant],
+        water: WaterState,
+        dt_seconds: float,
+    ) -> None:
         self.tick_seen = self._world.clock.tick_index
-        super().step(plants, dt_seconds)
+        super().step(plants, water, dt_seconds)
 
 
 def test_simulation_grows_plants_before_advancing_clock() -> None:
     world = World(
         SimulationConfig(dt_seconds=0.25, seed=1),
         plants=(make_plant(),),
+        water_state=make_water(),
     )
     growth_system = ObservingPlantGrowthSystem(world)
 
@@ -119,11 +147,17 @@ def test_simulation_grows_plants_before_advancing_clock() -> None:
 
 class RecordingPlantGrowthSystem(PlantGrowthSystem):
     def __init__(self, events: list[str]) -> None:
+        super().__init__()
         self._events = events
 
-    def step(self, plants: Sequence[Plant], dt_seconds: float) -> None:
+    def step(
+        self,
+        plants: Sequence[Plant],
+        water: WaterState,
+        dt_seconds: float,
+    ) -> None:
         self._events.append("growth")
-        super().step(plants, dt_seconds)
+        super().step(plants, water, dt_seconds)
 
 
 class RecordingHerbivoreBehaviorSystem(HerbivoreBehaviorSystem):
@@ -136,30 +170,75 @@ class RecordingHerbivoreBehaviorSystem(HerbivoreBehaviorSystem):
         *,
         herbivores: Sequence[Herbivore],
         plants: Sequence[Plant],
+        water: WaterState,
         bounds: WorldBounds,
         rng: SeededRNG,
         dt_seconds: float,
     ) -> None:
         self._events.append("behavior")
         assert plants[0].edible_biomass_kg == pytest.approx(0.55)
+        assert water is not None
         assert rng is not None
         assert bounds is not None
         assert herbivores == ()
 
 
-def test_simulation_order_is_growth_then_behavior_then_clock() -> None:
+class RecordingRainfallSystem(RainfallSystem):
+    def __init__(self, events: list[str]) -> None:
+        super().__init__(rain_rate_kg_per_s=0.0, soil_fraction=1.0)
+        self._events = events
+
+    def step(self, water: WaterState, dt_seconds: float) -> None:
+        self._events.append("rain")
+        super().step(water, dt_seconds)
+
+
+class RecordingEvaporationSystem(EvaporationSystem):
+    def __init__(self, events: list[str]) -> None:
+        super().__init__(0.0, 0.0)
+        self._events = events
+
+    def step(self, water: WaterState, dt_seconds: float) -> None:
+        self._events.append("evaporation")
+        super().step(water, dt_seconds)
+
+
+def test_simulation_uses_exact_approved_system_order_before_clock() -> None:
     events: list[str] = []
     world = World(
         SimulationConfig(dt_seconds=0.25, seed=1),
         plants=(make_plant(),),
+        water_state=make_water(),
     )
     simulation = Simulation(
         world,
+        rainfall_system=RecordingRainfallSystem(events),
         plant_growth_system=RecordingPlantGrowthSystem(events),
         herbivore_behavior_system=RecordingHerbivoreBehaviorSystem(events),
+        evaporation_system=RecordingEvaporationSystem(events),
     )
 
     simulation.step()
 
-    assert events == ["growth", "behavior"]
+    assert events == ["rain", "growth", "behavior", "evaporation"]
     assert world.clock.tick_index == 1
+
+
+class LeakingRainfallSystem(RainfallSystem):
+    def __init__(self) -> None:
+        super().__init__(0.0, 1.0)
+
+    def step(self, water: WaterState, dt_seconds: float) -> None:
+        water.atmosphere_water_kg -= 0.1
+
+
+def test_simulation_raises_runtime_error_before_clock_on_water_loss() -> None:
+    world = World(
+        SimulationConfig(dt_seconds=0.25, seed=1),
+        water_state=make_water(atmosphere=1.0),
+    )
+
+    with pytest.raises(RuntimeError, match=r"before=.*after="):
+        Simulation(world, rainfall_system=LeakingRainfallSystem()).step()
+
+    assert world.clock.tick_index == 0

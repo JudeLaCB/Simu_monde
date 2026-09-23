@@ -8,7 +8,13 @@ from simu_monde.core.geometry import WorldBounds
 from simu_monde.core.herbivore import create_uniform_herbivores
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.simulation import Simulation
-from simu_monde.core.vegetation import create_uniform_plants
+from simu_monde.core.vegetation import PlantGrowthSystem, create_uniform_plants
+from simu_monde.core.water import (
+    EvaporationSystem,
+    RainfallSystem,
+    WaterState,
+    create_uniform_water_sources,
+)
 from simu_monde.core.world import World
 
 WINDOW_SIZE_PX = (1000, 700)
@@ -76,8 +82,34 @@ def create_default_simulation() -> Simulation:
         feeding_rate_kg_per_s=0.05,
         food_capacity_kg=0.25,
         seek_food_hunger_threshold=0.35,
+        body_water_kg=0.70,
+        max_body_water_kg=1.00,
+        water_loss_kg_per_s=0.002,
+        drinking_rate_kg_per_s=0.05,
+        drinking_radius_m=8.0,
+        drink_thirst_threshold=0.35,
     )
-    return Simulation(World(config, plants=plants, herbivores=herbivores))
+    water_sources = create_uniform_water_sources(
+        rng=placement_rng,
+        bounds=bounds,
+        count=3,
+        water_kg_per_source=40.0,
+    )
+    water = WaterState(
+        atmosphere_water_kg=200.0,
+        soil_water_kg=120.0,
+        surface_sources=water_sources,
+    )
+    world = World(config, plants=plants, herbivores=herbivores, water_state=water)
+    return Simulation(
+        world,
+        rainfall_system=RainfallSystem(rain_rate_kg_per_s=0.10, soil_fraction=0.50),
+        plant_growth_system=PlantGrowthSystem(water_kg_per_biomass_kg=0.20),
+        evaporation_system=EvaporationSystem(
+            soil_evaporation_rate_kg_per_s=0.05,
+            surface_evaporation_rate_kg_per_s_per_source=0.02,
+        ),
+    )
 
 
 def main() -> int:
@@ -123,6 +155,11 @@ def main() -> int:
                 transform=transform,
                 plants=simulation.world.plants,
                 herbivores=simulation.world.herbivores,
+                water=simulation.world.water,
+                total_water_kg=simulation.world.total_water_kg,
+                animal_body_water_kg=sum(
+                    herbivore.body_water_kg for herbivore in simulation.world.herbivores
+                ),
                 tick_index=simulation.world.clock.tick_index,
                 time_seconds=simulation.world.clock.time_seconds,
                 is_running=controller.is_running,

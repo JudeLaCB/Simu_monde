@@ -9,6 +9,7 @@ from math import atan2, cos, dist, isfinite, pi, sin
 from simu_monde.core.geometry import Position2D, WorldBounds
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.vegetation import Plant
+from simu_monde.core.water import WaterSource, WaterState
 
 TAU = 2.0 * pi
 
@@ -52,6 +53,12 @@ class Herbivore:
     feeding_rate_kg_per_s: float
     food_capacity_kg: float
     seek_food_hunger_threshold: float
+    body_water_kg: float
+    max_body_water_kg: float
+    water_loss_kg_per_s: float
+    drinking_rate_kg_per_s: float
+    drinking_radius_m: float
+    drink_thirst_threshold: float
 
     def __post_init__(self) -> None:
         if isinstance(self.herbivore_id, bool) or not isinstance(self.herbivore_id, int):
@@ -82,6 +89,30 @@ class Herbivore:
         )
         if not 0.0 <= self.seek_food_hunger_threshold <= 1.0:
             raise ValueError("seek_food_hunger_threshold must be between 0 and 1")
+
+        self.max_body_water_kg = _require_finite(self.max_body_water_kg, "max_body_water_kg")
+        if self.max_body_water_kg <= 0.0:
+            raise ValueError("max_body_water_kg must be positive")
+        self.body_water_kg = _require_non_negative(self.body_water_kg, "body_water_kg")
+        if self.body_water_kg > self.max_body_water_kg:
+            raise ValueError("body_water_kg must not exceed max_body_water_kg")
+        self.water_loss_kg_per_s = _require_non_negative(
+            self.water_loss_kg_per_s, "water_loss_kg_per_s"
+        )
+        self.drinking_rate_kg_per_s = _require_non_negative(
+            self.drinking_rate_kg_per_s, "drinking_rate_kg_per_s"
+        )
+        self.drinking_radius_m = _require_non_negative(self.drinking_radius_m, "drinking_radius_m")
+        self.drink_thirst_threshold = _require_finite(
+            self.drink_thirst_threshold, "drink_thirst_threshold"
+        )
+        if not 0.0 <= self.drink_thirst_threshold <= 1.0:
+            raise ValueError("drink_thirst_threshold must be between 0 and 1")
+
+    @property
+    def thirst(self) -> float:
+        """Return the dimensionless body-water deficit in [0, 1]."""
+        return min(1.0, max(0.0, 1.0 - self.body_water_kg / self.max_body_water_kg))
 
 
 def _reflect_axis(start: float, displacement: float, limit: float) -> tuple[float, float]:
@@ -136,6 +167,27 @@ def _nearest_visible_plant(herbivore: Herbivore, plants: Sequence[Plant]) -> Pla
     )
 
 
+def _nearest_visible_water_source(
+    herbivore: Herbivore,
+    sources: Sequence[WaterSource],
+) -> WaterSource | None:
+    radius_squared = herbivore.perception_radius_m**2
+    candidates = (
+        source
+        for source in sources
+        if source.water_kg > 0.0
+        and _distance_squared(herbivore.position, source.position) <= radius_squared
+    )
+    return min(
+        candidates,
+        key=lambda source: (
+            _distance_squared(herbivore.position, source.position),
+            source.water_source_id,
+        ),
+        default=None,
+    )
+
+
 class HerbivoreBehaviorSystem:
     """Apply hunger, local food seeking, feeding, and bounded exploration."""
 
@@ -149,6 +201,7 @@ class HerbivoreBehaviorSystem:
         *,
         herbivores: Sequence[Herbivore],
         plants: Sequence[Plant],
+        water: WaterState,
         bounds: WorldBounds,
         rng: SeededRNG,
         dt_seconds: float,
@@ -156,6 +209,34 @@ class HerbivoreBehaviorSystem:
         """Advance herbivores in stored order, including sequential consumption."""
         for herbivore in herbivores:
             herbivore.hunger = min(1.0, herbivore.hunger + herbivore.hunger_rate_per_s * dt_seconds)
+            water_lost_kg = min(
+                herbivore.body_water_kg,
+                herbivore.water_loss_kg_per_s * dt_seconds,
+            )
+            herbivore.body_water_kg = max(0.0, herbivore.body_water_kg - water_lost_kg)
+            water.atmosphere_water_kg += water_lost_kg
+
+            if herbivore.thirst >= herbivore.drink_thirst_threshold:
+                water_target = _nearest_visible_water_source(herbivore, water.surface_sources)
+                if water_target is None:
+                    self._explore(herbivore, bounds, rng, dt_seconds)
+                    continue
+                distance_to_water = dist(
+                    (herbivore.position.x_m, herbivore.position.y_m),
+                    (water_target.position.x_m, water_target.position.y_m),
+                )
+                if distance_to_water <= herbivore.drinking_radius_m:
+                    self._drink(herbivore, water_target, dt_seconds)
+                else:
+                    self._seek_position(
+                        herbivore,
+                        water_target.position,
+                        distance_to_water,
+                        herbivore.drinking_radius_m,
+                        dt_seconds,
+                    )
+                continue
+
             target = None
             if herbivore.hunger >= herbivore.seek_food_hunger_threshold:
                 target = _nearest_visible_plant(herbivore, plants)
@@ -171,7 +252,13 @@ class HerbivoreBehaviorSystem:
             if distance_to_target <= herbivore.feeding_radius_m:
                 self._feed(herbivore, target, dt_seconds)
             else:
-                self._seek(herbivore, target, distance_to_target, dt_seconds)
+                self._seek_position(
+                    herbivore,
+                    target.position,
+                    distance_to_target,
+                    herbivore.feeding_radius_m,
+                    dt_seconds,
+                )
 
     def _explore(
         self,
@@ -192,18 +279,19 @@ class HerbivoreBehaviorSystem:
         )
 
     @staticmethod
-    def _seek(
+    def _seek_position(
         herbivore: Herbivore,
-        target: Plant,
+        target_position: Position2D,
         distance_to_target: float,
+        stopping_radius_m: float,
         dt_seconds: float,
     ) -> None:
-        dx_m = target.position.x_m - herbivore.position.x_m
-        dy_m = target.position.y_m - herbivore.position.y_m
+        dx_m = target_position.x_m - herbivore.position.x_m
+        dy_m = target_position.y_m - herbivore.position.y_m
         heading = normalize_heading(atan2(dy_m, dx_m))
         travel_distance = min(
             herbivore.speed_m_per_s * dt_seconds,
-            distance_to_target - herbivore.feeding_radius_m,
+            distance_to_target - stopping_radius_m,
         )
         herbivore.position = Position2D(
             x_m=herbivore.position.x_m + cos(heading) * travel_distance,
@@ -219,6 +307,17 @@ class HerbivoreBehaviorSystem:
         target.edible_biomass_kg = max(0.0, target.edible_biomass_kg - eaten_kg)
         herbivore.hunger = max(0.0, herbivore.hunger - eaten_kg / herbivore.food_capacity_kg)
 
+    @staticmethod
+    def _drink(herbivore: Herbivore, source: WaterSource, dt_seconds: float) -> None:
+        potential_drink_kg = herbivore.drinking_rate_kg_per_s * dt_seconds
+        needed_kg = herbivore.max_body_water_kg - herbivore.body_water_kg
+        drunk_kg = min(potential_drink_kg, source.water_kg, needed_kg)
+        source.water_kg = max(0.0, source.water_kg - drunk_kg)
+        herbivore.body_water_kg = min(
+            herbivore.max_body_water_kg,
+            herbivore.body_water_kg + drunk_kg,
+        )
+
 
 def create_uniform_herbivores(
     *,
@@ -233,6 +332,12 @@ def create_uniform_herbivores(
     feeding_rate_kg_per_s: float,
     food_capacity_kg: float,
     seek_food_hunger_threshold: float,
+    body_water_kg: float,
+    max_body_water_kg: float,
+    water_loss_kg_per_s: float,
+    drinking_rate_kg_per_s: float,
+    drinking_radius_m: float,
+    drink_thirst_threshold: float,
 ) -> tuple[Herbivore, ...]:
     """Create herbivores with deterministic x, y, then heading draws per animal."""
     if isinstance(count, bool) or not isinstance(count, int):
@@ -258,6 +363,12 @@ def create_uniform_herbivores(
                 feeding_rate_kg_per_s=feeding_rate_kg_per_s,
                 food_capacity_kg=food_capacity_kg,
                 seek_food_hunger_threshold=seek_food_hunger_threshold,
+                body_water_kg=body_water_kg,
+                max_body_water_kg=max_body_water_kg,
+                water_loss_kg_per_s=water_loss_kg_per_s,
+                drinking_rate_kg_per_s=drinking_rate_kg_per_s,
+                drinking_radius_m=drinking_radius_m,
+                drink_thirst_threshold=drink_thirst_threshold,
             )
         )
     return tuple(herbivores)

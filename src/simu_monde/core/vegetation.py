@@ -8,6 +8,7 @@ from math import isfinite
 
 from simu_monde.core.geometry import Position2D, WorldBounds
 from simu_monde.core.randomness import SeededRNG
+from simu_monde.core.water import WaterState
 
 
 def _require_finite(value: float, name: str) -> float:
@@ -66,14 +67,35 @@ class Plant:
 
 
 class PlantGrowthSystem:
-    """Apply the approved linear biomass input to existing plants."""
+    """Apply water-limited growth with same-tick soil-to-atmosphere transpiration."""
 
-    def step(self, plants: Sequence[Plant], dt_seconds: float) -> None:
-        """Grow each plant for one fixed timestep without creating or moving it."""
+    def __init__(self, water_kg_per_biomass_kg: float = 0.2) -> None:
+        self._water_coefficient = _require_finite(
+            water_kg_per_biomass_kg, "water_kg_per_biomass_kg"
+        )
+        if self._water_coefficient <= 0.0:
+            raise ValueError("water_kg_per_biomass_kg must be positive")
+
+    def step(
+        self,
+        plants: Sequence[Plant],
+        water: WaterState,
+        dt_seconds: float,
+    ) -> None:
+        """Grow plants in order, transferring all used soil water to atmosphere."""
         for plant in plants:
+            potential_growth_kg = min(
+                plant.growth_rate_kg_per_s * dt_seconds,
+                plant.max_edible_biomass_kg - plant.edible_biomass_kg,
+            )
+            required_water_kg = potential_growth_kg * self._water_coefficient
+            used_water_kg = min(required_water_kg, water.soil_water_kg)
+            actual_growth_kg = used_water_kg / self._water_coefficient
+            water.soil_water_kg = max(0.0, water.soil_water_kg - used_water_kg)
+            water.atmosphere_water_kg += used_water_kg
             plant.edible_biomass_kg = min(
                 plant.max_edible_biomass_kg,
-                plant.edible_biomass_kg + plant.growth_rate_kg_per_s * dt_seconds,
+                plant.edible_biomass_kg + actual_growth_kg,
             )
 
 

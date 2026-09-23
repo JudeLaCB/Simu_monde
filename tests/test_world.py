@@ -8,6 +8,7 @@ from simu_monde.core.config import SimulationConfig
 from simu_monde.core.geometry import Position2D
 from simu_monde.core.herbivore import Herbivore
 from simu_monde.core.vegetation import Plant
+from simu_monde.core.water import WaterSource, WaterState
 from simu_monde.core.world import World
 
 
@@ -34,6 +35,12 @@ def make_herbivore(herbivore_id: int, position: Position2D) -> Herbivore:
         feeding_rate_kg_per_s=0.2,
         food_capacity_kg=0.5,
         seek_food_hunger_threshold=0.4,
+        body_water_kg=1.0,
+        max_body_water_kg=1.0,
+        water_loss_kg_per_s=0.0,
+        drinking_rate_kg_per_s=0.2,
+        drinking_radius_m=1.0,
+        drink_thirst_threshold=0.5,
     )
 
 
@@ -58,6 +65,8 @@ def test_world_without_plants_preserves_original_behavior() -> None:
     assert world.bounds.height_m == 40.0
     assert world.plants == ()
     assert world.herbivores == ()
+    assert world.water == WaterState(0.0, 0.0, ())
+    assert world.total_water_kg == 0.0
 
 
 def test_world_rejects_duplicate_plant_ids() -> None:
@@ -126,3 +135,29 @@ def test_world_accepts_herbivores_on_exact_boundary(position: Position2D) -> Non
     world = World(SimulationConfig(dt_seconds=0.1, seed=1), herbivores=(herbivore,))
 
     assert world.herbivores == (herbivore,)
+
+
+def test_world_owns_water_state_and_total_includes_herbivore_body_water() -> None:
+    source = WaterSource(0, Position2D(5.0, 6.0), 3.0)
+    water = WaterState(1.0, 2.0, (source,))
+    herbivore = make_herbivore(0, Position2D(1.0, 2.0))
+
+    world = World(
+        SimulationConfig(dt_seconds=0.1, seed=1),
+        herbivores=(herbivore,),
+        water_state=water,
+    )
+
+    assert world.water is water
+    assert world.total_water_kg == 7.0
+
+
+def test_world_rejects_out_of_bounds_water_source() -> None:
+    water = WaterState(
+        1.0,
+        2.0,
+        (WaterSource(0, Position2D(-0.1, 2.0), 3.0),),
+    )
+
+    with pytest.raises(ValueError, match="water source 0 position is outside world bounds"):
+        World(SimulationConfig(dt_seconds=0.1, seed=1), water_state=water)

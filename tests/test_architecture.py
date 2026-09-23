@@ -38,3 +38,11 @@ def test_herbivore_module_does_not_import_adapters() -> None:
     assert not any(
         module.startswith("simu_monde.adapters") for module in _imported_modules(herbivore_module)
     )
+
+
+def test_water_module_does_not_import_adapters() -> None:
+    water_module = Path(__file__).parents[1] / "src" / "simu_monde" / "core" / "water.py"
+
+    assert not any(
+        module.startswith("simu_monde.adapters") for module in _imported_modules(water_module)
+    )

@@ -12,6 +12,7 @@ from simu_monde.core.herbivore import Herbivore, HerbivoreBehaviorSystem, reflec
 from simu_monde.core.randomness import SeededRNG
 from simu_monde.core.simulation import Simulation
 from simu_monde.core.vegetation import Plant
+from simu_monde.core.water import WaterSource, WaterState
 from simu_monde.core.world import World
 
 DEFAULT_POSITION = Position2D(10.0, 10.0)
@@ -30,6 +31,12 @@ def make_herbivore(
     feeding_rate_kg_per_s: float = 0.2,
     food_capacity_kg: float = 1.0,
     seek_food_hunger_threshold: float = 0.5,
+    body_water_kg: float = 1.0,
+    max_body_water_kg: float = 1.0,
+    water_loss_kg_per_s: float = 0.0,
+    drinking_rate_kg_per_s: float = 0.2,
+    drinking_radius_m: float = 1.0,
+    drink_thirst_threshold: float = 0.5,
 ) -> Herbivore:
     return Herbivore(
         herbivore_id=herbivore_id,
@@ -43,6 +50,12 @@ def make_herbivore(
         feeding_rate_kg_per_s=feeding_rate_kg_per_s,
         food_capacity_kg=food_capacity_kg,
         seek_food_hunger_threshold=seek_food_hunger_threshold,
+        body_water_kg=body_water_kg,
+        max_body_water_kg=max_body_water_kg,
+        water_loss_kg_per_s=water_loss_kg_per_s,
+        drinking_rate_kg_per_s=drinking_rate_kg_per_s,
+        drinking_radius_m=drinking_radius_m,
+        drink_thirst_threshold=drink_thirst_threshold,
     )
 
 
@@ -61,6 +74,18 @@ def make_plant(
     )
 
 
+def make_water_source(
+    source_id: int,
+    position: Position2D,
+    water_kg: float = 1.0,
+) -> WaterSource:
+    return WaterSource(
+        water_source_id=source_id,
+        position=position,
+        water_kg=water_kg,
+    )
+
+
 def step(
     herbivores: tuple[Herbivore, ...],
     plants: tuple[Plant, ...] = (),
@@ -68,11 +93,18 @@ def step(
     seed: int = 1,
     dt_seconds: float = 1.0,
     turn_rate: float = 0.8,
+    water: WaterState | None = None,
 ) -> SeededRNG:
     rng = SeededRNG(seed)
+    water_state = (
+        water
+        if water is not None
+        else WaterState(atmosphere_water_kg=0.0, soil_water_kg=0.0, surface_sources=())
+    )
     HerbivoreBehaviorSystem(turn_rate).step(
         herbivores=herbivores,
         plants=plants,
+        water=water_state,
         bounds=WorldBounds(100.0, 100.0),
         rng=rng,
         dt_seconds=dt_seconds,
@@ -130,6 +162,99 @@ def test_hunger_accumulation_is_capped_at_one() -> None:
     step((herbivore,))
 
     assert herbivore.hunger == 1.0
+
+
+def test_body_water_loss_transfers_to_atmosphere_and_stops_at_zero() -> None:
+    herbivore = make_herbivore(
+        body_water_kg=0.1,
+        max_body_water_kg=1.0,
+        water_loss_kg_per_s=0.2,
+        speed_m_per_s=0.0,
+    )
+    water = WaterState(2.0, 0.0, ())
+
+    step((herbivore,), water=water)
+
+    assert herbivore.body_water_kg == 0.0
+    assert water.atmosphere_water_kg == pytest.approx(2.1)
+
+
+def test_thirst_priority_overrides_hunger_and_food_target() -> None:
+    herbivore = make_herbivore(
+        hunger=1.0,
+        body_water_kg=0.4,
+        drink_thirst_threshold=0.5,
+    )
+    plant = make_plant(0, Position2D(11.0, 10.0))
+    source = make_water_source(0, Position2D(10.0, 15.0))
+    water = WaterState(0.0, 0.0, (source,))
+
+    step((herbivore,), (plant,), water=water)
+
+    assert herbivore.position == Position2D(10.0, 12.0)
+    assert plant.edible_biomass_kg == 1.0
+
+
+def test_thirsty_without_visible_water_explores_and_does_not_eat() -> None:
+    herbivore = make_herbivore(
+        hunger=1.0,
+        body_water_kg=0.0,
+        perception_radius_m=2.0,
+        speed_m_per_s=0.0,
+    )
+    plant = make_plant(0, Position2D(10.0, 10.0))
+    distant_source = make_water_source(0, Position2D(20.0, 10.0))
+
+    step(
+        (herbivore,),
+        (plant,),
+        water=WaterState(0.0, 0.0, (distant_source,)),
+    )
+
+    assert plant.edible_biomass_kg == 1.0
+
+
+def test_water_perception_ignores_empty_and_ties_by_source_id() -> None:
+    herbivore = make_herbivore(body_water_kg=0.0)
+    sources = (
+        make_water_source(0, Position2D(11.0, 10.0), water_kg=0.0),
+        make_water_source(2, Position2D(10.0, 15.0)),
+        make_water_source(1, Position2D(15.0, 10.0)),
+    )
+
+    step((herbivore,), water=WaterState(0.0, 0.0, sources))
+
+    assert herbivore.position == Position2D(12.0, 10.0)
+
+
+@pytest.mark.parametrize(
+    ("source_water", "body_water", "rate", "expected_drink"),
+    [
+        (1.0, 0.0, 0.2, 0.2),
+        (0.1, 0.0, 0.5, 0.1),
+        (1.0, 0.9, 0.5, 0.1),
+    ],
+)
+def test_drinking_is_limited_by_rate_source_and_need_and_conserves_water(
+    source_water: float,
+    body_water: float,
+    rate: float,
+    expected_drink: float,
+) -> None:
+    herbivore = make_herbivore(
+        body_water_kg=body_water,
+        drinking_rate_kg_per_s=rate,
+        drink_thirst_threshold=0.0,
+    )
+    source = make_water_source(0, Position2D(10.5, 10.0), source_water)
+    water = WaterState(0.0, 0.0, (source,))
+    total_before = source.water_kg + herbivore.body_water_kg
+
+    step((herbivore,), water=water)
+
+    assert source.water_kg == pytest.approx(source_water - expected_drink)
+    assert herbivore.body_water_kg == pytest.approx(body_water + expected_drink)
+    assert source.water_kg + herbivore.body_water_kg == pytest.approx(total_before)
 
 
 def test_below_threshold_explores_without_targeting_or_eating() -> None:
