@@ -32,46 +32,80 @@ Terminé via PR #5 :
 
 ## Phase 1V — Première visualisation 2D
 
-Viewer Pygame minimal :
+Terminé via PR #9 :
 
-- fenêtre 2D ;
-- monde rendu comme rectangle ;
-- conversion mètres -> pixels ;
-- origine logique bas-gauche ;
-- affichage de positions fournies par le core ;
-- tick et temps ;
+- viewer Pygame ;
+- transformation mètres -> pixels ;
+- fenêtre redimensionnable ;
+- pause / run / single-step ;
+- affichage tick / temps ;
+- build Windows `SimuMonde.exe`;
 - séparation stricte core / interface.
 
-Aucune règle d'écologie dans le viewer.
+## Première expérience d'émergence
 
-## Phase 1B — Première ressource : eau
+Priorité actuelle :
 
-Ensuite :
+```text
+végétation
+    ↓
+herbivore
+    ↓
+mémoire
+    ↓
+premiers comportements émergents
+    ↓
+eau / deuxième besoin concurrent
+```
 
-- réservoirs d'eau ;
-- transferts explicites ;
-- conservation ;
-- métriques.
+Le but n'est pas de reproduire tout de suite un écosystème réaliste. Le but est d'obtenir le plus tôt possible un comportement collectif ou individuel intéressant qui n'a pas été scripté explicitement.
 
 ## Phase 1C — Végétation minimale
 
-Ajouter une végétation simple.
+Créer une ressource spatiale vivante simple :
 
-## Phase 1D — Animal minimal
+- plante avec ID stable ;
+- position continue ;
+- biomasse comestible ;
+- biomasse maximale ;
+- repousse déterministe ;
+- placement initial seedé ;
+- rendu Pygame depuis l'état du core.
 
-Ajouter un animal avec position continue et besoins.
+Aucun besoin en eau, reproduction ou mort à ce stade.
+
+## Phase 1D — Herbivore minimal
+
+Ensuite :
+
+- position ;
+- faim ;
+- vitesse ;
+- rayon de perception ;
+- déplacement ;
+- alimentation ;
+- exploration lorsqu'aucune nourriture n'est perçue.
+
+Pas de règle de troupeau, migration ou territoire.
 
 ## Phase 1E — Mémoire minimale
 
-Première mémoire individuelle utile :
+Ajouter ensuite la première mémoire individuelle :
 
-- souvenir d'une ressource ou d'un danger ;
-- ancienneté du souvenir ;
+- souvenir d'une ressource ;
+- ancienneté ;
 - confiance simple ;
-- décision dépendant à la fois de la perception actuelle et de la mémoire.
+- oubli ;
+- décision influencée par perception actuelle + mémoire.
 
-Objectif : produire les premiers comportements adaptatifs sans script global.
+Objectif : observer si des habitudes, trajets, préférences ou abandons de zones émergent sans règle globale correspondante.
+
+## Phase 1F — Eau / deuxième besoin
+
+L'eau est volontairement différée jusque-là.
+
+Son introduction ajoutera un second besoin spatial concurrent (faim vs soif), ce qui enrichira les décisions sans être nécessaire au premier test d'émergence.
 
 ## Phases suivantes
 
-Cycles écologiques, mémoire plus riche, interactions, reproduction, évolution, environnement, puis optimisation selon les limites observées.
+Interactions plus riches, ressources multiples, reproduction, évolution, environnement, puis optimisation selon les limites observées.

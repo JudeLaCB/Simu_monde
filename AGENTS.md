@@ -46,6 +46,21 @@ Le Primary Pilot est responsable de :
 
 Le Primary doit réduire la tâche à un problème d'exécution borné avant d'envoyer Codex sur tout changement STANDARD non mécanique ou HIGH-RISK.
 
+### Sélection du modèle Codex — règle permanente
+
+Avant **chaque** délégation d'implémentation ou de review à Codex, le Primary Pilot doit proposer explicitement à Jude :
+
+- le modèle recommandé ;
+- le niveau de raisonnement recommandé ;
+- une justification courte liée à la difficulté réelle de la tâche ;
+- le compromis capacité / vitesse / quota lorsque pertinent.
+
+La recommandation doit privilégier le modèle **le moins coûteux qui reste suffisamment fiable** pour le contrat préparé. Un modèle plus puissant n'est utilisé que si la complexité, le risque, l'ambiguïté ou un échec précédent le justifie.
+
+Ne pas figer durablement un nom de modèle dans la gouvernance : les modèles disponibles peuvent évoluer. Le pilote doit utiliser les options actuellement disponibles et, si nécessaire, vérifier l'offre courante avant de recommander.
+
+Cette recommandation doit apparaître **avant le prompt Codex**, afin que Jude puisse sélectionner le bon modèle. Les pilotes futurs doivent appliquer cette règle sans attendre qu'elle soit redemandée.
+
 ### Codex — implementation engineer
 
 Codex possède le HOW local dans les limites du contrat approuvé :

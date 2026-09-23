@@ -1,11 +1,11 @@
 # Project Handoff — Simu_monde
 
-**Phase :** 1 — noyau initial  
+**Phase :** 1 — première expérience d'émergence  
 **Source de vérité live :** GitHub
 
 ## Vision actuelle
 
-Construire un simulateur d'écosystème 2D continu où des comportements complexes émergent de règles locales, de l'environnement et plus tard de la mémoire.
+Construire un simulateur 2D continu où des comportements surprenants émergent de règles locales simples, de contraintes environnementales et de mémoire, tout en restant parfaitement rejouables avec la même seed.
 
 ## Décisions déjà prises
 
@@ -18,49 +18,66 @@ Construire un simulateur d'écosystème 2D continu où des comportements complex
 7. RNG seedé et reproductible.
 8. Déterminisme = replay reproductible, pas comportement simpliste.
 9. L'intelligence recherchée est émergente/adaptative.
-10. **Pygame est le viewer V1**, strictement séparé du core.
+10. Pygame est le viewer V1, strictement séparé du core.
 11. Le core stocke les positions en mètres ; l'adapter convertit en pixels.
 12. L'orientation visuelle V1 utilise une origine logique bas-gauche, X vers la droite, Y vers le haut.
-
-## Frontière core / interface
-
-```text
-CORE
-position = (x_m, y_m)
-simulation time
-world state
-rules
-    |
-    | lecture / snapshot
-    v
-PYGAME ADAPTER
-camera
-meters -> pixels
-drawing
-input controls
-```
-
-Aucune loi du monde ne doit dépendre de Pygame ou du framerate.
+13. `SimuMonde.exe` est produit par le workflow Windows.
+14. La première expérience d'émergence suit l'ordre : **plantes -> herbivore -> mémoire -> eau**.
+15. Avant chaque délégation Codex, le pilote doit proposer à Jude le **modèle + niveau de raisonnement** adaptés, avec une justification courte et en privilégiant l'efficacité de quota. Cette règle s'applique à tous les futurs pilotes.
 
 ## État du code
 
-Le world kernel déterministe a été mergé via PR #5 :
+Mergé :
 
-- `SimulationConfig`;
-- `Position2D`;
-- `WorldBounds`;
-- `SimulationClock`;
-- `SeededRNG`;
-- `World`;
-- `Simulation.step()`.
+- world kernel déterministe (#5) ;
+- viewer Pygame + executable Windows (#9).
 
-## Prochaine interface minimale
+Le viewer permet déjà :
 
-Créer un viewer Pygame capable d'afficher :
-
-- le rectangle du monde ;
-- une ou plusieurs positions de test provenant du core ;
+- pause / run ;
+- single-step ;
 - tick / temps ;
-- transformation réversible et testable mètres -> pixels.
+- monde redimensionnable sans modifier l'état du core.
 
-Pas encore d'eau, plante ou animal nécessaire à cette étape.
+## Étape active — végétation minimale
+
+Issue #10.
+
+La première entité écologique sera une plante avec :
+
+- ID stable ;
+- position continue ;
+- biomasse comestible en kg ;
+- biomasse maximale ;
+- vitesse de repousse ;
+- placement initial déterministe à partir du RNG du monde.
+
+La croissance est volontairement simplifiée comme un apport externe de biomasse. Aucun cycle de l'eau ou de nutriments n'est encore modélisé.
+
+## Expérience cible
+
+Après les plantes, ajouter un herbivore très simple puis sa mémoire.
+
+On ne programmera pas directement :
+
+- migration ;
+- troupeau ;
+- territoire ;
+- habitudes ;
+- chemins préférés.
+
+On programmera seulement les mécanismes locaux nécessaires et on observera si ces phénomènes apparaissent d'eux-mêmes.
+
+## Ordre immédiat
+
+```text
+#10 plantes
+  ↓
+herbivore minimal
+  ↓
+mémoire minimale
+  ↓
+observer / mesurer l'émergence
+  ↓
+#2 eau (deferred)
+```
