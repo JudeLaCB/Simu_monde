@@ -69,25 +69,30 @@ def create_default_simulation() -> Simulation:
         initial_biomass_kg=0.5,
         max_biomass_kg=1.0,
         growth_rate_kg_per_s=0.02,
+        age_s=0.0,
+        lifespan_s=300.0,
     )
     herbivores = create_uniform_herbivores(
         rng=placement_rng,
         bounds=bounds,
         count=12,
-        hunger=0.60,
         speed_m_per_s=15.0,
         perception_radius_m=150.0,
         feeding_radius_m=8.0,
-        hunger_rate_per_s=0.003,
         feeding_rate_kg_per_s=0.05,
-        food_capacity_kg=0.25,
-        seek_food_hunger_threshold=0.35,
         body_water_kg=0.70,
         max_body_water_kg=1.00,
         water_loss_kg_per_s=0.002,
         drinking_rate_kg_per_s=0.05,
         drinking_radius_m=8.0,
-        drink_thirst_threshold=0.35,
+        energy_j=3500.0,
+        max_energy_j=5000.0,
+        basal_power_w=4.0,
+        movement_energy_j_per_m=1.0,
+        food_energy_j_per_kg=2500.0,
+        age_s=0.0,
+        lifespan_s=600.0,
+        recoverable_nutrient_kg=0.02,
     )
     water_sources = create_uniform_water_sources(
         rng=placement_rng,
@@ -155,10 +160,23 @@ def main() -> int:
                 transform=transform,
                 plants=simulation.world.plants,
                 herbivores=simulation.world.herbivores,
+                carcasses=simulation.world.carcasses,
                 water=simulation.world.water,
                 total_water_kg=simulation.world.total_water_kg,
                 animal_body_water_kg=sum(
                     herbivore.body_water_kg for herbivore in simulation.world.herbivores
+                ),
+                average_energy_fraction=(
+                    sum(herbivore.energy_fraction for herbivore in simulation.world.herbivores)
+                    / len(simulation.world.herbivores)
+                    if simulation.world.herbivores
+                    else 0.0
+                ),
+                average_hydration_fraction=(
+                    sum(1.0 - herbivore.thirst for herbivore in simulation.world.herbivores)
+                    / len(simulation.world.herbivores)
+                    if simulation.world.herbivores
+                    else 0.0
                 ),
                 tick_index=simulation.world.clock.tick_index,
                 time_seconds=simulation.world.clock.time_seconds,

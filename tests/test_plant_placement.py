@@ -17,6 +17,8 @@ def create_plants(seed: int, count: int = 5) -> tuple[Plant, ...]:
         initial_biomass_kg=0.5,
         max_biomass_kg=1.0,
         growth_rate_kg_per_s=0.2,
+        age_s=0.0,
+        lifespan_s=300.0,
     )
 
 
@@ -35,6 +37,8 @@ def test_placement_assigns_ordered_ids_and_in_bounds_positions() -> None:
         initial_biomass_kg=0.5,
         max_biomass_kg=1.0,
         growth_rate_kg_per_s=0.2,
+        age_s=0.0,
+        lifespan_s=300.0,
     )
 
     assert [plant.plant_id for plant in plants] == list(range(20))
@@ -69,6 +73,8 @@ def test_placement_draws_x_then_y_from_caller_rng() -> None:
         initial_biomass_kg=0.5,
         max_biomass_kg=1.0,
         growth_rate_kg_per_s=0.2,
+        age_s=0.0,
+        lifespan_s=300.0,
     )
     expected_positions = [
         (replay_rng.random() * bounds.width_m, replay_rng.random() * bounds.height_m)
@@ -95,4 +101,6 @@ def test_placement_rejects_invalid_count(
             initial_biomass_kg=0.5,
             max_biomass_kg=1.0,
             growth_rate_kg_per_s=0.2,
+            age_s=0.0,
+            lifespan_s=300.0,
         )

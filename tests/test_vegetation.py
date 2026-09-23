@@ -17,6 +17,8 @@ def make_plant(
     edible_biomass_kg: float = 0.5,
     max_edible_biomass_kg: float = 1.0,
     growth_rate_kg_per_s: float = 0.2,
+    age_s: float = 0.0,
+    lifespan_s: float = 100.0,
 ) -> Plant:
     return Plant(
         plant_id=plant_id,
@@ -24,6 +26,8 @@ def make_plant(
         edible_biomass_kg=edible_biomass_kg,
         max_edible_biomass_kg=max_edible_biomass_kg,
         growth_rate_kg_per_s=growth_rate_kg_per_s,
+        age_s=age_s,
+        lifespan_s=lifespan_s,
     )
 
 
@@ -59,6 +63,13 @@ def test_plant_accepts_zero_and_maximum_biomass(biomass: float) -> None:
         ("growth_rate_kg_per_s", nan),
         ("growth_rate_kg_per_s", inf),
         ("growth_rate_kg_per_s", -inf),
+        ("age_s", -1.0),
+        ("age_s", nan),
+        ("age_s", inf),
+        ("lifespan_s", 0.0),
+        ("lifespan_s", -1.0),
+        ("lifespan_s", nan),
+        ("lifespan_s", inf),
     ],
 )
 def test_plant_rejects_invalid_numeric_values(field: str, value: float) -> None:
@@ -66,6 +77,8 @@ def test_plant_rejects_invalid_numeric_values(field: str, value: float) -> None:
         "edible_biomass_kg": 0.5,
         "max_edible_biomass_kg": 1.0,
         "growth_rate_kg_per_s": 0.2,
+        "age_s": 0.0,
+        "lifespan_s": 100.0,
     }
     arguments[field] = value
 
@@ -82,6 +95,8 @@ def test_plant_rejects_non_integer_id(plant_id: object) -> None:
             edible_biomass_kg=0.5,
             max_edible_biomass_kg=1.0,
             growth_rate_kg_per_s=0.2,
+            age_s=0.0,
+            lifespan_s=100.0,
         )
 
 

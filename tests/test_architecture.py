@@ -46,3 +46,19 @@ def test_water_module_does_not_import_adapters() -> None:
     assert not any(
         module.startswith("simu_monde.adapters") for module in _imported_modules(water_module)
     )
+
+
+def test_homeostasis_module_does_not_import_adapters() -> None:
+    module = Path(__file__).parents[1] / "src" / "simu_monde" / "core" / "homeostasis.py"
+
+    assert not any(
+        imported.startswith("simu_monde.adapters") for imported in _imported_modules(module)
+    )
+
+
+def test_lifecycle_module_does_not_import_adapters() -> None:
+    module = Path(__file__).parents[1] / "src" / "simu_monde" / "core" / "lifecycle.py"
+
+    assert not any(
+        imported.startswith("simu_monde.adapters") for imported in _imported_modules(module)
+    )
