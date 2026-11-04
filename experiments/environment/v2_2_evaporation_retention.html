@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Monde VJ — Environnement V2.2 · Évaporation et rétention du sol</title>
+<style>
+:root{color-scheme:dark;--bg:#081016;--panel:#0e1b22;--border:#253a42;--surface:#132730;--muted:#8ba4ac;--ink:#edf7f5;--teal:#6ce3c0;--blue:#70bffd;--amber:#efca8a}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,'Segoe UI',sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+body::before{content:'';pointer-events:none;position:fixed;inset:0;background:radial-gradient(circle at 45% -12%,#215b5a35,transparent 53%)}
+.shell{position:relative;max-width:1590px;margin:auto;padding:25px clamp(14px,2.4vw,32px) 22px}
+.header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.identity{display:flex;gap:13px;align-items:center}.brand-icon{border:1px solid #418875;background:linear-gradient(145deg,#153e3d,#102027);border-radius:14px;width:46px;height:46px;display:grid;place-items:center}.brand-icon svg{width:31px;height:31px}.micro{color:var(--teal);font-size:10px;letter-spacing:.19em;text-transform:uppercase;font-weight:800}.brand{font-size:19px;font-weight:770;letter-spacing:-.035em}.head-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.chip{border:1px solid #30505a;border-radius:100px;padding:7px 11px;background:#10232b;color:#b4d1d2;font-size:11px;white-space:nowrap}.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#879298;margin-right:7px}.live-dot.on{background:#63e4bb;box-shadow:0 0 9px #63e4bba5}
+.intro{margin-bottom:20px}.intro h1{font-size:clamp(24px,3vw,38px);line-height:1.18;letter-spacing:-.055em;margin:6px 0 8px}.intro p{color:#9ab0b8;margin:0;max-width:830px;font-size:13px;line-height:1.65}
+.layout{display:grid;grid-template-columns:minmax(235px,275px) minmax(460px,1fr) minmax(232px,270px);gap:14px;align-items:start}.panel{border:1px solid var(--border);border-radius:16px;background:linear-gradient(160deg,#0e1c23,#0b181f);overflow:hidden;min-width:0}.side{padding:19px;display:grid;gap:21px}.sectitle{display:flex;align-items:center;justify-content:space-between;gap:8px}.sectitle h2{margin:0;font-size:13px;font-weight:760}.eyebrow{font-size:10px;color:#7a9aa4;font-weight:700;letter-spacing:.065em;text-transform:uppercase}.small{color:var(--muted);font-size:11px;line-height:1.58;margin:5px 0 0}.controls{display:grid;gap:16px}.control{display:grid;gap:8px}.control label{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#cfdddd}.value{font-variant-numeric:tabular-nums;color:var(--teal);font-weight:750}.control input[type=range]{width:100%;accent-color:#68dec1;margin:0}.control input[type=number],.control select{background:#0c1e26;color:#e6f2f0;border:1px solid #2e4651;border-radius:9px;padding:9px 11px;min-width:0;width:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;border:1px solid #36515a;background:#192f39;color:#deeeeb;padding:10px 13px;font-size:12px;font-weight:700;white-space:nowrap;min-height:39px}.btn:hover{background:#23414c}.btn.primary{color:#062d28;background:#58d6b3;border-color:#77f0cc}.btn.primary:hover{background:#80e9cb}.btn.ghost{background:#11222a}.btn:disabled{cursor:not-allowed;opacity:.5}.two-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}.notice{background:#132d303d;border:1px solid #315653;border-radius:11px;padding:12px;color:#aec9c5;font-size:11px;line-height:1.7}.notice b{color:#e1f7ee}.status{font-size:11px;color:#adc1ba;min-height:17px}.status.pending{color:#efcb82}
+.viewport{display:flex;flex-direction:column}.vp-head{padding:14px 17px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #223740}.vp-head h2{margin:0;font-size:13px}.vp-meta{color:#7f9ca5;letter-spacing:.05em;font-size:10px;text-transform:uppercase;margin-top:4px}.vp-actions{display:flex;gap:6px;flex-wrap:wrap}.toggle{font-size:11px;border:1px solid #294550;border-radius:8px;padding:7px 10px;background:#142731;color:#9bb4bc}.toggle.active{background:#1e4d47;color:#a6f4d9;border-color:#499d81}
+.map-wrap{background:#061219;position:relative;padding:14px;min-height:440px;display:grid;place-items:center}.map-frame{width:100%;max-width:645px;aspect-ratio:1/1;border:1px solid #36515b;border-radius:10px;overflow:hidden;position:relative;background:#0e2528;box-shadow:0 9px 45px #0007}.map-frame canvas{display:block;width:100%;height:100%;cursor:crosshair;image-rendering:auto}.map-badge{position:absolute;top:10px;left:10px;border:1px solid #e6f7e933;color:#ecf5e4;background:#102020b5;border-radius:7px;padding:5px 8px;font-size:10px;pointer-events:none}.map-scale{position:absolute;bottom:10px;right:12px;text-align:right;pointer-events:none;color:#ebf0ed;text-shadow:0 1px 4px #000}.scale-line{width:64px;border-bottom:2px solid #f5f8f7;margin-left:auto;height:5px}.map-scale span{font-size:10px}.inspect{position:absolute;left:10px;bottom:10px;background:#09191bd9;color:#d9e9e6;border:1px solid #5771728a;border-radius:8px;padding:7px 9px;font-size:10px;line-height:1.6;pointer-events:none;min-width:142px;font-variant-numeric:tabular-nums;display:none}.inspect.visible{display:block}.map-caption{padding:10px 17px;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#9ab3ba;font-size:11px;border-top:1px solid #20343d}.key{display:flex;gap:11px;flex-wrap:wrap;align-items:center}.legend-swatch{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:baseline}.legend-swatch.water{background:#3aa3d7}.legend-swatch.land{background:#7b9a5d}.legend-swatch.high{background:#c9bd9d}
+.transport{border-top:1px solid #213640;padding:13px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px}.speed-wrap{display:flex;align-items:center;gap:5px;margin-left:auto;color:#8daab1;font-size:11px}.speed{border:1px solid #2d4953;background:#0f242d;color:#9db5bd;padding:8px 10px;font-size:11px;border-radius:8px}.speed.active{background:#214c42;border-color:#4da083;color:#a6f4d7}
+.stats{display:grid;gap:9px}.metric{border:1px solid #29414a;background:#12262e;border-radius:11px;padding:12px}.metric .mlabel{font-size:11px;color:#96b0b6}.metric strong{font-size:22px;line-height:1.45;letter-spacing:-.04em;display:block;font-variant-numeric:tabular-nums;font-weight:760}.metric small{font-size:10px;color:#89a3a9}.metric.blue strong{color:#79c8f0}.metric.orange strong{color:#f4ce8b}.metric.green strong{color:#7ce7c3}.meta-rows{display:grid;gap:11px}.meta-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:#9bb3bc}.meta-row b{color:#e1f0ee;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}.positive{color:#83e2b9!important}.bad{color:#f3a493!important}.explain{border:1px solid #2c454a;background:#10272d;border-radius:10px;padding:12px;color:#a6c0c0;font-size:11px;line-height:1.7}.explain b{color:#e1f4ee}.footer{margin-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#819ea6;font-size:11px;line-height:1.6}.footer b{color:#b9d1d3}.kbd{font-family:monospace;background:#172b34;border:1px solid #3e5b65;padding:2px 5px;border-radius:4px;color:#cadcdd}
+@media(max-width:1230px){.layout{grid-template-columns:minmax(225px,270px) minmax(0,1fr)}.right{grid-column:1/-1}.right .side{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}.right .stats{grid-template-columns:1fr}.map-wrap{min-height:410px}}
+@media(max-width:790px){.shell{padding:17px 11px 25px}.head-right{display:none}.layout{grid-template-columns:1fr}.left .side{grid-template-columns:1fr 1fr;align-items:start}.left .side>div:first-child{grid-column:1/-1}.right{grid-column:auto}.right .side{grid-template-columns:repeat(2,minmax(0,1fr))}.map-wrap{min-height:0;padding:10px}.vp-head{padding:13px}.map-caption{flex-wrap:wrap}.speed-wrap{margin-left:0}}
+@media(max-width:510px){.intro h1{font-size:26px}.left .side,.right .side{grid-template-columns:1fr}.left .side>div:first-child{grid-column:auto}.transport{padding:11px}.speed-wrap{width:100%}.map-wrap{padding:7px}.metric strong{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="header">
+  <div class="identity"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M2 23 10 9 17 18 23 6 30 23Z" fill="#5eb69b" opacity=".9"/><path d="M1 24 9 21 15 26 23 18 31 23" fill="none" stroke="#81c6f2" stroke-width="3.6" stroke-linecap="round"/></svg></div><div><div class="micro">MONDE VJ / EXPÉRIENCE MACROSCOPIQUE</div><div class="brand">Environnement V2.2</div></div></div>
+  <div class="head-right"><span class="chip">2D · 1 km² · système isolé</span><span class="chip"><span class="live-dot" id="liveDot"></span><span id="liveState">EN PAUSE</span></span></div>
+</header>
+<section class="intro"><div class="micro">Laboratoire 04 / Cycle hydrique simplifié</div><h1>L’eau circule entre surface, sol et atmosphère</h1><p>Le relief crée les bassins ; l’infiltration retient une partie de l’eau dans le sol, tandis que l’évaporation la transfère vers l’atmosphère. La quantité totale d’eau reste fixe : aucune pluie ni source extérieure n’est ajoutée.</p></section>
+<main class="layout">
+<aside class="panel left"><div class="side">
+  <div><div class="sectitle"><h2>Génération procédurale</h2><span class="eyebrow">Conditions initiales</span></div><p class="small">Les paramètres définissent le monde au départ. Ils ne changent pas en cours de simulation.</p></div>
+  <div class="controls">
+    <div class="control"><label for="landform">Structure du paysage</label><select id="landform"><option value="lakes" selected>Massifs et lacs</option><option value="coast">Bassin côtier / mer intérieure</option><option value="mountains">Chaînes et vallées</option></select><span class="small">Quelques formes dominantes placées par la seed, sans quadrillage régulier.</span></div>
+    <div class="control"><label for="basinDepth">Creux des bassins <span id="basinDepthVal" class="value">75 %</span></label><input id="basinDepth" type="range" min="20" max="100" step="5" value="75"/><span class="small">Plus profond : l’eau se concentre dans des dépressions mieux marquées.</span></div>
+    <div class="control"><label for="roughness">Rugosité du relief <span id="roughnessVal" class="value">40 %</span></label><input id="roughness" type="range" min="0" max="100" step="5" value="40"/><span class="small">Irrégularités fines superposées aux grands massifs et aux creux.</span></div>
+    <div class="control"><label for="waterAmount">Quantité d’eau <span id="waterAmountVal" class="value">30 %</span></label><input id="waterAmount" type="range" min="5" max="100" step="5" value="30"/><span class="small" id="waterHint">Profondeur moyenne équivalente : 1,74 m.</span></div>
+    <div class="control"><label for="waterDistribution">Répartition initiale de l’eau</label><select id="waterDistribution"><option value="patches" selected>Pluie initiale irrégulière</option><option value="uniform">Couche uniforme</option><option value="highland">Précipitations sur les hauteurs</option><option value="level">Bassins déjà remplis (niveau initial)</option></select></div>
+    <div class="control"><label for="seed">Seed</label><input id="seed" type="number" min="0" max="4294967295" step="1" value="42"/></div>
+    <div class="control"><label for="fluidity">Mobilité de l’eau <span id="fluidityVal" class="value">0,22</span></label><input id="fluidity" type="range" min="0.04" max="0.42" step="0.02" value="0.22"/><span class="small">Coefficient numérique d’écoulement, sans création d’eau ni d’énergie.</span></div>
+    <div class="control"><label for="evaporationRate">Évaporation <span id="evaporationVal" class="value">0,15 mm / pas</span></label><input id="evaporationRate" type="range" min="0" max="1" step="0.05" value="0.15"/><span class="small">Taux accéléré expérimental (1 pas = 1 seconde simulée). Eau de surface exposée, ou humidité du sol si la surface est sèche.</span></div>
+    <div class="control"><label for="retention">Capacité de rétention <span id="retentionVal" class="value">60 %</span></label><input id="retention" type="range" min="0" max="100" step="5" value="60"/><span class="small">Contrôle la capacité de stockage du sol (0 à 0,8 m d’eau équivalente). Infiltration plafonnée à 12 mm par pas.</span></div>
+  </div>
+  <div class="two-buttons"><button id="generateBtn" class="btn primary">↻ Générer</button><button id="newSeedBtn" class="btn ghost">Nouvelle seed</button></div>
+  <div class="status" id="draftStatus" aria-live="polite">Monde initial prêt.</div>
+  <div class="notice"><b>Une condition de départ, pas un résultat.</b> La distribution initiale imite un épisode de pluie. Ensuite l’eau se déplace entre surface, sol et atmosphère, sans pluie supplémentaire. L’évaporation utilise une réserve thermique initiale finie ; la vapeur reste dans le monde mais ne se condense pas encore.</div>
+  <div class="sectitle"><h2>Notre règle expérimentale</h2><span class="eyebrow">V2.2</span></div>
+  <div class="explain">Pour une cellule : <b>surface libre = altitude du terrain + profondeur d’eau</b>. L’eau passe d’une surface libre haute à une plus basse. Les échanges sont locaux, limités par l’eau présente et dissipent de l’énergie gravitationnelle en chaleur. L’infiltration déplace l’eau vers le sol ; l’évaporation déplace l’eau vers une atmosphère simplifiée en consommant de la chaleur et en stockant de l’énergie latente.</div>
+</div></aside>
+<section class="panel viewport">
+  <div class="vp-head"><div><h2>Carte du monde</h2><div class="vp-meta">100 × 100 cellules · 10 m / cellule · frontières imperméables</div></div><div class="vp-actions" role="group" aria-label="Affichage de la carte"><button class="toggle active" data-view="mix">Mixte</button><button class="toggle" data-view="terrain">Relief</button><button class="toggle" data-view="water">Surface</button><button class="toggle" data-view="soil">Sol humide</button></div></div>
+  <div class="map-wrap"><div class="map-frame" id="mapFrame"><canvas id="terrainCanvas" width="700" height="700" tabindex="0" aria-label="Carte de relief et de circulation d’eau. Survolez pour inspecter une cellule."></canvas><div class="map-badge" id="mapModeLabel">RELIEF + EAU</div><div class="map-scale"><div class="scale-line"></div><span>100 m</span></div><div class="inspect" id="cellInspect"></div></div></div>
+  <div class="map-caption"><div class="key"><span><i class="legend-swatch water"></i>Eau de surface</span><span><i class="legend-swatch land"></i>Basses altitudes</span><span><i class="legend-swatch high"></i>Hauteurs</span></div><span id="hoverHint">Survolez la carte pour inspecter une cellule</span></div>
+  <div class="transport"><button id="playBtn" class="btn primary"><span id="playSymbol">▶</span><span id="playText">Démarrer</span></button><button id="stepBtn" class="btn">Pas +1</button><button id="resetBtn" class="btn ghost">↶ Réinitialiser</button><div class="speed-wrap">Vitesse <button class="speed active" data-speed="1">1×</button><button class="speed" data-speed="4">4×</button><button class="speed" data-speed="12">12×</button></div></div>
+</section>
+<aside class="panel right"><div class="side">
+  <div><div class="sectitle"><h2>Bilans physiques</h2><span class="eyebrow">Conservation</span></div><p class="small">Les valeurs correspondent au système simulé, pas à une source de matière ou d’énergie extérieure.</p></div>
+  <div class="stats"><div class="metric blue"><span class="mlabel">Eau totale</span><strong id="waterTotal">—</strong><small>kg · quantité initiale finie</small></div><div class="metric orange"><span class="mlabel">Énergie gravitationnelle</span><strong id="potEnergy">—</strong><small>J · eau dans le relief</small></div><div class="metric green"><span class="mlabel">Réserve thermique</span><strong id="heatEnergy">—</strong><small>J · chaleur finie et dissipation</small></div></div>
+    <div class="meta-rows">
+      <div class="meta-row"><span>Eau de surface</span><b id="surfaceMass">—</b></div>
+      <div class="meta-row"><span>Eau retenue dans le sol</span><b id="soilMass">—</b></div>
+      <div class="meta-row"><span>Vapeur atmosphérique</span><b id="atmosphereMass">—</b></div>
+      <div class="meta-row"><span>Énergie latente</span><b id="latentEnergy">—</b></div>
+      <div class="meta-row"><span>Énergie totale</span><b id="energyTotal">—</b></div>
+      <div class="meta-row"><span>Écart de masse</span><b id="massDrift">—</b></div>
+      <div class="meta-row"><span>Écart d’énergie</span><b id="energyDrift">—</b></div>
+      <div class="meta-row"><span>Cellules en eau de surface</span><b id="wetCells">—</b></div>
+      <div class="meta-row"><span>Écoulement / pas</span><b id="lastFlow">—</b></div>
+      <div class="meta-row"><span>Infiltration / pas</span><b id="lastInfiltration">—</b></div>
+      <div class="meta-row"><span>Évaporation / pas</span><b id="lastEvaporation">—</b></div>
+      <div class="meta-row"><span>Temps simulé</span><b id="simTime">0 s</b></div>
+      <div class="meta-row"><span>Générations / pas</span><b id="tickCount">0</b></div>
+    </div>
+  <div class="explain"><b>Limites du modèle :</b> l’infiltration est locale, sans nappe ni écoulement souterrain ; l’atmosphère est un réservoir global sans pluie ni condensation. L’énergie thermique est une réserve initiale simplifiée (ce n’est pas un calcul météo réaliste). Le terrain ne s’érode pas et il n’y a pas encore de végétation.</div>
+  <button id="exportBtn" class="btn ghost">↓ Exporter l’état CSV</button>
+</div></aside>
+</main>
+<footer class="footer"><span><b>Mécanique :</b> massifs et bassins par seed, échanges d’eau surface ↔ sol ↔ atmosphère. Lacs non programmés.</span><span><span class="kbd">Espace</span> pause/lecture · <span class="kbd">→</span> un pas · <span class="kbd">R</span> réinitialiser</span></footer>
+</div>
+<script>
+(() => {
+'use strict';
+const N = 100, SIZE = N*N, L = 10, A = L*L, RHO = 1000, G = 9.81, CELL_MASS = RHO*A, DT = 1;
+const LATENT_HEAT_J_PER_KG = 2.45e6, INFILTRATION_DEPTH_M_PER_TICK = 0.012, MAX_SOIL_CAPACITY_M = 0.8;
+// Atmosphere is spatially lumped. Its reference altitude is fixed for each generated terrain.
+const $ = id => document.getElementById(id);
+const canvas = $('terrainCanvas'), ctx = canvas.getContext('2d', {alpha: false});
+const small = document.createElement('canvas');small.width=N;small.height=N;
+const sctx=small.getContext('2d',{willReadFrequently:false});
+const pixels=sctx.createImageData(N,N);
+let terrain=new Float64Array(SIZE),water=new Float64Array(SIZE),soilWater=new Float64Array(SIZE),initialWater=null;
+let atmosphereWaterKg=0,latentEnergy=0,initialThermalEnergy=0,atmosphereAltitude=0;
+let seed=42, roughness=40, basinDepth=75, landform='lakes', waterPct=30, fluidity=.22, distribution='patches', evaporationRateMm=.15, retentionPct=60;
+let running=false, speed=1, view='mix',tickCount=0,lastMovedKg=0,lastInfiltrationKg=0,lastEvaporationKg=0;
+let initialMass=0, initialEnergy=0, heatEnergy=0, currentPotential=0, currentMass=0, maxAltitude=0;
+let lastAnim=performance.now(), accumulator=0, showError=false;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const fmt=(v,dec=2)=>v.toLocaleString('fr-FR',{maximumFractionDigits:dec,minimumFractionDigits:dec});
+const sci=(v)=>{if(!Number.isFinite(v))return '—';if(Math.abs(v)<10000)return fmt(v,2);const e=Math.floor(Math.log10(Math.abs(v)));return fmt(v/Math.pow(10,e),2)+' × 10'+sup(e)};
+const sup=e=>String(e).replace(/[-0-9]/g,c=>({'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'})[c]);
+function hash2(x,y,s){let h=(Math.imul(x|0,374761393)+Math.imul(y|0,668265263)+Math.imul(s|0,1442695041))|0;h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function noise(x,y,f,s){const a=x*f,b=y*f;const ix=Math.floor(a),iy=Math.floor(b),u=a-ix,v=b-iy,fu=u*u*(3-2*u),fv=v*v*(3-2*v);const a0=hash2(ix,iy,s),a1=hash2(ix+1,iy,s),b0=hash2(ix,iy+1,s),b1=hash2(ix+1,iy+1,s);return (a0+(a1-a0)*fu)*(1-fv)+(b0+(b1-b0)*fu)*fv;}
+// A smooth landscape made of a few randomly located hills and depressions.
+// The RNG controls *terrain features*, not lake objects or intended water paths.
+function featureRng(s){let state=(s^0x9e3779b9)>>>0;return ()=>{state=(state+0x6d2b79f5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
+function pickCenter(rng,sites,limit=.19,pad=.13){
+ for(let attempt=0;attempt<48;attempt++){
+  const x=pad+(1-2*pad)*rng(),y=pad+(1-2*pad)*rng();
+  if(sites.every(s=>(s.x-x)**2+(s.y-y)**2>limit*limit))return {x,y};
+ }
+ return {x:pad+(1-2*pad)*rng(),y:pad+(1-2*pad)*rng()};
+}
+function makeShape(rng,site,rx,ry,height,kind){return {...site,rx,ry,height,kind,ang:rng()*Math.PI*2,ring:2.8+2.8*rng()};}
+function generateTerrain(){
+ const rng=featureRng(seed+2117),features=[],mountainSites=[],basinSites=[];
+ const mountainous=landform==='mountains',coastal=landform==='coast';
+ const nMounts=mountainous?6:coastal?3:4;
+ const nBasins=mountainous?2:coastal?2:3;
+ for(let k=0;k<nMounts;k++){
+  const pos=pickCenter(rng,mountainSites,mountainous?.15:.20,.07);
+  mountainSites.push(pos);
+  features.push(makeShape(rng,pos,(mountainous?.07:.085)+.055*rng(),(mountainous?.12:.09)+.085*rng(),21+22*rng()+(mountainous?12:0),'hill'));
+ }
+ for(let k=0;k<nBasins;k++){
+  const pos=pickCenter(rng,basinSites,.22,.16);
+  basinSites.push(pos);
+  const depth=(18+15*rng())*(basinDepth/75);
+  features.push(makeShape(rng,pos,(mountainous?.07:.078)+.045*rng(),(mountainous?.13:.087)+.06*rng(),depth,mountainous?'valley':'basin'));
+ }
+ if(coastal){
+  // A broad lowland touching one random edge: if water collects, it can form a sea-like basin.
+  const edge=Math.floor(rng()*4),t=.27+.46*rng();
+  const pos=edge===0?{x:-.015,y:t}:edge===1?{x:1.015,y:t}:edge===2?{x:t,y:-.015}:{x:t,y:1.015};
+  features.push(makeShape(rng,pos,.33+.06*rng(),.30+.065*rng(),(30+9*rng())*(basinDepth/75),'sea'));
+ }
+ const raw=new Float64Array(SIZE);let min=Infinity,max=-Infinity;
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const nx=x/(N-1),ny=y/(N-1);
+  const warpX=.028*(noise(nx,ny,5,seed+78)-.5),warpY=.028*(noise(nx,ny,5,seed+91)-.5);
+  const px=nx+warpX,py=ny+warpY;
+  // Broad quiet plains, with microrelief governed only by the ruggedness setting.
+  const calm=(noise(nx,ny,2.5,seed+501)-.5)*4.2;
+  const fine=(noise(nx,ny,12,seed+502)-.5)*(0.7+roughness*.053);
+  const detailed=(noise(nx,ny,27,seed+503)-.5)*roughness*.022;
+  let altitude=35+calm+fine+detailed;
+  for(const f of features){
+   const dx=px-f.x,dy=py-f.y,c=Math.cos(f.ang),s=Math.sin(f.ang);
+   const ux=(dx*c+dy*s)/f.rx,uy=(-dx*s+dy*c)/f.ry;
+   const r2=ux*ux+uy*uy;
+   if(f.kind==='hill') altitude+=f.height*Math.exp(-1.5*r2);
+   else if(f.kind==='sea') altitude-=f.height*Math.exp(-1.0*r2);
+   else if(f.kind==='valley') altitude-=f.height*Math.exp(-1.3*r2);
+   else {
+    const r=Math.sqrt(r2);
+    altitude-=f.height*Math.exp(-1.7*r2);
+    // Broad shoulders yield a closed depression without hard edges.
+    altitude+=(f.ring*basinDepth/75)*Math.exp(-.5*((r-1.27)/.31)**2);
+   }
+  }
+  const i=y*N+x;raw[i]=altitude;min=Math.min(min,altitude);max=Math.max(max,altitude);
+ }
+ // Set the lowest land to z=0, avoiding negative reference potential energies.
+ for(let i=0;i<SIZE;i++)terrain[i]=raw[i]-min;
+ maxAltitude=Math.max(1,max-min);
+}
+function meanDepthForPct(pct){return .05+6*(pct/100);}
+function generateWater(){const wgt=new Float64Array(SIZE);let sum=0;const meanDepth=meanDepthForPct(waterPct);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const idx=y*N+x,nx=x/(N-1),ny=y/(N-1);let w=1;
+  if(distribution==='patches'){const r=.6*noise(nx,ny,3,seed+1901)+.4*noise(nx,ny,8,seed+1902);w=Math.pow(Math.max(0,r-.43),1.45);}
+  else if(distribution==='highland'){const r=.7*noise(nx,ny,3,seed+1901)+.3*noise(nx,ny,8,seed+1902);w=Math.max(0,(terrain[idx]/maxAltitude)*.78+r*.4-.30);w=w*w;}
+  wgt[idx]=w;sum+=w;
+ }
+ if(distribution==='level'){
+  // Initial standing water is assigned from terrain geometry alone at a fixed total volume.
+  // This does not spawn special lake objects: the subsequent dynamics are unchanged.
+  let lo=0,hi=maxAltitude+meanDepth*SIZE;
+  for(let k=0;k<52;k++){
+   const level=(lo+hi)*.5;let volume=0;
+   for(let i=0;i<SIZE;i++)volume+=Math.max(0,level-terrain[i]);
+   if(volume<meanDepth*SIZE)lo=level;else hi=level;
+  }
+  const level=(lo+hi)*.5;for(let i=0;i<SIZE;i++)water[i]=Math.max(0,level-terrain[i]);
+  return;
+ }
+ if(sum<=1e-10){wgt.fill(1);sum=SIZE;}
+ const scale=meanDepth*SIZE/sum;for(let i=0;i<SIZE;i++)water[i]=wgt[i]*scale;
+}
+function reservoirMasses(){
+ let surface=0,soil=0;
+ for(let i=0;i<SIZE;i++){surface+=water[i]*CELL_MASS;soil+=soilWater[i]*CELL_MASS;}
+ return {surface,soil,atmosphere:atmosphereWaterKg};
+}
+function mass(){const m=reservoirMasses();return m.surface+m.soil+m.atmosphere;}
+function potential(){
+ let p=G*atmosphereWaterKg*atmosphereAltitude;
+ for(let i=0;i<SIZE;i++){
+  const h=water[i];
+  p+=G*CELL_MASS*(h*(terrain[i]+.5*h)+soilWater[i]*terrain[i]);
+ }
+ return p;
+}
+function totalEnergy(){return currentPotential+heatEnergy+latentEnergy;}
+function newWorld(){
+ seed=(Number($('seed').value)||0)>>>0;roughness=Number($('roughness').value);waterPct=Number($('waterAmount').value);
+ basinDepth=Number($('basinDepth').value);landform=$('landform').value;
+ fluidity=Number($('fluidity').value);distribution=$('waterDistribution').value;
+ evaporationRateMm=Number($('evaporationRate').value);retentionPct=Number($('retention').value);
+ $('seed').value=String(seed);
+ generateTerrain();generateWater();initialWater=Float64Array.from(water);
+ soilWater.fill(0);atmosphereWaterKg=0;latentEnergy=0;atmosphereAltitude=maxAltitude+100;
+ tickCount=0;lastMovedKg=0;lastInfiltrationKg=0;lastEvaporationKg=0;
+ currentPotential=potential();currentMass=mass();initialMass=currentMass;
+ // Finite initial thermal stock; no solar input or imposed replenishment.
+ initialThermalEnergy=initialMass*LATENT_HEAT_J_PER_KG*.12;
+ heatEnergy=initialThermalEnergy;initialEnergy=totalEnergy();
+ showError=false;running=false;accumulator=0;setPlaying(false);$('draftStatus').textContent='Terrain généré · seed '+seed+'.';$('draftStatus').classList.remove('pending');updateDisplay(true);
+}
+function resetWorld(){if(!initialWater)return;
+ water=Float64Array.from(initialWater);soilWater.fill(0);atmosphereWaterKg=0;latentEnergy=0;
+ tickCount=0;lastMovedKg=0;lastInfiltrationKg=0;lastEvaporationKg=0;heatEnergy=initialThermalEnergy;
+ currentPotential=potential();currentMass=mass();showError=false;running=false;accumulator=0;
+ setPlaying(false);updateDisplay(true);$('draftStatus').textContent='Retour aux conditions initiales.';
+}
+// Each pair exchange follows the downward free-surface gradient. The 0.42 upper bound
+// is strictly below the 0.5 pair-equalization fraction, guaranteeing energy descent.
+function exchange(i,j){const hi=terrain[i]+water[i],hj=terrain[j]+water[j],delta=hi-hj;if(Math.abs(delta)<1e-11)return 0;
+ let moved=0;if(delta>0){moved=Math.min(water[i],fluidity*delta);if(moved<=0)return 0;water[i]-=moved;water[j]+=moved;}
+ else{moved=Math.min(water[j],fluidity*(-delta));if(moved<=0)return 0;water[j]-=moved;water[i]+=moved;}
+ return moved;
+}
+function tick(){
+ const before=currentPotential;let moved=0;
+ // Identical surface dynamics to the archived V2.1b.
+ if(tickCount%2===0){
+  for(let y=0;y<N;y++)for(let x=0;x<N-1;x++){const i=y*N+x;moved+=exchange(i,i+1);}
+  for(let x=0;x<N;x++)for(let y=0;y<N-1;y++){const i=y*N+x;moved+=exchange(i,i+N);}
+ }else{
+  for(let x=N-1;x>=0;x--)for(let y=N-2;y>=0;y--){const i=y*N+x;moved+=exchange(i,i+N);}
+  for(let y=N-1;y>=0;y--)for(let x=N-2;x>=0;x--){const i=y*N+x;moved+=exchange(i,i+1);}
+ }
+ const afterFlow=potential();
+ heatEnergy+=before-afterFlow; // Gravity lost through dissipative flow becomes heat.
+
+ // Infiltration: local storage capacity, no subsurface lateral transport yet.
+ const soilCapacity=MAX_SOIL_CAPACITY_M*retentionPct/100;
+ let infiltratedDepth=0;
+ for(let i=0;i<SIZE;i++){
+  const amount=Math.min(water[i],Math.max(0,soilCapacity-soilWater[i]),INFILTRATION_DEPTH_M_PER_TICK);
+  if(amount>0){water[i]-=amount;soilWater[i]+=amount;infiltratedDepth+=amount;}
+ }
+ const afterInfiltration=potential();
+ heatEnergy+=afterFlow-afterInfiltration; // Infiltration lowers the water center of mass.
+
+ // Vapor is a third, finite-mass reservoir. It stores latent heat and gravitational potential.
+ // An initial finite thermal reserve pays for all evaporation. No rain/condensation in V2.2.
+ const latentBefore=latentEnergy;
+ let evaporatedDepth=0;
+ const surfaceEvaporationM=evaporationRateMm/1000;
+ for(let i=0;i<SIZE;i++){
+  if(surfaceEvaporationM===0||heatEnergy<=0)break;
+  const surfaceExposed=water[i]>0;
+  const source=surfaceExposed?water:soilWater;
+  const desired=surfaceExposed?surfaceEvaporationM:surfaceEvaporationM*.35;
+  // Conservative energy cap includes evaporation's gravitational work.
+  const energyPerM=CELL_MASS*(LATENT_HEAT_J_PER_KG+G*(atmosphereAltitude+MAX_SOIL_CAPACITY_M));
+  const availableEnergyDepth=Math.max(0,heatEnergy/energyPerM);
+  const amount=Math.min(source[i],desired,availableEnergyDepth);
+  if(amount<=0)continue;
+  source[i]-=amount;const transferred=amount*CELL_MASS;
+  atmosphereWaterKg+=transferred;
+  latentEnergy+=transferred*LATENT_HEAT_J_PER_KG;
+  evaporatedDepth+=amount;
+  // Reserve enough heat before processing the next cell; exact potential correction follows.
+  heatEnergy-=amount*energyPerM;
+ }
+ const afterEvaporation=potential();
+ const actualEvaporationCost=(afterEvaporation-afterInfiltration)+(latentEnergy-latentBefore);
+ const reservedCost=evaporatedDepth*CELL_MASS*(LATENT_HEAT_J_PER_KG+G*(atmosphereAltitude+MAX_SOIL_CAPACITY_M));
+ heatEnergy+=reservedCost-actualEvaporationCost;
+ currentPotential=afterEvaporation;currentMass=mass();
+ lastMovedKg=moved*CELL_MASS;lastInfiltrationKg=infiltratedDepth*CELL_MASS;
+ lastEvaporationKg=evaporatedDepth*CELL_MASS;tickCount++;
+ const massError=Math.abs(currentMass-initialMass)/initialMass;
+ const energyError=Math.abs(totalEnergy()-initialEnergy)/initialEnergy;
+ if(!Number.isFinite(currentMass)||!Number.isFinite(totalEnergy())||massError>1e-9||energyError>1e-9||heatEnergy < -Math.max(0.1,initialEnergy*1e-13)){
+  running=false;setPlaying(false);showError=true;
+  $('draftStatus').textContent='Alerte : bilan de masse/énergie ou réserve thermique invalide.';
+  $('draftStatus').classList.add('pending');
+ }
+}
+const cpoints=[[37,75,57],[65,104,79],[106,129,84],[158,152,110],[198,183,152]];
+function samplePalette(v){const t=clamp(v,0,1)*(cpoints.length-1),i=Math.min(cpoints.length-2,Math.floor(t)),q=t-i;return [0,1,2].map(k=>cpoints[i][k]*(1-q)+cpoints[i+1][k]*q);}
+function draw(){const p=pixels.data;let k=0;
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x,h=water[i],z=terrain[i],t=z/maxAltitude;
+  let r,g,b;
+  if(view==='soil'){
+    const moisture=clamp(soilWater[i]/Math.max(.001,MAX_SOIL_CAPACITY_M*retentionPct/100),0,1);
+    r=65-40*moisture;g=58+88*moisture;b=40+107*moisture;
+  }else if(view==='water'){
+    if(h<.015){r=14;g=28;b=35;}else{const a=clamp(Math.log1p(h)*.45,0,1);r=13+22*a;g=58+97*a;b=93+128*a;}
+  }else{
+    [r,g,b]=samplePalette(t);
+    const west=terrain[y*N+Math.max(x-1,0)],east=terrain[y*N+Math.min(x+1,N-1)];
+    const north=terrain[Math.max(y-1,0)*N+x],south=terrain[Math.min(y+1,N-1)*N+x];
+    const shade=clamp(.91+.048*(west-east)+.04*(north-south),.60,1.27);
+    r*=shade;g*=shade;b*=shade;
+    if(view==='mix' && h>.012){
+      const op=clamp(.36+.6*(1-Math.exp(-h*.33)),.30,.95);
+      const deep=1-Math.exp(-h*.28);
+      const wr=20+12*deep,wg=104-32*deep,wb=152+26*deep;
+      r=r*(1-op)+wr*op;g=g*(1-op)+wg*op;b=b*(1-op)+wb*op;
+    }
+  }
+  p[k++]=clamp(Math.round(r),0,255);p[k++]=clamp(Math.round(g),0,255);p[k++]=clamp(Math.round(b),0,255);p[k++]=255;
+ }
+ sctx.putImageData(pixels,0,0);ctx.imageSmoothingEnabled=true;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(small,0,0,canvas.width,canvas.height);
+}
+function updateDisplay(redraw){
+ let wet=0;for(let i=0;i<SIZE;i++)if(water[i]>.035)wet++;
+ const e=totalEnergy(),md=initialMass?100*(currentMass-initialMass)/initialMass:0,ed=initialEnergy?100*(e-initialEnergy)/initialEnergy:0;
+ const reservoirs=reservoirMasses();
+ $('waterTotal').textContent=sci(currentMass);$('potEnergy').textContent=sci(currentPotential);$('heatEnergy').textContent=sci(heatEnergy);
+ $('surfaceMass').textContent=sci(reservoirs.surface)+' kg';$('soilMass').textContent=sci(reservoirs.soil)+' kg';
+ $('atmosphereMass').textContent=sci(reservoirs.atmosphere)+' kg';$('latentEnergy').textContent=sci(latentEnergy)+' J';
+ $('energyTotal').textContent=sci(e)+' J';$('massDrift').textContent=(Math.abs(md)<1e-9?'≈ 0':fmt(md,9))+' %';$('energyDrift').textContent=(Math.abs(ed)<1e-9?'≈ 0':fmt(ed,9))+' %';
+ $('massDrift').className=Math.abs(md)<1e-7?'positive':'bad';$('energyDrift').className=Math.abs(ed)<1e-7?'positive':'bad';
+ $('wetCells').textContent=fmt(wet,0)+' / '+fmt(SIZE,0);$('lastFlow').textContent=sci(lastMovedKg)+' kg';$('lastInfiltration').textContent=sci(lastInfiltrationKg)+' kg';$('lastEvaporation').textContent=sci(lastEvaporationKg)+' kg';$('simTime').textContent=fmt(tickCount*DT,0)+' s';$('tickCount').textContent=fmt(tickCount,0);
+ if(redraw)draw();
+}
+function setPlaying(v){running=v;$('liveDot').classList.toggle('on',running);$('liveState').textContent=running?'EN COURS':'EN PAUSE';$('playSymbol').textContent=running?'Ⅱ':'▶';$('playText').textContent=running?'Pause':'Démarrer';}
+function markDirty(){const e=$('draftStatus');e.textContent='Paramètres modifiés : cliquez sur « Générer » pour appliquer.';e.classList.add('pending');}
+function reflectInput(){const r=Number($('roughness').value),p=Number($('waterAmount').value),f=Number($('fluidity').value);$('basinDepthVal').textContent=$('basinDepth').value+' %';$('roughnessVal').textContent=r+' %';$('waterAmountVal').textContent=p+' %';$('fluidityVal').textContent=fmt(f,2);$('waterHint').textContent='Profondeur moyenne équivalente : '+fmt(meanDepthForPct(p))+' m.';$('evaporationVal').textContent=fmt(Number($('evaporationRate').value),2)+' mm / pas';$('retentionVal').textContent=$('retention').value+' %';}
+function exportCsv(){let csv='x_m;y_m;altitude_m;surface_water_depth_m;surface_level_m;surface_water_kg;soil_water_equivalent_depth_m;soil_water_kg\n';for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+ const i=y*N+x;csv+=(x+.5)*L+';'+(y+.5)*L+';'+terrain[i].toFixed(8)+';'+water[i].toFixed(8)+';'+(terrain[i]+water[i]).toFixed(8)+';'+(water[i]*CELL_MASS).toFixed(5)+';'+soilWater[i].toFixed(8)+';'+(soilWater[i]*CELL_MASS).toFixed(5)+'\n';}
+ const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='monde_vj_v22_seed_'+seed+'_pas_'+tickCount+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),800);
+}
+function updateInspect(e){const rect=canvas.getBoundingClientRect();const x=Math.floor((e.clientX-rect.left)/rect.width*N),y=Math.floor((e.clientY-rect.top)/rect.height*N);if(x<0||x>=N||y<0||y>=N)return;
+ const i=y*N+x;const info=$('cellInspect');info.innerHTML='Cellule '+(x+1)+', '+(y+1)+'<br>Altitude : '+fmt(terrain[i])+' m<br>Eau : '+fmt(water[i],3)+' m<br>Sol : '+fmt(soilWater[i]*1000,1)+' mm équiv.<br>Surface libre : '+fmt(terrain[i]+water[i])+' m';info.classList.add('visible');$('hoverHint').textContent='x = '+fmt((x+.5)*L,0)+' m · y = '+fmt((y+.5)*L,0)+' m';}
+function animation(t){let elapsed=Math.min(120,t-lastAnim);lastAnim=t;if(running&&!showError){accumulator+=elapsed;let bursts=0;while(accumulator>=65 && bursts<3){accumulator-=65;for(let j=0;j<speed;j++){tick();if(showError)break;}bursts++;if(showError)break;}if(bursts>0)updateDisplay(true);}
+ requestAnimationFrame(animation);
+}
+for(const id of ['landform','basinDepth','roughness','waterAmount','fluidity','seed','waterDistribution','evaporationRate','retention']){$(id).addEventListener('input',()=>{reflectInput();markDirty();});}
+$('generateBtn').addEventListener('click',newWorld);$('newSeedBtn').addEventListener('click',()=>{$('seed').value=String((Math.floor(Math.random()*4294967296))>>>0);reflectInput();newWorld();});$('resetBtn').addEventListener('click',resetWorld);
+$('playBtn').addEventListener('click',()=>{setPlaying(!running);lastAnim=performance.now();});$('stepBtn').addEventListener('click',()=>{setPlaying(false);tick();updateDisplay(true);});
+document.querySelectorAll('[data-speed]').forEach(btn=>btn.addEventListener('click',()=>{speed=Number(btn.dataset.speed);document.querySelectorAll('[data-speed]').forEach(b=>b.classList.toggle('active',b===btn));}));
+document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{view=btn.dataset.view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b===btn));$('mapModeLabel').textContent=view==='terrain'?'RELIEF':view==='water'?'EAU DE SURFACE':view==='soil'?'HUMIDITÉ DU SOL':'RELIEF + EAU';draw();}));
+canvas.addEventListener('pointermove',updateInspect);canvas.addEventListener('pointerleave',()=>{$('cellInspect').classList.remove('visible');$('hoverHint').textContent='Survolez la carte pour inspecter une cellule';});$('exportBtn').addEventListener('click',exportCsv);
+document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;if(e.code==='Space'){e.preventDefault();setPlaying(!running);lastAnim=performance.now();}else if(e.code==='ArrowRight'){e.preventDefault();setPlaying(false);tick();updateDisplay(true);}else if(e.code==='KeyR'){e.preventDefault();resetWorld();}});
+reflectInput();newWorld();requestAnimationFrame(animation);
+// Nonvisual debug interface for reproducibility and invariant tests.
+window.__VJ_TEST__={getState:()=>({seed,landform,basinDepth,roughness,evaporationRateMm,retentionPct,tickCount,waterMass:currentMass,initialMass,reservoirs:reservoirMasses(),potential:currentPotential,heat:heatEnergy,latent:latentEnergy,initialEnergy,totalEnergy:totalEnergy(),lastMovedKg,lastInfiltrationKg,lastEvaporationKg,minAltitude:Math.min(...terrain),maxAltitude,minDepth:Math.min(...water),minSoilDepth:Math.min(...soilWater),maxSoilDepth:Math.max(...soilWater),maxDepth:Math.max(...water),wetCells:water.reduce((a,v)=>a+(v>.035?1:0),0),samples:[water[0],water[17],water[110],water[1004],water[5432],water[9999]],terrainSamples:[terrain[0],terrain[17],terrain[110],terrain[1004],terrain[5432],terrain[9999]],soilSamples:[soilWater[0],soilWater[17],soilWater[110],soilWater[1004],soilWater[5432],soilWater[9999]],showError}),step:n=>{for(let i=0;i<n;i++){tick();if(showError)break;}updateDisplay(true);},regen:newWorld,reset:resetWorld,terrain:()=>Array.from(terrain),water:()=>Array.from(water),soil:()=>Array.from(soilWater)};
+})();
+</script>
+</body>
+</html>
