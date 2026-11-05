@@ -34,3 +34,19 @@ Les valeurs sont vérifiées numériquement à chaque pas. L'énergie thermique 
 ## Frontière d'architecture
 
 Ces prototypes n'implémentent ni organismes, ni pluie, ni eau souterraine mobile, ni minéraux. Aucun code de l'ancien simulateur écologique n'est modifié par leur ajout. Le futur système d'environnement Python doit préserver le monde en mètres, la seed, le pas de temps fixe, l'indépendance du rendu et les tests d'invariants.
+
+
+## Versions supplémentaires sur cette branche
+
+- **V2.3 — [Reconnaissance des paysages](v2_3_paysages.html)** : classification indicatrice des lacs, marécages, montagnes, vallées, plateaux et plaines par état local et composantes connexes. La lecture géographique ne modifie pas les équations hydrologiques.
+- **V2.4 — [Cycle jour / nuit](v2_4_jour_nuit.html)** : 1 000 pas par jour, dont 500 éclairés ; température globale de l'atmosphère et température de sol par cellule ; chauffage solaire progressif, échanges thermiques sol/air et voisins, refroidissement radiatif et évaporation dépendante de la température.
+
+## Bilans et limites de V2.4
+
+- `W_total = W_surface + W_sol + W_atmosphere` demeure constant.
+- `E_comptabilisée = E_gravitationnelle + E_sensible_sol_air + E_latente + E_solaire_restante + E_rayonnement_sortant` demeure constante dans le **système de comptabilité élargi**.
+- Le Soleil est un réservoir fini d'énergie initiale ; quand celui-ci est épuisé, le jour continue d'être annoncé par l'horloge mais n'apporte plus de chaleur. Le rayonnement thermique est conservé comme énergie émise, sans être réinjecté artificiellement.
+- L'horloge est `1000 pas = 24 h`; les coefficients d'écoulement et d'évaporation par pas sont des approximations, **pas** une hydrodynamique ni un modèle atmosphérique calibrés. L'évaporation maximale par défaut est passée de `0.15 mm/pas` (V2.3) à `0.004 mm/pas` pour permettre un bilan latent et thermique cohérent avec les ordres de grandeur de la nouvelle journée.
+- Pas encore de pluie, condensation, vent, nuages ni conduction verticale dans le sol.
+- Le core Python historique sous `src/` n'est pas modifié : les prototypes restent des fichiers HTML autonomes.
+- Tests manuels automatisés dans Chromium : 2 000 pas sur configuration standard, reproductibilité exacte après reset, contrôles de masse et d'énergie, variantes de rayonnement/évaporation, vue des températures et mise en page mobile.
