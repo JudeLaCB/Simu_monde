@@ -153,3 +153,30 @@ La V2.7 introduit également les données géographiques de pluie, vapeur, nuage
 - Les tests sont des **tests d'intégration navigateur du prototype**, pas une calibration scientifique ni des tests du core historique.
 
 **PR empilée sur #25 (V2.6) ; fusionner les PR du plus ancien au plus récent.**
+
+
+## V2.8 — Vent dominant, pluie continentale et correction de la surchauffe
+
+[Ouvrir le prototype V2.8](v2_8_vent_pluie_terres.html) — laboratoire HTML autonome ; l'ancien moteur Python et V2.7 restent inchangés.
+
+### Diagnostic confirmé par tests navigateur
+
+- V2.7 seed 42 à **8 000 pas** : atmosphère `61,5 °C`, température moyenne du sol `60,3 °C`. Les végétaux ne tolèrent pas ces températures. Environ **14 %** des précipitations cumulées tombent sur des cellules de terre avec moins de 5 cm d'eau ; le reste tombe sur l'eau de surface.
+- **V2.8, même seed et paramètres par défaut :** à 8 000 pas, atmosphère `18,1 °C`, sol moyen `20,8 °C`, **1 363 cellules végétalisées** et **125 herbivores vivants**. Aucun équilibre à durée infinie n'est démontré.
+- **Expérience contrôlée V2.8 à 4 000 pas :** vent à 0 % => **12,7 %** des pluies sur les terres ; vent automatique à 180 % => **47,9 %** des pluies sur les terres. Cette comparaison isole l'effet du vent **dans la même V2.8**.
+
+### Changements V2.8
+
+1. **Vent persistant et plus rapide :** force réglable 0–300 % ; direction automatique depuis les zones d'eau et bas-relief vers les terres plus hautes, ou direction manuelle est/ouest/nord/sud. Petite modulation de rafales et d'orientation, sans rotation lente inversant les masses d'air. Le vent n'ajoute ni eau ni énergie de mouvement comptable (forçage externe idéalisé).
+2. **Transport atmosphérique conservatif :** l'advection avant redistribue les masses de vapeur et de nuages entre quatre cellules par interpolation bilinéaire, même avec déplacements supérieurs à une cellule/pas. Les bords atmosphériques sont **périodiques**. La grille et les réservoirs de surface sont inchangés.
+3. **Soulèvement du relief :** une augmentation d'altitude dans la direction du vent augmente le refroidissement et favorise condensation/précipitation. Pluie moins rapide et seuil nuageux accru pour laisser les nuages voyager avant de précipiter. Aucune pluie créée sans eau nuageuse.
+4. **Bilan thermique :** coefficient radiatif de l'atmosphère `AIR_COOL_J_K_STEP` relevé de `1.0e8` à `6.5e8 J/K/pas` pour corriger la hausse excessive des températures ; l'énergie rayonnée reste dans le réservoir de rayonnement sortant comptabilisé. C'est un **paramétrage expérimental**, pas une calibration climatique.
+5. **Observation :** nouvelles vues « Pluie cumulée » (palette **relative** à la gamme minimum–maximum affichée), précipitation sur terre/eau cumulée, direction/intensité du vent et données CSV `rain_accumulated_kg` ; les cartes « Nuages » ont un meilleur contraste.
+
+### Tests de non-régression
+
+Dans Chromium sur fichier HTML autonome : valeur de la seed 42, 11 000 pas continus sans erreur, et scénario 8 000 pas ; pas d'écart relatif significatif eau, matière sèche et énergie (~1e-14 ou mieux). Réinitialisation + 500 pas = états numériques identiques. Vent à 0 %, vent est à 300 %, pluie à 0 %, seed 517, rendu mobile 390px sans débordement ; aucun avertissement moteur.
+
+### Limites du laboratoire
+
+La vitesse du vent est exprimée en **mètres par pas** (10 m par cellule et 1 000 pas/jour) ; ce n'est ni une dynamique Navier–Stokes ni un vent calibré en m/s. Le mode automatique est un **forçage géographique heuristique** vers les terres, pas un champ de pression météorologique émergent. Les bords périodiques peuvent faire traverser plusieurs fois le monde de 1 km aux mêmes nuages. Une atmosphère 3D, des vents thermiques locaux, les fronts, les pluies au vent/sous le vent, le cycle carbone complet, la croissance végétale à très long terme et l'équilibre écologique sont des développements ultérieurs.
