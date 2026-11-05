@@ -50,3 +50,31 @@ Ces prototypes n'implémentent ni organismes, ni pluie, ni eau souterraine mobil
 - Pas encore de pluie, condensation, vent, nuages ni conduction verticale dans le sol.
 - Le core Python historique sous `src/` n'est pas modifié : les prototypes restent des fichiers HTML autonomes.
 - Tests manuels automatisés dans Chromium : 2 000 pas sur configuration standard, reproductibilité exacte après reset, contrôles de masse et d'énergie, variantes de rayonnement/évaporation, vue des températures et mise en page mobile.
+
+
+## V2.5 — Végétation conditionnée par une humidité durable
+
+- Fichier : [v2_5_vegetation.html](v2_5_vegetation.html). Le moteur V2.4 est conservé séparément, sans changement.
+- 100 × 100 cellules, 10 m × 10 m chacune ; distribution de graines dormantes déterminée par la seed (70 % initialement). **Les organismes ne surgissent pas spontanément de matière inerte** : les graines dormantes sont une condition initiale, sans masse de graine détaillée.
+- L'humidité locale est suivie par référence exponentielle (coefficient 0,035/pas). Une cellule ne peut germer que lorsque l'humidité du sol reste suffisante et peu fluctuante pendant **160 pas consécutifs** (réglable 60–500), avec faible submersion, pente modérée et température de 4–38 °C.
+- La germination et la croissance exploitent la lumière du Soleil pendant les 500 pas de jour. Aucun arbre, forêt ou prairie n'est posé par le générateur ; les cellules végétalisées apparaissent au cours des pas.
+- La biomasse sèche prélève la masse dans un **substrat nutritif local fini** (28–72 kg par cellule) ; la mort/décomposition locale restitue la matière à ce substrat. Une partie plafonnée de l'énergie solaire est convertie en énergie chimique de biomasse ; le reste chauffe l'air ou le sol. Les réservoirs chimiques et nutritifs sont des approximations, pas une stœchiométrie du carbone ou de la photosynthèse.
+- Pour ce premier laboratoire, la croissance **ne prélève pas encore explicitement l'eau** du réservoir de sol. L'humidité agit comme facteur limitant ; l'ajout ultérieur d'absorption et de transpiration devra transférer eau et énergie sans rompre les bilans.
+- Pas de reproduction, succession écologique, fixation de carbone atmosphérique, cycle des minéraux détaillé, météo complète ou plantes intelligentes. Le monde ne reçoit aucune matière externe.
+
+### Invariants supplémentaires
+
+```text
+W_total = W_surface + W_sol + W_atmosphere                   = W_initial
+M_seche = substrat_local + biomasse_vegetale                 = M_seche_initiale
+E_totale = E_grav + E_chaleur + E_latente + E_solaire_restant
+           + E_rayonnement_sortant + E_chimique_vegetale     = E_initiale
+```
+
+### Vérifications Chromium
+
+- Seed 42, paramètres par défaut : 0 cellule végétalisée au pas 120 ; environ 949 au pas 350 ; 996 au pas 500 ; environ 979 au pas 1 000. Ce sont des **résultats du scénario**, pas des objectifs codés dans le programme.
+- Reset puis 350 pas : biomasse identique ; 0 % de graines : zéro germination ; absence de lumière : zéro croissance ; absence de rétention du sol : zéro croissance.
+- Testés : peu d'eau, beaucoup d'eau, forte croissance et densité totale de graines ; erreurs relatives de masse d'eau, de matière sèche et d'énergie inférieures à 1e-9 sur les scénarios vérifiés.
+- Mode sans graines : mêmes valeurs d'eau, températures et énergie que V2.4 au pas 350, à l'identique pour les observables comparées.
+- Tests réalisés dans le navigateur sur le **prototype HTML autonome**. Cela ne constitue pas une intégration dans le core Python et ne valide pas un modèle biologique réaliste.
