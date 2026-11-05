@@ -78,3 +78,39 @@ E_totale = E_grav + E_chaleur + E_latente + E_solaire_restant
 - Testés : peu d'eau, beaucoup d'eau, forte croissance et densité totale de graines ; erreurs relatives de masse d'eau, de matière sèche et d'énergie inférieures à 1e-9 sur les scénarios vérifiés.
 - Mode sans graines : mêmes valeurs d'eau, températures et énergie que V2.4 au pas 350, à l'identique pour les observables comparées.
 - Tests réalisés dans le navigateur sur le **prototype HTML autonome**. Cela ne constitue pas une intégration dans le core Python et ne valide pas un modèle biologique réaliste.
+
+
+## V2.6 — Herbivores avec perceptrons multicouches individuels
+
+- Prototype : [v2_6_herbivores.html](v2_6_herbivores.html). Expérience autonome issue de V2.5 : l'ancien moteur Python et les prototypes archivés ne sont pas modifiés.
+- Population initiale paramétrable (0 à 120, 50 par défaut), chaque individu disposant d'une position continue en mètres, direction, âge, eau corporelle, matière sèche structurelle et énergie chimique stockée.
+- **Capteurs locaux** : à gauche, devant et à droite, sondes des ressources végétales, de l'eau et des obstacles ; besoins internes d'énergie et d'hydratation. Pas de vision globale ni de téléportation.
+- **Contrôleur** : réseau 12 entrées → 8 neurones `tanh` → 2 sorties (rotation et vitesse) ; génome initial tiré par seed. Aucun code de navigation vers une plante, lac, ou point le plus proche. Le contrôle reste identique pendant la vie.
+- **Réflexes au contact** : ingestion de biomasse seulement dans la cellule occupée ; boisson seulement dans la même cellule si eau de surface accessible. Le réflexe n'implique pas de stratégie de recherche.
+- **Métabolisme** : prélève de l'énergie chimique animale et transfère une masse équivalente (densité simplifiée 18 MJ/kg) vers le substrat local et l'énergie dissipée vers la chaleur. Les pertes physiologiques d'eau retournent à l'eau du sol. Lors de la mort, restitution immédiate de l'eau, de la matière et de l'énergie : la décomposition n'est **pas encore** réaliste.
+- **Naissance** : possible uniquement après une maturité minimale et avec de bonnes réserves, par division des stocks parentaux de matière, d'eau et d'énergie ; copie des connexions neuronales avec mutation paramétrable. La reproduction ne crée pas de ressources. **Évolution générationnelle**, pas encore de renforcement/apprentissage individuel.
+- Les animaux initiaux sont explicitement une **condition initiale** : leur matière sèche et leur eau sont prélevées sur des stocks existants lors de la génération du monde. Ce n'est pas une émergence spontanée de la vie.
+- Cap de 150 individus pour garder un prototype navigateur réactif ; les lois physiques précédentes de V2.5 sont inchangées.
+
+### Bilans supplémentaires
+
+```text
+W = W_surface + W_sol + W_atmosphere + W_corps_animaux
+M_seche = substrat + biomasse_vegetale + masse_structurelle_animale + reserves_animales/18 MJ.kg^-1
+E = E_grav + E_thermique + E_latente + E_solaire + E_rayonnement + E_plantes + E_animaux
+```
+
+La variable `initialEnergy` est fixée après les allocations initiales de stocks animaux. Les transfers entre masse, énergie chimique et chaleur sont explicitement équilibrés. Ce **bilan comptable idéalisé** n'est pas une simulation exacte de respiration, carbone, oxygène, ni chimie physiologique.
+
+### Contrôles Chromium (prototype HTML)
+
+- Seed 42, 50 herbivores initialement : **19 vivants, 16 naissances cumulées** après 3 300 pas dans les essais effectués.
+- Après 1 600 pas, `reset → 1 600 pas` produit les mêmes individus, gènes et états à l'identique ; aucune erreur JavaScript.
+- Avec **0 herbivores**, les observables physiques et végétales comparées à V2.5 restent *bit-à-bit identiques* à 300 pas.
+- Scénarios de stress : 120 animaux/2 000 pas ; pas d'apport solaire/1 700 pas ; rétention du sol nulle/900 pas ; aucune graine/1 350 pas. Conservation de l'eau, de la matière sèche et de l'énergie dans la tolérance relative 1e-9, sans stocks négatifs dans les scénarios contrôlés.
+- Avec 0 graine ou 0 soleil, population éteinte dans les essais correspondants. Pas de débordement horizontal à 390 pixels.
+- Tests navigateur réalisés localement, **pas** des tests unitaires du core Python.
+
+### Limites et suite possible
+
+Les paramètres physiologiques sont expérimentaux. Les stratégies efficaces ne sont pas garanties par une évolution sélectionnée si les niches sont trop difficiles, et l'apparition d'intelligence n'est pas démontrée. À étudier : trajectoires des individus, génomes parent/descendance, durée des populations, absorption et transpiration réelles par les plantes, décomposition différée, cycle carbone/oxygène et mécanismes évolutifs plus robustes.
