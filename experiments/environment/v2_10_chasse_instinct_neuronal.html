@@ -1,0 +1,1373 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Monde VJ V2.10 — Instincts de chasse et perception</title>
+<style>
+:root{color-scheme:dark;--bg:#081016;--panel:#0e1b22;--border:#253a42;--surface:#132730;--muted:#8ba4ac;--ink:#edf7f5;--teal:#6ce3c0;--blue:#70bffd;--amber:#efca8a}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,'Segoe UI',sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+body::before{content:'';pointer-events:none;position:fixed;inset:0;background:radial-gradient(circle at 45% -12%,#215b5a35,transparent 53%)}
+.shell{position:relative;max-width:1590px;margin:auto;padding:25px clamp(14px,2.4vw,32px) 22px}
+.header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.identity{display:flex;gap:13px;align-items:center}.brand-icon{border:1px solid #418875;background:linear-gradient(145deg,#153e3d,#102027);border-radius:14px;width:46px;height:46px;display:grid;place-items:center}.brand-icon svg{width:31px;height:31px}.micro{color:var(--teal);font-size:10px;letter-spacing:.19em;text-transform:uppercase;font-weight:800}.brand{font-size:19px;font-weight:770;letter-spacing:-.035em}.head-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.chip{border:1px solid #30505a;border-radius:100px;padding:7px 11px;background:#10232b;color:#b4d1d2;font-size:11px;white-space:nowrap}.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#879298;margin-right:7px}.live-dot.on{background:#63e4bb;box-shadow:0 0 9px #63e4bba5}
+.intro{margin-bottom:20px}.intro h1{font-size:clamp(24px,3vw,38px);line-height:1.18;letter-spacing:-.055em;margin:6px 0 8px}.intro p{color:#9ab0b8;margin:0;max-width:830px;font-size:13px;line-height:1.65}
+.layout{display:grid;grid-template-columns:minmax(235px,275px) minmax(460px,1fr) minmax(232px,270px);gap:14px;align-items:start}.panel{border:1px solid var(--border);border-radius:16px;background:linear-gradient(160deg,#0e1c23,#0b181f);overflow:hidden;min-width:0}.side{padding:19px;display:grid;gap:21px}.sectitle{display:flex;align-items:center;justify-content:space-between;gap:8px}.sectitle h2{margin:0;font-size:13px;font-weight:760}.eyebrow{font-size:10px;color:#7a9aa4;font-weight:700;letter-spacing:.065em;text-transform:uppercase}.small{color:var(--muted);font-size:11px;line-height:1.58;margin:5px 0 0}.controls{display:grid;gap:16px}.control{display:grid;gap:8px}.control label{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#cfdddd}.value{font-variant-numeric:tabular-nums;color:var(--teal);font-weight:750}.control input[type=range]{width:100%;accent-color:#68dec1;margin:0}.control input[type=number],.control select{background:#0c1e26;color:#e6f2f0;border:1px solid #2e4651;border-radius:9px;padding:9px 11px;min-width:0;width:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;border:1px solid #36515a;background:#192f39;color:#deeeeb;padding:10px 13px;font-size:12px;font-weight:700;white-space:nowrap;min-height:39px}.btn:hover{background:#23414c}.btn.primary{color:#062d28;background:#58d6b3;border-color:#77f0cc}.btn.primary:hover{background:#80e9cb}.btn.ghost{background:#11222a}.btn:disabled{cursor:not-allowed;opacity:.5}.two-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}.notice{background:#132d303d;border:1px solid #315653;border-radius:11px;padding:12px;color:#aec9c5;font-size:11px;line-height:1.7}.notice b{color:#e1f7ee}.status{font-size:11px;color:#adc1ba;min-height:17px}.status.pending{color:#efcb82}
+.viewport{display:flex;flex-direction:column}.vp-head{padding:14px 17px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #223740}.vp-head h2{margin:0;font-size:13px}.vp-meta{color:#7f9ca5;letter-spacing:.05em;font-size:10px;text-transform:uppercase;margin-top:4px}.vp-actions{display:flex;gap:6px;flex-wrap:wrap}.toggle{font-size:11px;border:1px solid #294550;border-radius:8px;padding:7px 10px;background:#142731;color:#9bb4bc}.toggle.active{background:#1e4d47;color:#a6f4d9;border-color:#499d81}
+.map-wrap{background:#061219;position:relative;padding:14px;min-height:440px;display:grid;place-items:center}.map-frame{width:100%;max-width:645px;aspect-ratio:1/1;border:1px solid #36515b;border-radius:10px;overflow:hidden;position:relative;background:#0e2528;box-shadow:0 9px 45px #0007}.map-frame canvas{display:block;width:100%;height:100%;cursor:crosshair;image-rendering:auto}.map-badge{position:absolute;top:10px;left:10px;border:1px solid #e6f7e933;color:#ecf5e4;background:#102020b5;border-radius:7px;padding:5px 8px;font-size:10px;pointer-events:none}.map-scale{position:absolute;bottom:10px;right:12px;text-align:right;pointer-events:none;color:#ebf0ed;text-shadow:0 1px 4px #000}.scale-line{width:64px;border-bottom:2px solid #f5f8f7;margin-left:auto;height:5px}.map-scale span{font-size:10px}.inspect{position:absolute;left:10px;bottom:10px;background:#09191bd9;color:#d9e9e6;border:1px solid #5771728a;border-radius:8px;padding:7px 9px;font-size:10px;line-height:1.6;pointer-events:none;min-width:142px;font-variant-numeric:tabular-nums;display:none}.inspect.visible{display:block}.map-caption{padding:10px 17px;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#9ab3ba;font-size:11px;border-top:1px solid #20343d}.key{display:flex;gap:11px;flex-wrap:wrap;align-items:center}.legend-swatch{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:baseline}.legend-swatch.water{background:#3aa3d7}.legend-swatch.land{background:#7b9a5d}.legend-swatch.high{background:#c9bd9d}
+.transport{border-top:1px solid #213640;padding:13px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px}.speed-wrap{display:flex;align-items:center;gap:5px;margin-left:auto;color:#8daab1;font-size:11px}.speed{border:1px solid #2d4953;background:#0f242d;color:#9db5bd;padding:8px 10px;font-size:11px;border-radius:8px}.speed.active{background:#214c42;border-color:#4da083;color:#a6f4d7}
+.stats{display:grid;gap:9px}.metric{border:1px solid #29414a;background:#12262e;border-radius:11px;padding:12px}.metric .mlabel{font-size:11px;color:#96b0b6}.metric strong{font-size:22px;line-height:1.45;letter-spacing:-.04em;display:block;font-variant-numeric:tabular-nums;font-weight:760}.metric small{font-size:10px;color:#89a3a9}.metric.blue strong{color:#79c8f0}.metric.orange strong{color:#f4ce8b}.metric.green strong{color:#7ce7c3}.meta-rows{display:grid;gap:11px}.meta-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:#9bb3bc}.meta-row b{color:#e1f0ee;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}.positive{color:#83e2b9!important}.bad{color:#f3a493!important}.explain{border:1px solid #2c454a;background:#10272d;border-radius:10px;padding:12px;color:#a6c0c0;font-size:11px;line-height:1.7}.explain b{color:#e1f4ee}.footer{margin-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#819ea6;font-size:11px;line-height:1.6}.footer b{color:#b9d1d3}.kbd{font-family:monospace;background:#172b34;border:1px solid #3e5b65;padding:2px 5px;border-radius:4px;color:#cadcdd}
+/* Biome inspector and connected-region list */
+.region-panel{display:grid;gap:10px;border-top:1px solid #26434a;padding-top:14px}.region-summary{display:grid;grid-template-columns:1fr 1fr;gap:7px}.region-summary>div{background:#112a32;border:1px solid #284550;border-radius:9px;padding:9px;min-width:0}.region-summary span{color:#87a8b0;font-size:10px;display:block}.region-summary strong{color:#d5f2e7;display:block;font-size:13px;white-space:normal;overflow-wrap:anywhere}.region-list{display:grid;gap:5px}.region-entry{cursor:pointer;width:100%;display:flex;align-items:center;gap:8px;border:1px solid #26414a;border-radius:8px;background:#14252d;color:#d9edec;padding:8px;text-align:left;font-size:11px;min-height:36px}.region-entry:hover{background:#203943}.region-entry.active{border-color:#6dddc0;background:#1a4840}.region-dot{display:block;width:9px;height:9px;flex:0 0 9px;border-radius:2px}.region-name{flex:1;min-width:0}.region-entry strong{font-size:10px;color:#93c6bd;font-variant-numeric:tabular-nums}.vp-actions{max-width:100%}.map-caption{min-height:39px}
+@media(max-width:1230px){.layout{grid-template-columns:minmax(225px,270px) minmax(0,1fr)}.right{grid-column:1/-1}.right .side{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}.right .stats{grid-template-columns:1fr}.map-wrap{min-height:410px}}
+@media(max-width:790px){.shell{padding:17px 11px 25px}.head-right{display:none}.layout{grid-template-columns:1fr}.left .side{grid-template-columns:1fr 1fr;align-items:start}.left .side>div:first-child{grid-column:1/-1}.right{grid-column:auto}.right .side{grid-template-columns:repeat(2,minmax(0,1fr))}.map-wrap{min-height:0;padding:10px}.vp-head{padding:13px}.map-caption{flex-wrap:wrap}.speed-wrap{margin-left:0}}
+@media(max-width:510px){.intro h1{font-size:26px}.left .side,.right .side{grid-template-columns:1fr}.left .side>div:first-child{grid-column:auto}.transport{padding:11px}.speed-wrap{width:100%}.map-wrap{padding:7px}.metric strong{font-size:20px}}
+/* Cycle jour / nuit */
+.climate-panel{padding:13px 17px;border-bottom:1px solid #263d44;background:linear-gradient(100deg,#14242c,#172b32);display:grid;gap:9px}
+.cycle-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.cycle-head strong{font-size:12px;color:#f0f4e8}.cycle-head span{font-size:11px;color:#9fc1be}
+.cycle-track{height:9px;border-radius:100px;overflow:hidden;background:linear-gradient(90deg,#eac17c 0%,#f6d985 25%,#dfa76e 50%,#152b57 50.1%,#0b1a3b 75%,#e9b87b 100%);position:relative;border:1px solid #ffffff40}
+.cycle-marker{position:absolute;top:-3px;bottom:-3px;width:3px;background:#f8fffe;box-shadow:0 0 8px #fff;border-radius:4px;left:0%;}
+.climate-quick{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#acc3c9;font-size:11px}.climate-quick b{color:#ecf7ec}
+.night-veil{position:absolute;inset:0;background:#020e29;opacity:0;pointer-events:none;transition:opacity .2s;z-index:1}.map-badge,.map-scale,.inspect{z-index:2}
+@media(max-width:510px){.climate-panel{padding:12px}}
+.population-trend{border-top:1px solid #253a42;padding:12px 18px 8px;background:#0b1d24}
+.population-trend .trend-header{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;align-items:center;font-size:12px;color:#d9eae4}
+.population-trend .trend-key{display:flex;gap:12px;flex-wrap:wrap;color:#b3c4c5;font-size:11px}
+.population-trend .trend-key i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
+.population-trend canvas{display:block;width:100%;height:130px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="header">
+  <div class="identity"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M2 23 10 9 17 18 23 6 30 23Z" fill="#5eb69b" opacity=".9"/><path d="M1 24 9 21 15 26 23 18 31 23" fill="none" stroke="#81c6f2" stroke-width="3.6" stroke-linecap="round"/></svg></div><div><div class="micro">MONDE VJ / EXPÉRIENCE MACROSCOPIQUE</div><div class="brand">Monde VJ V2.10</div></div></div>
+  <div class="head-right"><span class="chip">2D · 1 km² · bilan énergétique fermé élargi</span><span class="chip"><span class="live-dot" id="liveDot"></span><span id="liveState">EN PAUSE</span></span></div>
+</header>
+<section class="intro"><div class="micro">Laboratoire 12 / Perception et instinct de chasse</div><h1>La chaîne alimentaire prend vie.</h1><p>Une journée dure <b>1 000 pas</b>. L’eau circule entre lacs, sol, végétation, vapeur et nuages ; les pluies dépendent de l’humidité atmosphérique et de la condensation. Les plantes établies résistent aux périodes sèches et transmettent leurs caractéristiques lors de la dispersion de nouvelles graines. Un vent dominant transporte la vapeur et les nuages vers les terres. Les prédateurs possèdent désormais une perception directionnelle améliorée et un instinct neuronal héréditaire pour orienter leur chasse ; ils capturent uniquement au contact, selon les décisions de leurs réseaux neuronaux héréditaires. Chaque naissance et chaque capture redistribue les réserves de matière et d’énergie, sans en créer.</p></section>
+<main class="layout">
+<aside class="panel left"><div class="side">
+  <div><div class="sectitle"><h2>Génération procédurale</h2><span class="eyebrow">Conditions initiales</span></div><p class="small">Les paramètres définissent le monde au départ. Ils ne changent pas en cours de simulation.</p></div>
+  <div class="controls">
+    <div class="control"><label for="landform">Structure du paysage</label><select id="landform"><option value="lakes" selected>Massifs et lacs</option><option value="coast">Bassin côtier / mer intérieure</option><option value="mountains">Chaînes et vallées</option></select><span class="small">Quelques formes dominantes placées par la seed, sans quadrillage régulier.</span></div>
+    <div class="control"><label for="basinDepth">Creux des bassins <span id="basinDepthVal" class="value">75 %</span></label><input id="basinDepth" type="range" min="20" max="100" step="5" value="75"/><span class="small">Plus profond : l’eau se concentre dans des dépressions mieux marquées.</span></div>
+    <div class="control"><label for="roughness">Rugosité du relief <span id="roughnessVal" class="value">40 %</span></label><input id="roughness" type="range" min="0" max="100" step="5" value="40"/><span class="small">Irrégularités fines superposées aux grands massifs et aux creux.</span></div>
+    <div class="control"><label for="waterAmount">Quantité d’eau <span id="waterAmountVal" class="value">30 %</span></label><input id="waterAmount" type="range" min="5" max="100" step="5" value="30"/><span class="small" id="waterHint">Profondeur moyenne équivalente : 1,74 m.</span></div>
+    <div class="control"><label for="waterDistribution">Répartition initiale de l’eau</label><select id="waterDistribution"><option value="patches" selected>Pluie initiale irrégulière</option><option value="uniform">Couche uniforme</option><option value="highland">Précipitations sur les hauteurs</option><option value="level">Bassins déjà remplis (niveau initial)</option></select></div>
+    <div class="control"><label for="seed">Seed</label><input id="seed" type="number" min="0" max="4294967295" step="1" value="42"/></div>
+    <div class="control"><label for="fluidity">Mobilité de l’eau <span id="fluidityVal" class="value">0,22</span></label><input id="fluidity" type="range" min="0.04" max="0.42" step="0.02" value="0.22"/><span class="small">Coefficient numérique d’écoulement, sans création d’eau ni d’énergie.</span></div>
+    <div class="control"><label for="evaporationRate">Évaporation maximale <span id="evaporationVal" class="value">0,004 mm / pas</span></label><input id="evaporationRate" type="range" min="0" max="0.020" step="0.001" value="0.004"/><span class="small">Coefficient de référence modulé par la température du sol. 1 000 pas représentent une journée ; l'évaporation reste schématique et limitée par la chaleur disponible.</span></div>
+    <div class="control"><label for="windStrength">Intensité du vent <span id="windVal" class="value">180 %</span></label><input id="windStrength" type="range" min="0" max="300" step="20" value="180"/><span class="small">Transport conservatif de la vapeur et des nuages : plus le vent souffle, plus ils parcourent de distance avant de précipiter.</span></div>
+    <div class="control"><label for="windMode">Direction dominante</label><select id="windMode"><option value="auto" selected>Brise vers les terres (automatique)</option><option value="east">Vers l’est →</option><option value="west">Vers l’ouest ←</option><option value="north">Vers le nord ↑</option><option value="south">Vers le sud ↓</option></select><span class="small">La brise automatique suit le contraste géographique initial eau/terre ; les directions manuelles permettent de tester d’autres climats. La direction reste dominante durant la journée.</span></div>
+    <div class="control"><label for="rainStrength">Précipitations <span id="rainVal" class="value">100 %</span></label><input id="rainStrength" type="range" min="0" max="200" step="10" value="100"/><span class="small">La pluie vient de nuages formés et déplacés ; les ascendances de relief favorisent la condensation. 0 % la désactive.</span></div>
+    <div class="control"><label for="retention">Capacité de rétention <span id="retentionVal" class="value">60 %</span></label><input id="retention" type="range" min="0" max="100" step="5" value="60"/><span class="small">Contrôle la capacité de stockage du sol (0 à 0,8 m d’eau équivalente). Infiltration plafonnée à 12 mm par pas.</span></div>
+    <div class="control"><label for="solarStrength">Rayonnement solaire <span id="solarVal" class="value">100 %</span></label><input id="solarStrength" type="range" min="0" max="200" step="10" value="100"/><span class="small">Puissance absorbée pendant le jour, prélevée dans un réservoir solaire <b>fini</b>.</span></div>
+    <div class="control"><label for="radiationStrength">Refroidissement radiatif <span id="radiationVal" class="value">100 %</span></label><input id="radiationStrength" type="range" min="0" max="200" step="10" value="100"/><span class="small">Coefficient de refroidissement rééquilibré pour éviter la surchauffe sur plusieurs jours ; la chaleur rayonnée reste comptabilisée, et non détruite.</span></div>
+  </div>
+  <div class="sectitle"><h2>Vie végétale</h2><span class="eyebrow">Conditions de germination</span></div>
+  <div class="control"><label for="stabilityDuration">Humidité stable requise <span id="stabilityVal" class="value">160 pas</span></label><input id="stabilityDuration" type="range" min="60" max="500" step="20" value="160"/><span class="small">La cellule doit conserver un sol suffisamment humide, sans fluctuations rapides, pendant cette durée consécutive. Aucune germination instantanée après une pluie.</span></div>
+  <div class="control"><label for="seedDensity">Graines dormantes <span id="seedDensityVal" class="value">70 %</span></label><input id="seedDensity" type="range" min="0" max="100" step="5" value="70"/><span class="small">Répartition initiale aléatoire, reproductible par seed : présence d'un potentiel de germination, pas d'une plante déjà développée.</span></div>
+  <div class="control"><label for="plantMutation">Mutation des graines <span id="plantMutationVal" class="value">8 %</span></label><input id="plantMutation" type="range" min="0" max="25" step="1" value="8"/><span class="small">Probabilité par trait lors de la dispersion locale, sans fitness imposée.</span></div>
+  <div class="control"><label for="growthStrength">Vitesse de croissance <span id="growthVal" class="value">100 %</span></label><input id="growthStrength" type="range" min="0" max="200" step="10" value="100"/><span class="small">La croissance exige soleil, humidité, température acceptable et substrat nutritif disponible. Les réserves ne sont jamais créées.</span></div>
+  <div class="sectitle"><h2>Premiers herbivores</h2><span class="eyebrow">Génomes neuronaux</span></div>
+  <div class="control"><label for="animalCount">Population initiale <span id="animalCountVal" class="value">50</span></label><input id="animalCount" type="range" min="0" max="120" step="10" value="50"/><span class="small">Animaux initiaux à cerveaux différents. 0 permet une expérience témoin.</span></div>
+  <div class="control"><label for="animalMutation">Mutation à la naissance <span id="animalMutationVal" class="value">14 %</span></label><input id="animalMutation" type="range" min="0" max="40" step="2" value="14"/><span class="small">Une variation héréditaire des connexions ; aucun apprentissage individuel dans cette version.</span></div>
+  <div class="sectitle"><h2>Prédateurs</h2><span class="eyebrow">Niveau trophique supplémentaire</span></div>
+  <div class="control"><label for="predatorCount">Prédateurs initiaux <span id="predatorCountVal" class="value">4</span></label><input id="predatorCount" type="range" min="0" max="40" step="2" value="4"/><span class="small">Agents mobiles à cerveau neuronal propre : ils doivent rencontrer une proie pour se nourrir. 0 = témoin sans prédation.</span></div>
+  <div class="control"><label for="predatorInstinct">Instinct neuronal de chasse <span id="predatorInstinctVal" class="value">90 %</span></label><input id="predatorInstinct" type="range" min="0" max="100" step="5" value="90"/><span class="small">Structure héréditaire des connexions cerveau → poursuite : 0 % = connexions initiales aléatoires comme en V2.9 ; 100 % = biais inné fort. Les déplacements restent décidés par le réseau, sans cible ni trajectoire préprogrammée.</span></div>
+  <div class="control"><label for="predatorMutation">Mutations des prédateurs <span id="predatorMutationVal" class="value">14 %</span></label><input id="predatorMutation" type="range" min="0" max="40" step="2" value="14"/><span class="small">Transmission de poids neuronaux avec mutations aléatoires à chaque naissance.</span></div>
+  <div class="notice"><b>Instinct héréditaire :</b> les premiers prédateurs possèdent des connexions orientant la rotation vers les signaux de proies. Ces poids mutent ensuite. Ce point est une hypothèse biologique <b>introduite volontairement</b>, et non une stratégie apparue spontanément. <b>Prédation au contact :</b> le réseau neuronal décide seulement de la direction et de la vitesse. Capturer une proie exige de la rejoindre à moins de 8 m. Les herbivores peuvent percevoir les prédateurs comme des menaces dans leurs capteurs d'obstacles. Les organismes initiaux sont une condition du scénario, pas une apparition spontanée de vie.</div>
+  <div class="two-buttons"><button id="generateBtn" class="btn primary">↻ Générer</button><button id="newSeedBtn" class="btn ghost">Nouvelle seed</button></div>
+  <div class="status" id="draftStatus" aria-live="polite">Monde initial prêt.</div>
+  <div class="notice"><b>Horloge commune :</b> 1 000 pas = 24 heures (500 pas éclairés, puis 500 pas sans Soleil). Le rayonnement entrant provient d’un stock solaire limité ; le rayonnement sortant reste enregistré dans un réservoir séparé. Le vent transporte les nuages vers les terres. Les pluies dépendent de leur masse et du soulèvement du relief, et l’eau reste conservée. La vie végétale suppose des graines initiales dormantes et un substrat carboné minéral simplifié ; elle ne surgit pas spontanément de matière inerte.</div>
+  <div class="sectitle"><h2>Notre règle expérimentale</h2><span class="eyebrow">V2.8</span></div>
+  <div class="explain">Pour une cellule : <b>surface libre = altitude du terrain + profondeur d’eau</b>. L’eau passe d’une surface libre haute à une plus basse. Les échanges d’eau restent locaux. La chaleur solaire est distribuée au sol et à l’air, les cellules échangent de la chaleur entre elles et avec l’atmosphère ; l’évaporation puise son énergie dans le sol. Les bilans englobent le Soleil et le rayonnement sortant. Les plantes puisent de l’eau dans le sol et transpirent ; la pluie ramène de l’eau depuis les nuages. Des graines héritent de caractères qui peuvent muter. La matière sèche et l’énergie sont conservées dans nos stocks idéalisés.</div>
+</div></aside>
+<section class="panel viewport">
+  <div class="vp-head"><div><h2>Carte du monde</h2><div class="vp-meta">100 × 100 cellules · 10 m / cellule · frontières imperméables</div></div><div class="vp-actions" role="group" aria-label="Affichage de la carte"><button class="toggle active" data-view="biome">Paysages</button><button class="toggle" data-view="mix">Mixte</button><button class="toggle" data-view="terrain">Relief</button><button class="toggle" data-view="water">Surface</button><button class="toggle" data-view="soil">Sol humide</button><button class="toggle" data-view="temperature">Température sol</button><button class="toggle" data-view="vegetation">Végétation</button><button class="toggle" data-view="animals">Herbivores</button><button class="toggle" data-view="predators">Prédateurs</button><button class="toggle" id="visionBtn" aria-pressed="false" title="Afficher le champ de vision du prédateur suivi">Voir la vision</button><button class="toggle" data-view="clouds">Nuages</button><button class="toggle" data-view="rain">Pluie</button><button class="toggle" data-view="rainaccum">Pluie cumulée</button></div></div>
+  <div class="climate-panel"><div class="cycle-head"><strong id="cyclePhase">☀ Lever du soleil · Jour 1</strong><span id="cycleClock">06:00 · pas 0 / 1 000</span></div><div class="cycle-track" aria-label="Progression du jour et de la nuit"><div class="cycle-marker" id="cycleMarker"></div></div><div class="climate-quick"><span>☁ Air <b id="airTempQuick">—</b></span><span>▤ Sol moyen <b id="soilTempQuick">—</b></span><span>☀ Intensité <b id="sunQuick">—</b></span><span>☁ Nuages <b id="cloudQuick">—</b></span><span>➤ Vent <b id="windQuick">—</b></span></div></div>
+  <div class="map-wrap"><div class="map-frame" id="mapFrame"><canvas id="terrainCanvas" width="700" height="700" tabindex="0" aria-label="Carte du relief, de l'eau et de la température. Survolez pour inspecter une cellule."></canvas><div class="night-veil" id="nightVeil"></div><div class="map-badge" id="mapModeLabel">PAYSAGES + VÉGÉTATION</div><div class="map-scale"><div class="scale-line"></div><span>100 m</span></div><div class="inspect" id="cellInspect"></div></div></div>
+  <div class="map-caption"><div class="key" id="mapLegend"><span><i class="legend-swatch" style="background:#2665b7"></i>Lacs</span><span><i class="legend-swatch" style="background:#2f8d81"></i>Marécages</span><span><i class="legend-swatch" style="background:#c9b99e"></i>Montagnes</span><span><i class="legend-swatch" style="background:#4c846d"></i>Vallées</span><span><i class="legend-swatch" style="background:#7baa78"></i>Plaines</span><span><i class="legend-swatch" style="background:#2bcf73"></i>Végétation</span></div><span id="predatorVisionInfo">Vision : désactivée</span><span id="hoverHint">Clique sur un prédateur pour le suivre</span></div>
+  <div class="population-trend"><div class="trend-header"><b>Évolution des populations</b><div class="trend-key"><span><i style="background:#ffbb76"></i>Herbivores (échelle gauche)</span><span><i style="background:#f376a6"></i>Prédateurs (échelle droite)</span></div></div><canvas id="populationChart" width="780" height="160" aria-label="Courbes temporelles des herbivores et des prédateurs"></canvas></div>
+  <div class="transport"><button id="playBtn" class="btn primary"><span id="playSymbol">▶</span><span id="playText">Démarrer</span></button><button id="stepBtn" class="btn">Pas +1</button><button id="resetBtn" class="btn ghost">↶ Réinitialiser</button><div class="speed-wrap">Vitesse <button class="speed active" data-speed="1">1×</button><button class="speed" data-speed="4">4×</button><button class="speed" data-speed="12">12×</button><button class="speed" data-speed="48">48×</button></div></div>
+</section>
+<aside class="panel right"><div class="side">
+  <div><div class="sectitle"><h2>Bilans physiques</h2><span class="eyebrow">Conservation</span></div><p class="small">Système comptable fermé élargi : eau, chaleur, Soleil fini et rayonnement émis. Les températures sont des approximations.</p></div>
+  <div class="stats"><div class="metric blue"><span class="mlabel">Eau totale</span><strong id="waterTotal">—</strong><small>kg · quantité initiale finie</small></div><div class="metric orange"><span class="mlabel">Énergie gravitationnelle</span><strong id="potEnergy">—</strong><small>J · eau dans le relief</small></div><div class="metric green"><span class="mlabel">Énergie thermique</span><strong id="heatEnergy">—</strong><small>J · sol + atmosphère</small></div></div>
+    <div class="meta-rows">
+      <div class="meta-row"><span>Eau de surface</span><b id="surfaceMass">—</b></div>
+      <div class="meta-row"><span>Eau retenue dans le sol</span><b id="soilMass">—</b></div>
+      <div class="meta-row"><span>Vapeur atmosphérique</span><b id="atmosphereMass">—</b></div>
+      <div class="meta-row"><span>Eau des nuages</span><b id="cloudMass">—</b></div>
+      <div class="meta-row"><span>Pluie / pas</span><b id="rainMass">—</b></div><div class="meta-row"><span>Pluie sur terres (cumul)</span><b id="landRainTotal">—</b></div><div class="meta-row"><span>Pluie sur eau (cumul)</span><b id="waterRainTotal">—</b></div>
+      <div class="meta-row"><span>Transpiration / pas</span><b id="transpirationMass">—</b></div>
+      <div class="meta-row"><span>Eau dans les plantes</span><b id="plantWaterMass">—</b></div>
+      <div class="meta-row"><span>Température de l’air</span><b id="airTemp">—</b></div>
+      <div class="meta-row"><span>Température moyenne du sol</span><b id="soilTemp">—</b></div>
+      <div class="meta-row"><span>Énergie solaire restante</span><b id="solarEnergy">—</b></div>
+      <div class="meta-row"><span>Rayonnement émis (compté)</span><b id="radiatedEnergy">—</b></div>
+      <div class="meta-row"><span>Énergie latente</span><b id="latentEnergy">—</b></div>
+      <div class="meta-row"><span>Énergie totale</span><b id="energyTotal">—</b></div>
+      <div class="meta-row"><span>Écart de masse</span><b id="massDrift">—</b></div>
+      <div class="meta-row"><span>Écart d’énergie</span><b id="energyDrift">—</b></div>
+      <div class="meta-row"><span>Cellules en eau de surface</span><b id="wetCells">—</b></div>
+      <div class="meta-row"><span>Écoulement / pas</span><b id="lastFlow">—</b></div>
+      <div class="meta-row"><span>Infiltration / pas</span><b id="lastInfiltration">—</b></div>
+      <div class="meta-row"><span>Évaporation / pas</span><b id="lastEvaporation">—</b></div>
+      <div class="meta-row"><span>Cellules végétalisées</span><b id="plantCells">—</b></div>
+      <div class="meta-row"><span>Biomasse sèche</span><b id="plantMass">—</b></div>
+      <div class="meta-row"><span>Substrat nutritif restant</span><b id="substrateMass">—</b></div>
+      <div class="meta-row"><span>Sol assez stable pour germer</span><b id="stableCells">—</b></div>
+      <div class="meta-row"><span>Graines dispersées</span><b id="plantOffspring">—</b></div>
+      <div class="meta-row"><span>Plantes stressées</span><b id="droughtCells">—</b></div>
+      <div class="meta-row"><span>Énergie chimique des plantes</span><b id="plantChemical">—</b></div>
+      <div class="meta-row"><span>Écart de matière végétale</span><b id="plantMassDrift">—</b></div>
+      <div class="meta-row"><span>Temps simulé</span><b id="simTime">Jour 1 · 06:00</b></div>
+      <div class="meta-row"><span>Pas de simulation</span><b id="tickCount">0</b></div>
+      <div class="meta-row"><span>Herbivores vivants</span><b id="livingAnimals">—</b></div>
+      <div class="meta-row"><span>Naissances / morts cumulées</span><b id="animalEvents">—</b></div>
+      <div class="meta-row"><span>Biomasse sèche animale</span><b id="animalMass">—</b></div>
+      <div class="meta-row"><span>Eau corporelle animale</span><b id="animalWater">—</b></div>
+      <div class="meta-row"><span>Énergie chimique animale</span><b id="animalChemical">—</b></div>
+      <div class="meta-row"><span>Herbe consommée / pas</span><b id="animalGrazed">—</b></div>
+      <div class="meta-row"><span>Prédateurs vivants</span><b id="livingPredators">—</b></div>
+      <div class="meta-row"><span>Naissances / morts de prédateurs</span><b id="predatorEvents">—</b></div>
+      <div class="meta-row"><span>Herbivores capturés (cumul)</span><b id="predatorKills">—</b></div>
+      <div class="meta-row"><span>Captures / pas</span><b id="predatorKillsStep">—</b></div>
+      <div class="meta-row"><span>Masse sèche des prédateurs</span><b id="predatorDry">—</b></div>
+      <div class="meta-row"><span>Eau des prédateurs</span><b id="predatorWater">—</b></div>
+    </div>
+  <div class="explain"><b>Limites du modèle :</b> l’infiltration est locale, sans nappe ni écoulement souterrain ; l’atmosphère possède une température globale, avec transport atmosphérique stylisé, condensation et pluie locale. Le sol possède une température par cellule. Soleil, infrarouges et capacités thermiques sont simplifiés : ce n’est pas une prévision météo. Le vent utilise une direction dominante et une advection numérique conservant la masse, sans dynamique de pression atmosphérique. Les cellules atmosphériques traversent les frontières périodiques, contrairement à l’eau de surface ; le terrain ne s’érode pas. La végétation et les animaux échangent un substrat sec conservé ; les graines sont initialement présentes (pas de chimie du carbone complète). La végétation émet de nouvelles graines et prélève de l’eau du sol, qu’elle peut transpirer. Les animaux ont des capteurs locaux et un petit réseau neuronal fixe pendant leur vie. Boire et manger au contact sont des réflexes ; la sélection se fait uniquement via reproduction avec mutations. Les déchets métaboliques sont immédiatement restitués au substrat : c’est une approximation, pas une chimie biologique réaliste. Pas encore de saisons, ni de cycle carbone/oxygène réaliste.</div>
+  <div class="region-panel"><div class="sectitle"><h2>Paysages détectés</h2><span class="eyebrow">Lecture seule</span></div>
+  <p class="small">Groupes de cellules adjacentes. Un nom décrit un état physique observé, sans modifier le monde.</p>
+  <div class="region-summary"><div><span>Zones significatives</span><strong id="regionCount">—</strong></div><div><span>Plus grande région</span><strong id="largestRegion">—</strong></div></div>
+  <div id="regionsList" class="region-list" aria-label="Principales régions détectées"></div><div class="explain" id="regionDetail">Sélectionne une région sur la carte ou dans la liste pour inspecter sa surface et ses propriétés moyennes.</div>
+  <button id="clearRegionBtn" class="btn ghost" type="button">✕ Effacer la sélection</button>
+  <div class="explain"><b>Classification indicative :</b> marécage = sol saturé, faible pente et eau peu profonde ; lac = surface d’eau connectée et assez profonde ; montagne = altitude relative et pente ; vallée = creux local. Une grande étendue peut être appelée « mer intérieure » <em>par sa taille seulement</em> : aucune salinité n’est simulée.</div></div>
+  <button id="exportBtn" class="btn ghost">↓ Exporter l’état CSV</button>
+</div></aside>
+</main>
+<footer class="footer"><span><b>V2.10 :</b> cycle jour/nuit · nuages et pluie · végétation évolutive · perception locale · réseaux individuels · prédateurs et proies · naissance et mort · matière conservée.</span><span><span class="kbd">Espace</span> pause/lecture · <span class="kbd">→</span> un pas · <span class="kbd">R</span> réinitialiser</span></footer>
+</div>
+<script>
+(() => {
+'use strict';
+const N = 100, SIZE = N*N, L = 10, A = L*L, RHO = 1000, G = 9.81, CELL_MASS = RHO*A;
+const DAY_STEPS = 1000, DAYLIGHT_STEPS=500, SECONDS_PER_STEP=86.4;
+// Simplified effective capacities and fluxes in J/K or J per tick: illustrative, not climate-calibrated.
+const SOIL_HEAT_CAP_J_K=1.5e8, AIR_HEAT_CAP_J_K=3e11, SOIL_AIR_COUPLING_J_K=2.2e5;
+const SOIL_DIFFUSIVITY_J_K=6e5, SOLAR_PEAK_J_STEP=4.8e10, INITIAL_SOLAR_J=3e16;
+const AIR_COOL_J_K_STEP=6.5e8, BASE_TEMP_C=-40, MIN_TEMP_C=-25, RADIATION_REFERENCE_C=-3;
+const LATENT_HEAT_J_PER_KG = 2.45e6, INFILTRATION_DEPTH_M_PER_TICK = 0.012, MAX_SOIL_CAPACITY_M = 0.8;
+// Fixed initial dry substrate + dormant seed distribution. Not abiogenesis or carbon chemistry.
+const PLANT_CHEM_J_PER_KG=18e6, MAX_BIOMASS_KG_CELL=18, GROWTH_KG_TICK=.032;
+const SEED_MOISTURE_MIN=.12, SEED_MAX_FLOOD_M=.14, STABILITY_TOLERANCE=.075;
+const SEED_DRY_KG=.004, RAIN_CLOUD_THRESHOLD_KG=15;
+// Herbivore chemical matter has the same simplified energy density as plant dry matter.
+const ANIMAL_START_ENERGY_J=2.1e6, ANIMAL_MAX_ENERGY_J=3.7e6;
+const ANIMAL_STRUCTURE_START_KG=.12, ANIMAL_MAX_STRUCTURE_KG=.24, ANIMAL_INITIAL_WATER_KG=4;
+const ANIMAL_MAX_WATER_KG=6, ANIMAL_MAINTENANCE_J=2100, ANIMAL_MOTION_J_PER_M=95;
+const ANIMAL_WATER_LOSS_KG=.003, ANIMAL_MOVEMENT_M_PER_STEP=5.2, ANIMAL_MAX_LIFETIME=4300;
+const ANIMAL_HIDDEN=8, ANIMAL_INPUTS=12, ANIMAL_GENOME_LENGTH=(ANIMAL_INPUTS+1)*ANIMAL_HIDDEN+(ANIMAL_HIDDEN+1)*2;
+const ANIMAL_POP_CAP=150;
+// Predator metabolism and gene propagation: abstract animal bodies, no new chemistry.
+const PREDATOR_START_ENERGY_J=3.4e6, PREDATOR_MAX_ENERGY_J=7.5e6;
+const PREDATOR_STRUCTURE_KG=.27, PREDATOR_MAX_STRUCTURE_KG=.43, PREDATOR_WATER_INITIAL_KG=5.5, PREDATOR_MAX_WATER_KG=8.0;
+const PREDATOR_MAINTENANCE_J=700, PREDATOR_MOTION_J_PER_M=45, PREDATOR_SPEED_M_STEP=8.8;
+const PREDATOR_WATER_LOSS_KG=.0020, PREDATOR_MAX_AGE=7800, PREDATOR_ATTACK_RADIUS_M=8;
+const PREDATOR_HIDDEN=8,PREDATOR_INPUTS=12,PREDATOR_GENES=(PREDATOR_INPUTS+1)*PREDATOR_HIDDEN+(PREDATOR_HIDDEN+1)*2;
+const PREDATOR_POP_CAP=55, PREDATOR_SIGHT_M=155;
+// Atmosphere is spatially lumped. Its reference altitude is fixed for each generated terrain.
+const $ = id => document.getElementById(id);
+const canvas = $('terrainCanvas'), ctx = canvas.getContext('2d', {alpha: false});
+const small = document.createElement('canvas');small.width=N;small.height=N;
+const sctx=small.getContext('2d',{willReadFrequently:false});
+const pixels=sctx.createImageData(N,N);
+let terrain=new Float64Array(SIZE),water=new Float64Array(SIZE),soilWater=new Float64Array(SIZE),initialWater=null;
+// Spatial vapor and cloud reservoirs (kg per 100 m2 cell); their sum is the global atmosphere mass.
+let atmosphereWaterKg=0,latentEnergy=0,atmosphereAltitude=0;
+let vaporKg=new Float64Array(SIZE),cloudKg=new Float64Array(SIZE),rainCellKg=new Float64Array(SIZE),rainAccumKg=new Float64Array(SIZE);
+let rainfallStrength=100,plantMutation=8,lastRainKg=0,totalRainKg=0,lastTranspirationKg=0,cloudCoverCells=0;
+let windStrength=180, windMode="auto", autoWindAngle=0,windVX=0,windVY=0,totalLandRainKg=0,totalWaterRainKg=0;
+let cloudBuffer=new Float64Array(SIZE),vaporBuffer=new Float64Array(SIZE);
+let soilHeat=new Float64Array(SIZE),initialSoilHeat=null,airHeat=0,initialAirHeat=0;
+let solarEnergy=0,radiatedEnergy=0,heatEnergy=0,initialSolarEnergy=0;
+let sunlightWeights=new Float64Array(SIZE),sumSunlightWeights=0;
+let solarStrength=100,radiationStrength=100,lastSunlightJ=0,lastRadiationJ=0;
+let seedDensity=70,stabilityDuration=160,growthStrength=100;
+let animalCount=50,animalMutation=14,animals=[],nextAnimalId=1,totalBirths=0,totalDeaths=0;
+let lastGrazedKg=0,lastDrunkKg=0,selectedAnimalId=null;
+let predatorCount=4,predatorMutation=14,predatorInstinct=90,predators=[],nextPredatorId=1;
+let showPredatorVision=false, selectedPredatorId=null;
+let predatorBirths=0,predatorDeaths=0,predatorKills=0,lastPredatorKills=0;
+let populationHistory=[];
+let seedBank=new Uint8Array(SIZE),plantBiomass=new Float64Array(SIZE),substrateKg=new Float64Array(SIZE),initialSubstrate=null;
+// Per-cell heritable plant traits; 0..1, with local seed dispersal and mutation.
+let plantDrought=new Float64Array(SIZE),plantWaterUse=new Float64Array(SIZE),plantHeatTol=new Float64Array(SIZE),plantGrowthGene=new Float64Array(SIZE);
+let plantWaterKg=new Float64Array(SIZE),seedDryKg=new Float64Array(SIZE),plantStress=new Float64Array(SIZE),plantSeedBirths=0,plantStressedCells=0;
+let wetReference=new Float64Array(SIZE),wetStreak=new Uint16Array(SIZE),plantChemicalEnergy=0,initialDryMass=0;
+let plantCoveredCells=0,stableHabitatCells=0,lastPlantGrowthKg=0;
+const tempSoil=i=>soilHeat[i]/SOIL_HEAT_CAP_J_K+BASE_TEMP_C;
+const tempAir=()=>airHeat/AIR_HEAT_CAP_J_K+BASE_TEMP_C;
+const sunlight=step=>{const stepInDay=step%DAY_STEPS;return stepInDay<DAYLIGHT_STEPS?Math.sin(Math.PI*stepInDay/DAYLIGHT_STEPS):0;};
+function climateClock(step){const phase=(step%DAY_STEPS)/DAY_STEPS;const h=(6+(step%DAY_STEPS)*SECONDS_PER_STEP/3600)%24;return String(Math.floor(h)).padStart(2,'0')+':'+String(Math.floor(h%1*60)).padStart(2,'0');}
+function initThermal(){
+ airHeat=AIR_HEAT_CAP_J_K*(14-BASE_TEMP_C);initialAirHeat=airHeat;
+ let totalWeights=0;
+ for(let i=0;i<SIZE;i++){
+  // Altitude and exposure affect local ground equilibrium temperatures.
+  const initialTemp=16-4*(terrain[i]/maxAltitude)-1.8*Math.min(1,localSlopes[i]);
+  soilHeat[i]=SOIL_HEAT_CAP_J_K*(initialTemp-BASE_TEMP_C);
+  sunlightWeights[i]=clamp(1+.15*terrain[i]/maxAltitude-.5*localSlopes[i],.6,1.2);
+  totalWeights+=sunlightWeights[i];
+ }
+ sumSunlightWeights=totalWeights;initialSoilHeat=Float64Array.from(soilHeat);
+ solarEnergy=INITIAL_SOLAR_J;initialSolarEnergy=solarEnergy;radiatedEnergy=0;
+ recalcHeat();
+}
+function recalcHeat(){let total=airHeat;for(let i=0;i<SIZE;i++)total+=soilHeat[i];heatEnergy=total;}
+// Exponential moisture reference detects gradual stabilization, without confusing
+// a short wet pulse with consistently usable water. No arbitrary world-age gate.
+function trackSoilStability(){
+ const cap=MAX_SOIL_CAPACITY_M*retentionPct/100;
+ stableHabitatCells=0;
+ for(let i=0;i<SIZE;i++){
+  const moisture=cap>0?clamp(soilWater[i]/cap,0,1):0;
+  const deviation=Math.abs(moisture-wetReference[i]);
+  wetReference[i]+=.035*(moisture-wetReference[i]);
+  const suitable=moisture>=SEED_MOISTURE_MIN && water[i]<SEED_MAX_FLOOD_M && localSlopes[i]<.4;
+  if(suitable && deviation<STABILITY_TOLERANCE)wetStreak[i]=Math.min(65535,wetStreak[i]+1);
+  else wetStreak[i]=0;
+  if(wetStreak[i]>=stabilityDuration)stableHabitatCells++;
+ }
+}
+function initVegetation(){
+ seedBank.fill(0);plantBiomass.fill(0);wetReference.fill(0);wetStreak.fill(0);
+ plantWaterKg.fill(0);seedDryKg.fill(0);plantStress.fill(0);
+ plantChemicalEnergy=0;plantCoveredCells=0;stableHabitatCells=0;lastPlantGrowthKg=0;initialDryMass=0;plantSeedBirths=0;plantStressedCells=0;
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x;
+  // Seed status is an initial condition; initial seed dry matter is debited from the local substrate.
+  seedBank[i]=hash2(x,y,seed+1907)<seedDensity/100?1:0;
+  const initial=28+44*hash2(x,y,seed+3083);
+  substrateKg[i]=initial;initialDryMass+=initial;
+  plantDrought[i]=hash2(x,y,seed+3401);
+  plantWaterUse[i]=hash2(x,y,seed+3409);
+  plantHeatTol[i]=hash2(x,y,seed+3413);
+  plantGrowthGene[i]=hash2(x,y,seed+3427);
+  if(seedBank[i]){substrateKg[i]-=SEED_DRY_KG;seedDryKg[i]=SEED_DRY_KG;plantChemicalEnergy+=SEED_DRY_KG*PLANT_CHEM_J_PER_KG;}
+ }
+ initialSubstrate=Float64Array.from(substrateKg);
+}
+function plantWaterMass(){let s=0;for(let i=0;i<SIZE;i++)s+=plantWaterKg[i];return s;}
+function seedMatterMass(){let s=0;for(let i=0;i<SIZE;i++)s+=seedDryKg[i];return s;}
+function plantSelection(){
+ // Asexual dispersal of a *physical* dry seed, paid for by parent biomass and chemical energy already stored there.
+ // Children may inherit altered growth, water use, heat tolerance and drought traits. No target fitness function.
+ if(tickCount%90!==0||sunlight(tickCount)<.1)return;
+ for(let i=0;i<SIZE;i++){
+  if(plantBiomass[i]<.9 || plantStress[i]>240)continue;
+  const x=i%N,y=(i/N)|0;
+  if(hash2(x,y,seed+tickCount*19)>.24)continue;
+  const dir=Math.floor(hash2(x,y,seed+tickCount*7+8)*8);
+  const dx=[-1,0,1,-1,1,-1,0,1][dir],dy=[-1,-1,-1,0,0,1,1,1][dir];
+  if(x+dx<0||y+dy<0||x+dx>=N||y+dy>=N)continue;
+  const j=(y+dy)*N+x+dx;
+  if(seedBank[j]||plantBiomass[j]>.02 ||water[j]>.15||localSlopes[j]>.48)continue;
+  plantBiomass[i]-=SEED_DRY_KG;seedBank[j]=1;seedDryKg[j]=SEED_DRY_KG;plantSeedBirths++;
+  const traits=[plantDrought,plantWaterUse,plantHeatTol,plantGrowthGene];
+  for(let t=0;t<traits.length;t++){
+   const rnd=hash2(x+dx,y+dy,seed+tickCount*3+t*173);
+   const mut=rnd<plantMutation/100?(hash2(x,y,seed+tickCount*17+t*103)-.5)*.36:0;
+   traits[t][j]=clamp(traits[t][i]+mut,0,1);
+  }
+ }
+}
+function animalDryMass(){let v=0;for(const a of animals)v+=a.structureKg+a.energyJ/PLANT_CHEM_J_PER_KG;return v;}
+function animalChemical(){let v=0;for(const a of animals)v+=a.structureKg*PLANT_CHEM_J_PER_KG+a.energyJ;return v;}
+function animalBodyWater(){let v=0;for(const a of animals)v+=a.waterKg;return v;}
+function dryMass(){let m=animalDryMass()+predatorDryMass();for(let i=0;i<SIZE;i++)m+=plantBiomass[i]+substrateKg[i]+seedDryKg[i];return m;}
+function stepVegetation(plantSunBudgetJ){
+ let capturedJ=0,netGrowth=0,covered=0,stressed=0;
+ const perCellBudgetJ=plantSunBudgetJ/SIZE;
+ const soilCap=MAX_SOIL_CAPACITY_M*retentionPct/100;
+ for(let i=0;i<SIZE;i++){
+  const T=tempSoil(i),biomass=plantBiomass[i];
+  const moisture=soilCap>0?clamp(soilWater[i]/soilCap,0,1):0;
+  const droughtLimit=.055+.135*(1-plantDrought[i]);
+  const minT=4-7*plantHeatTol[i],maxT=38+7*plantHeatTol[i];
+  const goodTemp=T>=minT && T<=maxT;
+  const germinating=biomass<.001&&seedBank[i]&&wetStreak[i]>=stabilityDuration&&moisture>=SEED_MOISTURE_MIN&&goodTemp&&water[i]<SEED_MAX_FLOOD_M;
+  // Adult plants can keep growing without a 160-step uninterrupted stability streak.
+  const growing=(biomass>=.001||germinating)&&goodTemp&&moisture>droughtLimit&&water[i]<.20;
+  if(germinating&&perCellBudgetJ>0){plantBiomass[i]+=seedDryKg[i];seedDryKg[i]=0;seedBank[i]=0;}
+  if(growing && perCellBudgetJ>0 && growthStrength>0){
+   const actual=plantBiomass[i];
+   const moistureFactor=clamp((moisture-droughtLimit)/.36,0,1);
+   const tempFactor=clamp((T-minT)/16,0,1)*clamp((maxT-T)/11,0,1);
+   const rootFactor=actual<=SEED_DRY_KG*1.05?1:clamp(.55+plantWaterKg[i]/Math.max(.04,actual*.3),.18,1);
+   const maxGrowth=GROWTH_KG_TICK*growthStrength/100*(.65+.7*plantGrowthGene[i])*moistureFactor*tempFactor*rootFactor;
+   const added=Math.max(0,Math.min(maxGrowth,substrateKg[i],MAX_BIOMASS_KG_CELL-actual,perCellBudgetJ/PLANT_CHEM_J_PER_KG));
+   if(added>0){substrateKg[i]-=added;plantBiomass[i]+=added;capturedJ+=added*PLANT_CHEM_J_PER_KG;plantChemicalEnergy+=added*PLANT_CHEM_J_PER_KG;netGrowth+=added;}
+  }
+  if(plantBiomass[i]>.0001){
+   // Physiological buffering: a bad afternoon does not kill a rooted plant.
+   const dry=moisture<droughtLimit && plantWaterKg[i]<Math.max(.04,plantBiomass[i]*.25);
+   const unsuitable=(!goodTemp || water[i]>.25);
+   if(dry||unsuitable)plantStress[i]=Math.min(2500,plantStress[i]+(unsuitable?2.1:1.0));
+   else plantStress[i]=Math.max(0,plantStress[i]-2.8);
+   if(plantStress[i]>200)stressed++;
+   if(plantStress[i]>330){
+    const vulnerability=(1.3-plantDrought[i])*(.00045+(plantStress[i]-330)*.0000015)*(unsuitable?1.4:1);
+    const dead=Math.min(plantBiomass[i],vulnerability);
+    plantBiomass[i]-=dead;substrateKg[i]+=dead;
+    const lostJ=dead*PLANT_CHEM_J_PER_KG;plantChemicalEnergy-=lostJ;soilHeat[i]+=lostJ;netGrowth-=dead;
+   }
+  } else plantStress[i]=Math.max(0,plantStress[i]-4);
+  if(plantBiomass[i]>.025)covered++;
+ }
+ plantCoveredCells=covered;plantStressedCells=stressed;lastPlantGrowthKg=netGrowth;
+ plantSelection();
+ return capturedJ;
+}
+// Roots absorb water already in the soil, and leaves release it as atmospheric vapor.
+// Transpiration spends local sensible heat and raises atmospheric latent+gravitational energy.
+function stepPlantHydrology(){
+ lastTranspirationKg=0;
+ const light=sunlight(tickCount);
+ for(let i=0;i<SIZE;i++){
+  const biomass=plantBiomass[i];
+  if(biomass<=.001){
+   if(plantWaterKg[i]>0){soilWater[i]+=plantWaterKg[i]/CELL_MASS;plantWaterKg[i]=0;}
+   continue;
+  }
+  const capacity=Math.min(38,biomass*2.4+.03);
+  const uptake=Math.max(0,Math.min(.20,capacity-plantWaterKg[i],soilWater[i]*CELL_MASS));
+  if(uptake>0){soilWater[i]-=uptake/CELL_MASS;plantWaterKg[i]+=uptake;}
+  if(light<=0||plantWaterKg[i]<=0)continue;
+  const desired=(.025+.011*biomass)*(0.55+plantWaterUse[i]) *light*clamp((tempSoil(i)+7)/28,0,1.3);
+  const necessary=LATENT_HEAT_J_PER_KG+G*(atmosphereAltitude-terrain[i]);
+  const heatBudget=Math.max(0,soilHeat[i]-SOIL_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C));
+  const moved=Math.max(0,Math.min(desired,plantWaterKg[i],heatBudget/necessary));
+  if(moved<=0)continue;
+  plantWaterKg[i]-=moved;vaporKg[i]+=moved;atmosphereWaterKg+=moved;
+  latentEnergy+=moved*LATENT_HEAT_J_PER_KG;soilHeat[i]-=moved*necessary;
+  lastTranspirationKg+=moved;
+ }
+}
+// A simple closed hydrologic cycle: cloud water is liquid suspended at the atmospheric reference height.
+// Cloud formation releases latent heat; falling droplets lose gravitational potential as heat.
+// Prevailing wind is a geographic forcing, not a target or a command to spawn rain.
+// The auto direction approximates a breeze from the dominant water-source centroid
+// towards the exposed land centroid. Its direction is fixed for each generated world.
+function determineAutoWind(){
+ let wetX=0,wetY=0,wetSum=0,dryX=0,dryY=0,drySum=0;
+ for(let i=0;i<SIZE;i++){
+  const x=i%N,y=(i/N)|0,z=terrain[i]/Math.max(1,maxAltitude);
+  // Include low basins as likely sources after runoff, even when initially rain is patchy.
+  const wetWeight=Math.min(1,water[i]*.25)+Math.max(0,.30-z)*.6;
+  const dryWeight=Math.max(0,Math.min(1,(z-.23)*2.5))*(water[i]<.08?1:.16);
+  wetX+=x*wetWeight;wetY+=y*wetWeight;wetSum+=wetWeight;
+  dryX+=x*dryWeight;dryY+=y*dryWeight;drySum+=dryWeight;
+ }
+ const dx=dryX/Math.max(1,drySum)-wetX/Math.max(1,wetSum);
+ const dy=dryY/Math.max(1,drySum)-wetY/Math.max(1,wetSum);
+ autoWindAngle=Math.hypot(dx,dy)>4?Math.atan2(dy,dx):2*Math.PI*hash2(47,29,seed+6223);
+}
+function windVector(){
+ const angles={east:0,west:Math.PI,north:-Math.PI*.5,south:Math.PI*.5};
+ const base=windMode==='auto'?autoWindAngle:(angles[windMode]??0);
+ // Small veering and gusts: no rotating reversal to trap clouds above a lake.
+ const angle=base+.085*Math.sin(tickCount/1600+.4)+.055*Math.sin(tickCount/390+.8);
+ const cellsPerTick=windStrength/100*.68*(1+.08*Math.sin(tickCount/190+.5));
+ windVX=cellsPerTick*Math.cos(angle);windVY=cellsPerTick*Math.sin(angle);
+ return [windVX,windVY];
+}
+// Forward bilinear remapping is strictly conservative for positive masses,
+// including when the wind moves more than one cell per tick.
+function transportAtmosphere(vx,vy){
+ if(vx===0&&vy===0)return;
+ vaporBuffer.fill(0);cloudBuffer.fill(0);
+ const ix=Math.floor(vx),iy=Math.floor(vy),fx=vx-ix,fy=vy-iy;
+ const a=(1-fx)*(1-fy),b=fx*(1-fy),c=(1-fx)*fy,d=fx*fy;
+ for(let y=0;y<N;y++){
+  const row0=((y+iy%N+N)%N)*N,row1=((y+iy+1)%N+N)%N*N;
+  for(let x=0;x<N;x++){
+   const i=y*N+x,u=(x+ix%N+N)%N,v=(u+1)%N;
+   const vMass=vaporKg[i],cMass=cloudKg[i];
+   vaporBuffer[row0+u]+=vMass*a;vaporBuffer[row0+v]+=vMass*b;
+   vaporBuffer[row1+u]+=vMass*c;vaporBuffer[row1+v]+=vMass*d;
+   cloudBuffer[row0+u]+=cMass*a;cloudBuffer[row0+v]+=cMass*b;
+   cloudBuffer[row1+u]+=cMass*c;cloudBuffer[row1+v]+=cMass*d;
+  }
+ }
+ [vaporKg,vaporBuffer]=[vaporBuffer,vaporKg];
+ [cloudKg,cloudBuffer]=[cloudBuffer,cloudKg];
+}
+function stepCloudsAndRain(){
+ rainCellKg.fill(0);lastRainKg=0;cloudCoverCells=0;
+ const [vx,vy]=windVector();
+ transportAtmosphere(vx,vy);
+ const airC=tempAir();
+ // Orographic lift = the terrain rises along the upwind direction.
+ const sx=vx>=0?1:-1,sy=vy>=0?1:-1;
+ for(let i=0;i<SIZE;i++){
+  const x=i%N,y=(i/N)|0;
+  const upwindX=(x-sx+N)%N,upwindY=(y-sy+N)%N;
+  const rise=Math.max(0,terrain[i]-terrain[y*N+upwindX])*Math.abs(vx)/(Math.abs(vx)+Math.abs(vy)+.00001)
+    +Math.max(0,terrain[i]-terrain[upwindY*N+x])*Math.abs(vy)/(Math.abs(vx)+Math.abs(vy)+.00001);
+  const localCooling=4*(terrain[i]/Math.max(1,maxAltitude))+.8*localSlopes[i]+Math.min(3,rise*.22);
+  const saturation=clamp(10+1.7*(airC+15-localCooling),8,110);
+  const excess=Math.max(0,vaporKg[i]-saturation);
+  if(excess>0){
+   const condensed=excess*.30;
+   vaporKg[i]-=condensed;cloudKg[i]+=condensed;
+   latentEnergy-=condensed*LATENT_HEAT_J_PER_KG;
+   airHeat+=condensed*LATENT_HEAT_J_PER_KG;
+  }
+  // Daytime re-evaporation returns clouds to vapor only by spending heat.
+  if(cloudKg[i]>0 && vaporKg[i]<saturation){
+   const wanted=Math.min(cloudKg[i],(saturation-vaporKg[i])*.028*sunlight(tickCount));
+   const available=Math.max(0,(airHeat-AIR_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C))/LATENT_HEAT_J_PER_KG);
+   const reevaporated=Math.min(wanted,available);
+   if(reevaporated>0){cloudKg[i]-=reevaporated;vaporKg[i]+=reevaporated;airHeat-=reevaporated*LATENT_HEAT_J_PER_KG;latentEnergy+=reevaporated*LATENT_HEAT_J_PER_KG;}
+  }
+  // Lower precipitation rate leaves cloud water aloft long enough to travel;
+  // uplift accelerates rain only when the cloud has accumulated sufficient liquid.
+  const cloudExcess=Math.max(0,cloudKg[i]-RAIN_CLOUD_THRESHOLD_KG);
+  const rainFactor=(.009+.042*rainfallStrength/100)*(1+Math.min(2.2,rise*.17));
+  const rain=rainfallStrength>0?Math.min(cloudKg[i],cloudExcess*rainFactor):0;
+  if(rain>0){
+   const waterDepth=water[i],addedDepth=rain/CELL_MASS;
+   cloudKg[i]-=rain;water[i]+=addedDepth;atmosphereWaterKg-=rain;
+   const lostPotential=G*rain*(atmosphereAltitude-terrain[i]-waterDepth-addedDepth*.5);
+   airHeat+=lostPotential;
+   rainCellKg[i]=rain;rainAccumKg[i]+=rain;
+   lastRainKg+=rain;totalRainKg+=rain;
+   if(waterDepth<.05)totalLandRainKg+=rain;else totalWaterRainKg+=rain;
+  }
+  if(cloudKg[i]>18)cloudCoverCells++;
+ }
+}
+
+function stepClimate(){
+ const gain=Math.min(solarEnergy,SOLAR_PEAK_J_STEP*(solarStrength/100)*sunlight(tickCount));
+ solarEnergy-=gain;lastSunlightJ=gain;
+ // First let germinated plants capture a finite share of *this tick's* sunlight.
+ // Unused radiation is still delivered to the soil/air, and each dry kg fixes a
+ // matching chemical-energy stock so E_total remains accounted for.
+ const photosynthesized=stepVegetation(gain*.12);
+ const heatGain=gain-photosynthesized;
+ const soilShare=heatGain*.86;
+ for(let i=0;i<SIZE;i++)soilHeat[i]+=soilShare*sunlightWeights[i]/sumSunlightWeights;
+ airHeat+=heatGain-soilShare;
+ // Local soil-air heat exchange; every transfer is equal and opposite.
+ for(let i=0;i<SIZE;i++){
+  const diff=tempSoil(i)-tempAir();
+  const equalization=diff/(1/SOIL_HEAT_CAP_J_K+1/AIR_HEAT_CAP_J_K);
+  const transfer=Math.sign(diff)*Math.min(Math.abs(equalization),Math.abs(diff)*SOIL_AIR_COUPLING_J_K);
+  soilHeat[i]-=transfer;airHeat+=transfer;
+ }
+ // Neighbour-to-neighbour soil diffusion: no matter or energy created.
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x;
+  for(const j of [x<N-1?i+1:-1,y<N-1?i+N:-1]){
+   if(j<0)continue;
+   const q=(soilHeat[i]-soilHeat[j])/SOIL_HEAT_CAP_J_K*SOIL_DIFFUSIVITY_J_K;
+   soilHeat[i]-=q;soilHeat[j]+=q;
+  }
+ }
+ // Long-wave radiation is recorded in a sink, not destroyed.
+ const outgoing=Math.min(Math.max(0,airHeat-AIR_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C)),
+   AIR_COOL_J_K_STEP*(radiationStrength/100)*Math.max(0,tempAir()-RADIATION_REFERENCE_C));
+ airHeat-=outgoing;radiatedEnergy+=outgoing;lastRadiationJ=outgoing;
+}
+let seed=42, roughness=40, basinDepth=75, landform='lakes', waterPct=30, fluidity=.22, distribution='patches', evaporationRateMm=.004, retentionPct=60;
+let running=false, speed=1, view='biome',tickCount=0,lastMovedKg=0,lastInfiltrationKg=0,lastEvaporationKg=0;
+const REGION_CODES=[
+ {name:'Plaine',color:'#7baa78'},
+ {name:'Collines',color:'#8b9d69'},
+ {name:'Montagne',color:'#c9b99e'},
+ {name:'Plateau',color:'#b99d72'},
+ {name:'Vallée',color:'#4c846d'},
+ {name:'Marécage',color:'#2f8d81'},
+ {name:'Eau peu profonde',color:'#52b8c9'},
+ {name:'Eau profonde',color:'#2665b7'}
+];
+const CLASS={PLAIN:0,HILL:1,MOUNTAIN:2,PLATEAU:3,VALLEY:4,MARSH:5,SHALLOW:6,DEEP:7};
+const REGION_RGB=REGION_CODES.map(t=>[1,3,5].map(k=>parseInt(t.color.slice(k,k+2),16)));
+let baseClasses=new Uint8Array(SIZE),classes=new Uint8Array(SIZE),localSlopes=new Float64Array(SIZE);
+let regionIds=new Int32Array(SIZE),regions=[],selectedRegionId=-1,selectedCellIndex=-1,hoveredCell=-1,regionTypeCounts={},largeRegionCount=0;
+let initialMass=0, initialEnergy=0, currentPotential=0, currentMass=0, maxAltitude=0;
+let lastAnim=performance.now(), accumulator=0, showError=false;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const fmt=(v,dec=2)=>v.toLocaleString('fr-FR',{maximumFractionDigits:dec,minimumFractionDigits:dec});
+const sci=(v)=>{if(!Number.isFinite(v))return '—';if(Math.abs(v)<10000)return fmt(v,2);const e=Math.floor(Math.log10(Math.abs(v)));return fmt(v/Math.pow(10,e),2)+' × 10'+sup(e)};
+const sup=e=>String(e).replace(/[-0-9]/g,c=>({'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'})[c]);
+function hash2(x,y,s){let h=(Math.imul(x|0,374761393)+Math.imul(y|0,668265263)+Math.imul(s|0,1442695041))|0;h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function noise(x,y,f,s){const a=x*f,b=y*f;const ix=Math.floor(a),iy=Math.floor(b),u=a-ix,v=b-iy,fu=u*u*(3-2*u),fv=v*v*(3-2*v);const a0=hash2(ix,iy,s),a1=hash2(ix+1,iy,s),b0=hash2(ix,iy+1,s),b1=hash2(ix+1,iy+1,s);return (a0+(a1-a0)*fu)*(1-fv)+(b0+(b1-b0)*fu)*fv;}
+// A smooth landscape made of a few randomly located hills and depressions.
+// The RNG controls *terrain features*, not lake objects or intended water paths.
+function featureRng(s){let state=(s^0x9e3779b9)>>>0;return ()=>{state=(state+0x6d2b79f5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
+function pickCenter(rng,sites,limit=.19,pad=.13){
+ for(let attempt=0;attempt<48;attempt++){
+  const x=pad+(1-2*pad)*rng(),y=pad+(1-2*pad)*rng();
+  if(sites.every(s=>(s.x-x)**2+(s.y-y)**2>limit*limit))return {x,y};
+ }
+ return {x:pad+(1-2*pad)*rng(),y:pad+(1-2*pad)*rng()};
+}
+function makeShape(rng,site,rx,ry,height,kind){return {...site,rx,ry,height,kind,ang:rng()*Math.PI*2,ring:2.8+2.8*rng()};}
+function generateTerrain(){
+ const rng=featureRng(seed+2117),features=[],mountainSites=[],basinSites=[];
+ const mountainous=landform==='mountains',coastal=landform==='coast';
+ const nMounts=mountainous?6:coastal?3:4;
+ const nBasins=mountainous?2:coastal?2:3;
+ for(let k=0;k<nMounts;k++){
+  const pos=pickCenter(rng,mountainSites,mountainous?.15:.20,.07);
+  mountainSites.push(pos);
+  features.push(makeShape(rng,pos,(mountainous?.07:.085)+.055*rng(),(mountainous?.12:.09)+.085*rng(),21+22*rng()+(mountainous?12:0),'hill'));
+ }
+ for(let k=0;k<nBasins;k++){
+  const pos=pickCenter(rng,basinSites,.22,.16);
+  basinSites.push(pos);
+  const depth=(18+15*rng())*(basinDepth/75);
+  features.push(makeShape(rng,pos,(mountainous?.07:.078)+.045*rng(),(mountainous?.13:.087)+.06*rng(),depth,mountainous?'valley':'basin'));
+ }
+ if(coastal){
+  // A broad lowland touching one random edge: if water collects, it can form a sea-like basin.
+  const edge=Math.floor(rng()*4),t=.27+.46*rng();
+  const pos=edge===0?{x:-.015,y:t}:edge===1?{x:1.015,y:t}:edge===2?{x:t,y:-.015}:{x:t,y:1.015};
+  features.push(makeShape(rng,pos,.33+.06*rng(),.30+.065*rng(),(30+9*rng())*(basinDepth/75),'sea'));
+ }
+ const raw=new Float64Array(SIZE);let min=Infinity,max=-Infinity;
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const nx=x/(N-1),ny=y/(N-1);
+  const warpX=.028*(noise(nx,ny,5,seed+78)-.5),warpY=.028*(noise(nx,ny,5,seed+91)-.5);
+  const px=nx+warpX,py=ny+warpY;
+  // Broad quiet plains, with microrelief governed only by the ruggedness setting.
+  const calm=(noise(nx,ny,2.5,seed+501)-.5)*4.2;
+  const fine=(noise(nx,ny,12,seed+502)-.5)*(0.7+roughness*.053);
+  const detailed=(noise(nx,ny,27,seed+503)-.5)*roughness*.022;
+  let altitude=35+calm+fine+detailed;
+  for(const f of features){
+   const dx=px-f.x,dy=py-f.y,c=Math.cos(f.ang),s=Math.sin(f.ang);
+   const ux=(dx*c+dy*s)/f.rx,uy=(-dx*s+dy*c)/f.ry;
+   const r2=ux*ux+uy*uy;
+   if(f.kind==='hill') altitude+=f.height*Math.exp(-1.5*r2);
+   else if(f.kind==='sea') altitude-=f.height*Math.exp(-1.0*r2);
+   else if(f.kind==='valley') altitude-=f.height*Math.exp(-1.3*r2);
+   else {
+    const r=Math.sqrt(r2);
+    altitude-=f.height*Math.exp(-1.7*r2);
+    // Broad shoulders yield a closed depression without hard edges.
+    altitude+=(f.ring*basinDepth/75)*Math.exp(-.5*((r-1.27)/.31)**2);
+   }
+  }
+  const i=y*N+x;raw[i]=altitude;min=Math.min(min,altitude);max=Math.max(max,altitude);
+ }
+ // Set the lowest land to z=0, avoiding negative reference potential energies.
+ for(let i=0;i<SIZE;i++)terrain[i]=raw[i]-min;
+ maxAltitude=Math.max(1,max-min);
+}
+// Land forms are derived only from altitude and 10 m local relief: never from generation "preset".
+function buildLandClasses(){
+ const span=9; // 90 m neighbourhood sampled in cardinal and diagonal directions.
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x,z=terrain[i];
+  const west=terrain[y*N+Math.max(0,x-1)],east=terrain[y*N+Math.min(N-1,x+1)];
+  const north=terrain[Math.max(0,y-1)*N+x],south=terrain[Math.min(N-1,y+1)*N+x];
+  const slope=Math.hypot(east-west,south-north)/(2*L);localSlopes[i]=slope;
+  let mean=0,k=0;
+  for(const [dx,dy] of [[span,0],[-span,0],[0,span],[0,-span],[span,span],[-span,span],[span,-span],[-span,-span]]){
+   const xx=Math.max(0,Math.min(N-1,x+dx)),yy=Math.max(0,Math.min(N-1,y+dy));mean+=terrain[yy*N+xx];k++;
+  }
+  mean/=k;
+  const high=z>maxAltitude*.62, crest=z-mean;
+  let code=CLASS.PLAIN;
+  if(high && (slope>.22 || crest>6.5)) code=CLASS.MOUNTAIN;
+  else if(high && slope<=.22)code=CLASS.PLATEAU;
+  else if(mean-z>3.3 && z<maxAltitude*.72)code=CLASS.VALLEY;
+  else if(slope>.13)code=CLASS.HILL;
+  baseClasses[i]=code;
+ }
+}
+// Two thresholds (entry/exit) avoid label flickering at the shore; called each *tick*, not each draw.
+function classifyLandscape(){
+ const capacity=MAX_SOIL_CAPACITY_M*retentionPct/100;
+ for(let i=0;i<SIZE;i++){
+  const h=water[i],prev=classes[i];
+  const saturation=capacity>0?soilWater[i]/capacity:0;
+  if(h >= (prev===CLASS.DEEP?.44:.64)){classes[i]=CLASS.DEEP;continue;}
+  const wetThreshold=prev===CLASS.MARSH?.35:.52;
+  if(saturation>=wetThreshold && h<.60 && localSlopes[i]<.20 && (h>.018||saturation>.72)){
+   classes[i]=CLASS.MARSH;continue;
+  }
+  if(h>=(prev===CLASS.SHALLOW?.045:.085)){classes[i]=CLASS.SHALLOW;continue;}
+  classes[i]=baseClasses[i];
+ }
+}
+// Four-neighbour connectivity. Adjacent water classes are one water body;
+// other categories form distinct patches. All labels are observational.
+function analyzeRegions(){
+ regionIds.fill(-1);regions=[];const queue=new Int32Array(SIZE);
+ for(let start=0;start<SIZE;start++){
+  if(regionIds[start]!==-1)continue;
+  const type=classes[start],waterBody=(type===CLASS.DEEP||type===CLASS.SHALLOW);
+  const id=regions.length;let head=0,tail=1,count=0,sumX=0,sumY=0,sumDepth=0,maxDepth=0,sumSoil=0,sumAlt=0,sumSlope=0,deepCells=0;
+  queue[0]=start;regionIds[start]=id;
+  while(head<tail){
+   const at=queue[head++],x=at%N,y=(at/N)|0;
+   count++;sumX+=x;sumY+=y;sumDepth+=water[at];maxDepth=Math.max(maxDepth,water[at]);sumSoil+=soilWater[at];sumAlt+=terrain[at];sumSlope+=localSlopes[at];if(classes[at]===CLASS.DEEP)deepCells++;
+   const near=[x>0?at-1:-1,x<N-1?at+1:-1,y>0?at-N:-1,y<N-1?at+N:-1];
+   for(const next of near){
+    if(next<0||regionIds[next]!==-1)continue;
+    const t=classes[next];if(waterBody?(t!==CLASS.DEEP&&t!==CLASS.SHALLOW):(t!==type))continue;
+    regionIds[next]=id;queue[tail++]=next;
+   }
+  }
+  const meanDepth=sumDepth/count;
+  let label=REGION_CODES[type].name,color=REGION_CODES[type].color;
+  if(waterBody){
+   if(count>=1400 && deepCells>150){label='Mer intérieure*';color='#2254a6';}
+   else if(count>=18 && (maxDepth>=.8||meanDepth>=.42)){label='Lac';color='#327bca';}
+   else if(count>=4){label='Étang / mare';color='#49a1bf';}
+   else {label='Petite étendue d’eau';color='#52b8c9';}
+  }
+  const cx=sumX/count,cy=sumY/count;
+  const region={id,type,label,color,waterBody,count,hectares:count*.01,meanDepth,maxDepth,meanSoil:sumSoil/count,meanAlt:sumAlt/count,meanSlope:sumSlope/count,cx,cy};
+  regions.push(region);
+ }
+ // Ignore isolated one-cell fluctuations in the summary, never delete actual cells.
+ regionTypeCounts={};const significant=regions.filter(r=>r.count>=8);
+ for(const r of significant)regionTypeCounts[r.label]=(regionTypeCounts[r.label]||0)+1;
+ largeRegionCount=significant.length;
+ // Region identifiers are recomputed; selection follows a representative map cell.
+ if(selectedCellIndex>=0)selectedRegionId=regionIds[selectedCellIndex];
+ else selectedRegionId=-1;
+ return significant;
+}
+function regionAtCell(i){return i>=0&&i<SIZE?regions[regionIds[i]]:null;}
+function renderRegionsSidebar(){
+ const significant=regions.filter(r=>r.count>=8).sort((a,b)=>b.count-a.count);
+ $('regionCount').textContent=fmt(significant.length,0);
+ $('largestRegion').textContent=significant.length?significant[0].label:'Aucune';
+ const list=$('regionsList');list.replaceChildren();
+ const active=regions[selectedRegionId];$('regionDetail').innerHTML=active?'<b>'+active.label+'</b> · '+fmt(active.hectares,2)+' ha<br>Altitude moyenne : '+fmt(active.meanAlt,2)+' m<br>Pente moyenne : '+fmt(active.meanSlope*100,1)+' %<br>EAU moyenne : '+fmt(active.meanDepth,2)+' m<br>Eau stockée dans le sol : '+fmt(active.meanSoil*1000,0)+' mm':'Sélectionne une région sur la carte ou dans la liste pour voir ses propriétés moyennes.';
+ const displayed=significant.slice(0,8);
+ for(const r of displayed){
+  const btn=document.createElement('button');btn.type='button';btn.className='region-entry'+(r.id===selectedRegionId?' active':'');
+  btn.innerHTML='<span class="region-dot" style="background:'+r.color+'"></span><span class="region-name">'+r.label+'</span><strong>'+fmt(r.hectares,2)+' ha</strong>';
+  btn.addEventListener('click',()=>{selectedRegionId=r.id;selectedCellIndex=Math.max(0,Math.min(SIZE-1,Math.round(r.cy)*N+Math.round(r.cx)));if(regionIds[selectedCellIndex]!==r.id){selectedCellIndex=regionIds.indexOf(r.id);}draw();renderRegionsSidebar();$('hoverHint').textContent=r.label+' · '+fmt(r.hectares,2)+' ha · '+fmt(r.count,0)+' cellules';});
+  list.appendChild(btn);
+ }
+ if(!displayed.length)list.textContent='Aucune région significative.';
+}
+function meanDepthForPct(pct){return .05+6*(pct/100);}
+function generateWater(){const wgt=new Float64Array(SIZE);let sum=0;const meanDepth=meanDepthForPct(waterPct);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const idx=y*N+x,nx=x/(N-1),ny=y/(N-1);let w=1;
+  if(distribution==='patches'){const r=.6*noise(nx,ny,3,seed+1901)+.4*noise(nx,ny,8,seed+1902);w=Math.pow(Math.max(0,r-.43),1.45);}
+  else if(distribution==='highland'){const r=.7*noise(nx,ny,3,seed+1901)+.3*noise(nx,ny,8,seed+1902);w=Math.max(0,(terrain[idx]/maxAltitude)*.78+r*.4-.30);w=w*w;}
+  wgt[idx]=w;sum+=w;
+ }
+ if(distribution==='level'){
+  // Initial standing water is assigned from terrain geometry alone at a fixed total volume.
+  // This does not spawn special lake objects: the subsequent dynamics are unchanged.
+  let lo=0,hi=maxAltitude+meanDepth*SIZE;
+  for(let k=0;k<52;k++){
+   const level=(lo+hi)*.5;let volume=0;
+   for(let i=0;i<SIZE;i++)volume+=Math.max(0,level-terrain[i]);
+   if(volume<meanDepth*SIZE)lo=level;else hi=level;
+  }
+  const level=(lo+hi)*.5;for(let i=0;i<SIZE;i++)water[i]=Math.max(0,level-terrain[i]);
+  return;
+ }
+ if(sum<=1e-10){wgt.fill(1);sum=SIZE;}
+ const scale=meanDepth*SIZE/sum;for(let i=0;i<SIZE;i++)water[i]=wgt[i]*scale;
+}
+function reservoirMasses(){
+ let surface=0,soil=0;for(let i=0;i<SIZE;i++){surface+=water[i]*CELL_MASS;soil+=soilWater[i]*CELL_MASS;}
+ return {surface,soil,atmosphere:atmosphereWaterKg,animals:animalBodyWater(),predators:predatorBodyWater(),plants:plantWaterMass()};
+}
+function mass(){const m=reservoirMasses();return m.surface+m.soil+m.atmosphere+m.animals+m.predators+m.plants;}
+function potential(){
+ let p=G*atmosphereWaterKg*atmosphereAltitude;
+ for(let i=0;i<SIZE;i++){
+  const h=water[i];
+  p+=G*(CELL_MASS*(h*(terrain[i]+.5*h)+soilWater[i]*terrain[i])+plantWaterKg[i]*terrain[i]);
+ }
+ for(const a of animals)p+=G*a.waterKg*(terrain[animalCell(a)]+.5);
+ for(const pdr of predators)p+=G*pdr.waterKg*(terrain[animalCell(pdr)]+.5);
+ return p;
+}
+function totalEnergy(){return currentPotential+heatEnergy+latentEnergy+solarEnergy+radiatedEnergy+plantChemicalEnergy+animalChemical()+predatorChemical();}
+
+// ---- Bounded herbivore experiment, no rule to navigate to food or water ----
+const animalCell=a=>Math.min(N-1,Math.floor(a.y/L))*N+Math.min(N-1,Math.floor(a.x/L));
+const cellAt=(x,y)=>{if(x<0||y<0||x>=N*L||y>=N*L)return -1;return Math.min(N-1,Math.floor(y/L))*N+Math.min(N-1,Math.floor(x/L));};
+const animalRand=(n,k,salt=0)=>hash2((n*37+k*13)%9991,(n*23+k*17)%9973,(seed+8513+salt)>>>0);
+function randomGenes(id){const arr=new Float64Array(ANIMAL_GENOME_LENGTH);for(let k=0;k<arr.length;k++)arr[k]=(animalRand(id,k)*2-1)*.80;return arr;}
+function initAnimals(){
+ animals=[];nextAnimalId=1;totalBirths=0;totalDeaths=0;lastGrazedKg=0;lastDrunkKg=0;selectedAnimalId=null;
+ let placed=0;
+ for(let t=0;t<animalCount*30&&placed<animalCount;t++){
+  const x=(.5+Math.floor(animalRand(t+25,3)*N))*L;
+  const y=(.5+Math.floor(animalRand(t+25,4)*N))*L;
+  const i=cellAt(x,y);
+  if(i<0||water[i]>.13||localSlopes[i]>.35||substrateKg[i]<ANIMAL_STRUCTURE_START_KG+.15)continue;
+  const required=ANIMAL_STRUCTURE_START_KG+ANIMAL_START_ENERGY_J/PLANT_CHEM_J_PER_KG;
+  // The initial animals are initial conditions; matter is debited from terrain stocks.
+  let source=i;
+  if(water[source]*CELL_MASS<ANIMAL_INITIAL_WATER_KG){
+    let minD=Infinity;
+    for(let j=0;j<SIZE;j++)if(water[j]*CELL_MASS>=ANIMAL_INITIAL_WATER_KG){
+     const dx=(j%N)-(i%N),dy=Math.floor(j/N)-Math.floor(i/N),d=dx*dx+dy*dy;
+     if(d<minD){minD=d;source=j;}
+    }
+  }
+  if(water[source]*CELL_MASS<ANIMAL_INITIAL_WATER_KG)continue;
+  water[source]-=ANIMAL_INITIAL_WATER_KG/CELL_MASS;
+  substrateKg[i]-=required;
+  const id=nextAnimalId++;
+  animals.push({id,x,y,heading:animalRand(id,99)*Math.PI*2,
+   energyJ:ANIMAL_START_ENERGY_J,waterKg:ANIMAL_INITIAL_WATER_KG,
+   structureKg:ANIMAL_STRUCTURE_START_KG,age:0,lastBirth:-2000,
+   genes:randomGenes(id),generation:0});placed++;
+ }
+}
+// Herbivores can detect a nearby predator as a moving obstacle/threat.
+// The network (not a hand-written avoidance rule) decides what to do with it.
+function localRay(a,offset,range){
+ let plant=0,aqua=0,blocked=0;
+ const angle=a.heading+offset;
+ const dx=Math.cos(angle),dy=Math.sin(angle);
+ for(const distance of [14,35,65,95]){
+  const j=cellAt(a.x+dx*distance,a.y+dy*distance);
+  const weight=1/(1+distance*.016);
+  if(j<0){blocked+=weight;continue;}
+  plant+=Math.min(1,plantBiomass[j]/3.5)*weight;
+  aqua+=((water[j]>.009&&water[j]<.24)?1:0)*weight;
+  blocked+=(water[j]>.31||localSlopes[j]>.5?1:0)*weight;
+ }
+ if(predators.length){
+  for(const pdr of predators){
+   const rx=pdr.x-a.x,ry=pdr.y-a.y,along=rx*dx+ry*dy;
+   if(along<=0||along>95)continue;
+   const sideways=Math.abs(rx*dy-ry*dx);
+   if(sideways<8+along*.30)blocked+=.9*(1-along/110);
+  }
+ }
+ return [Math.min(1,plant*.65),Math.min(1,aqua*.55),Math.min(1,blocked*.55)];
+}
+function animalNeuralCommand(a){
+ const left=localRay(a,-.70),forward=localRay(a,0),right=localRay(a,.70);
+ const input=[1,1-a.energyJ/ANIMAL_MAX_ENERGY_J,1-a.waterKg/ANIMAL_MAX_WATER_KG,
+  left[0],forward[0],right[0],left[1],forward[1],right[1],left[2],forward[2],right[2]];
+ const hidden=new Float64Array(ANIMAL_HIDDEN);
+ let k=0;for(let h=0;h<ANIMAL_HIDDEN;h++){
+  let n=a.genes[k++];for(let j=0;j<ANIMAL_INPUTS;j++)n+=input[j]*a.genes[k++];
+  hidden[h]=Math.tanh(n);
+ }
+ let turn=a.genes[k++],motion=a.genes[k++];
+ for(let h=0;h<ANIMAL_HIDDEN;h++)turn+=hidden[h]*a.genes[k++];
+ for(let h=0;h<ANIMAL_HIDDEN;h++)motion+=hidden[h]*a.genes[k++];
+ return {turn:Math.tanh(turn)*.30,move:(.18+.82/(1+Math.exp(-motion)))*ANIMAL_MOVEMENT_M_PER_STEP};
+}
+function dieAnimal(a){
+ const at=animalCell(a),dry=a.structureKg+a.energyJ/PLANT_CHEM_J_PER_KG;
+ // Simplification: carcass decomposes immediately into local substrate and heat.
+ substrateKg[at]+=dry;soilHeat[at]+=a.structureKg*PLANT_CHEM_J_PER_KG+a.energyJ;
+ soilWater[at]+=a.waterKg/CELL_MASS;
+ a.energyJ=0;a.structureKg=0;a.waterKg=0;totalDeaths++;
+}
+function stepHerbivores(){
+ lastGrazedKg=0;lastDrunkKg=0;
+ const born=[],survivors=[];
+ for(const a of animals){
+  a.age++;
+  // Expense of maintaining a body; mass is returned as simplified local waste.
+  const expense=Math.min(a.energyJ,ANIMAL_MAINTENANCE_J);
+  a.energyJ-=expense;
+  const at=animalCell(a);substrateKg[at]+=expense/PLANT_CHEM_J_PER_KG;soilHeat[at]+=expense;
+  // Water is excreted to local ground rather than being destroyed.
+  const lost=Math.min(a.waterKg,ANIMAL_WATER_LOSS_KG);
+  a.waterKg-=lost;soilWater[at]+=lost/CELL_MASS;
+  if(a.energyJ<=0||a.waterKg<=0||a.age>=ANIMAL_MAX_LIFETIME){dieAnimal(a);continue;}
+  const {turn,move}=animalNeuralCommand(a);a.heading=(a.heading+turn+Math.PI*2)%(Math.PI*2);
+  const x=Math.max(.0001,Math.min(N*L-.0001,a.x+Math.cos(a.heading)*move));
+  const y=Math.max(.0001,Math.min(N*L-.0001,a.y+Math.sin(a.heading)*move));
+  const to=cellAt(x,y);
+  const traversable=to>=0&&water[to]<.28&&localSlopes[to]<.75;
+  const travelled=traversable?Math.hypot(x-a.x,y-a.y):0;
+  if(traversable){a.x=x;a.y=y;}
+  const c=animalCell(a);
+  const effort=Math.min(a.energyJ,travelled*ANIMAL_MOTION_J_PER_M);
+  a.energyJ-=effort;substrateKg[c]+=effort/PLANT_CHEM_J_PER_KG;soilHeat[c]+=effort;
+  // Grazing/drinking are local, hard-wired contact physiology, not navigation plans.
+  if((a.energyJ<ANIMAL_MAX_ENERGY_J*.92||a.structureKg<.20)&&plantBiomass[c]>.005){
+    const building=a.structureKg<.20;
+    const desired=Math.min(.012,Math.max(0,(ANIMAL_MAX_ENERGY_J-a.energyJ)/PLANT_CHEM_J_PER_KG)+(building?.003:0));
+    const eaten=Math.min(plantBiomass[c],desired);
+    const structured=building?Math.min(eaten*.25,.20-a.structureKg):0;
+    const storedJ=Math.min((eaten-structured)*PLANT_CHEM_J_PER_KG,ANIMAL_MAX_ENERGY_J-a.energyJ);
+    const excess=eaten-structured-storedJ/PLANT_CHEM_J_PER_KG;
+    plantBiomass[c]-=eaten;plantChemicalEnergy-=eaten*PLANT_CHEM_J_PER_KG;
+    a.structureKg+=structured;a.energyJ+=storedJ;
+    if(excess>0){substrateKg[c]+=excess;soilHeat[c]+=excess*PLANT_CHEM_J_PER_KG;}
+    lastGrazedKg+=eaten;
+  }
+  if(water[c]>.005 && water[c]<.28 && a.waterKg<ANIMAL_MAX_WATER_KG*.93){
+    const drank=Math.min(.30,ANIMAL_MAX_WATER_KG-a.waterKg,water[c]*CELL_MASS);
+    water[c]-=drank/CELL_MASS;a.waterKg+=drank;lastDrunkKg+=drank;
+  }
+  if(a.energyJ<=0||a.waterKg<=0){dieAnimal(a);continue;}
+  if(a.age>900 && a.age-a.lastBirth>650 && a.energyJ>ANIMAL_MAX_ENERGY_J*.88
+    &&a.waterKg>ANIMAL_MAX_WATER_KG*.70&&a.structureKg>.16&&animals.length+born.length<ANIMAL_POP_CAP){
+    const childEnergy=a.energyJ*.46,childWater=a.waterKg*.43,childStructure=a.structureKg*.45;
+    a.energyJ-=childEnergy;a.waterKg-=childWater;a.structureKg-=childStructure;
+    a.lastBirth=a.age;
+    const id=nextAnimalId++,genes=Float64Array.from(a.genes);
+    for(let j=0;j<genes.length;j++){
+      if(animalRand(id,j,91)<animalMutation/100)genes[j]+=(.5-animalRand(id,j,191))*.70;
+    }
+    born.push({id,x:a.x,y:a.y,heading:(a.heading+(animalRand(id,21)-.5)*1.2+Math.PI*2)%(Math.PI*2),
+      energyJ:childEnergy,waterKg:childWater,structureKg:childStructure,age:0,lastBirth:-2000,genes,generation:a.generation+1});
+    totalBirths++;
+  }
+  survivors.push(a);
+ }
+ animals=survivors.concat(born);
+}
+function drawHerbivores(){
+ const scale=canvas.width/(N*L);
+ ctx.lineWidth=1.35;
+ for(const a of animals){
+  const x=a.x*scale,y=a.y*scale,r=3.6;
+  ctx.fillStyle=a.generation>0?'#f4dd90':'#ffab65';
+  ctx.strokeStyle='rgba(8,20,25,.95)';
+  ctx.beginPath();ctx.arc(x,y,r,0,2*Math.PI);ctx.fill();ctx.stroke();
+  ctx.strokeStyle='#fff6dc';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(a.heading)*7,y+Math.sin(a.heading)*7);ctx.stroke();
+ }
+}
+
+
+// ---- V2.10: independent predator agents, hereditary movement policies ----
+function predatorDryMass(){let m=0;for(const p of predators)m+=p.structureKg+p.energyJ/PLANT_CHEM_J_PER_KG;return m;}
+function predatorChemical(){let e=0;for(const p of predators)e+=p.structureKg*PLANT_CHEM_J_PER_KG+p.energyJ;return e;}
+function predatorBodyWater(){let w=0;for(const p of predators)w+=p.waterKg;return w;}
+const predatorRand=(id,k,salt=0)=>animalRand(id+71017,k+113,salt+8191);
+// A modest inherited *species prior* in the neural wiring, not a scripted path or target.
+// Set instinct=0 to recover V2.9 random initial brain, with the new sensory geometry.
+function predatorGenes(id){
+ const genes=new Float64Array(PREDATOR_GENES);
+ const instinct=predatorInstinct/100;
+ for(let k=0;k<genes.length;k++)genes[k]=(predatorRand(id,k)*2-1)*(instinct===0?.88:.18);
+ if(instinct<=0)return genes;
+ const stride=PREDATOR_INPUTS+1, out=stride*PREDATOR_HIDDEN;
+ // Hidden neurons are hereditary signal channels: prey-left, prey-right,
+ // prey-forward; obstacle-left/right, water-left/right, forward blockage.
+ for(const [neuron,input,weight] of [
+   [0,3,2.5],[1,5,2.5],[2,4,2.2],
+   [3,9,1.8],[4,11,1.8],[5,6,1.35],[6,8,1.35],[7,10,1.5]
+ ])genes[neuron*stride+1+input]+=weight*instinct;
+ // Turn left for left prey (negative angular velocity), right for right prey.
+ // Side obstacles provide a weaker opposite turn; water is a weak attraction.
+ for(const [neuron,weight] of [
+   [0,-2.35],[1,2.35],[3,1.1],[4,-1.1],[5,-.45],[6,.45]
+ ])genes[out+2+neuron]+=weight*instinct;
+ genes[out+2+PREDATOR_HIDDEN+2]+=1.25*instinct; // accelerate with prey ahead
+ genes[out+2+PREDATOR_HIDDEN+7]-=.75*instinct; // slow in front of obstacle
+ return genes;
+}
+function initPredators(){
+ predators=[];nextPredatorId=1;selectedPredatorId=null;predatorBirths=0;predatorDeaths=0;predatorKills=0;lastPredatorKills=0;
+ const required=PREDATOR_STRUCTURE_KG+PREDATOR_START_ENERGY_J/PLANT_CHEM_J_PER_KG;
+ let placed=0;
+ for(let attempt=0;attempt<predatorCount*55 && placed<predatorCount;attempt++){
+  let x,y;
+  // Initial placement samples herbivore habitats when available. No pursuit thereafter.
+  if(animals.length){
+   const target=animals[Math.floor(predatorRand(attempt+1,41)*animals.length)];
+   const theta=predatorRand(attempt+1,42)*Math.PI*2;
+   const distance=11+38*predatorRand(attempt+1,43);
+   x=Math.max(.001,Math.min(N*L-.001,target.x+Math.cos(theta)*distance));
+   y=Math.max(.001,Math.min(N*L-.001,target.y+Math.sin(theta)*distance));
+  }else{
+   x=(.5+Math.floor(predatorRand(attempt+1,44)*N))*L;
+   y=(.5+Math.floor(predatorRand(attempt+1,45)*N))*L;
+  }
+  const i=cellAt(x,y);
+  if(i<0||water[i]>.20||localSlopes[i]>.6||substrateKg[i]<required+.1)continue;
+  let source=i;
+  if(water[source]*CELL_MASS<PREDATOR_WATER_INITIAL_KG){
+   let mind=Infinity;
+   for(let j=0;j<SIZE;j++)if(water[j]*CELL_MASS>=PREDATOR_WATER_INITIAL_KG){
+    const dx=j%N-i%N,dy=Math.floor(j/N)-Math.floor(i/N),d=dx*dx+dy*dy;
+    if(d<mind){mind=d;source=j;}
+   }
+  }
+  if(water[source]*CELL_MASS<PREDATOR_WATER_INITIAL_KG)continue;
+  water[source]-=PREDATOR_WATER_INITIAL_KG/CELL_MASS;substrateKg[i]-=required;
+  const id=nextPredatorId++;
+  predators.push({id,x,y,heading:predatorRand(id,99)*Math.PI*2,energyJ:PREDATOR_START_ENERGY_J,
+   waterKg:PREDATOR_WATER_INITIAL_KG,structureKg:PREDATOR_STRUCTURE_KG,
+   age:0,lastBirth:-2000,genes:predatorGenes(id),generation:0});placed++;
+ }
+}
+function predatorRay(p,offset){
+ const angle=p.heading+offset,dx=Math.cos(angle),dy=Math.sin(angle);
+ let prey=0,waterSignal=0,blocked=0;
+ for(const distance of [14,35,65,95]){
+   const j=cellAt(p.x+dx*distance,p.y+dy*distance);
+   const weight=1/(1+distance*.016);
+   if(j<0){blocked+=weight;continue;}
+   if(water[j]>.009&&water[j]<.26)waterSignal+=weight;
+   if(water[j]>.35||localSlopes[j]>.55)blocked+=weight;
+ }
+ // Smooth directional vision: a prey contributes to each of three view channels
+ // according to angular separation and distance; terrain occlusion is not modeled yet.
+ // No global path planning, no selection of the nearest target for navigation.
+ for(const a of animals){
+   const rx=a.x-p.x,ry=a.y-p.y,distance=Math.hypot(rx,ry);
+   if(distance<.01||distance>PREDATOR_SIGHT_M)continue;
+   const bearing=Math.atan2(ry,rx)-angle;
+   const delta=Math.atan2(Math.sin(bearing),Math.cos(bearing));
+   const angleWeight=Math.exp(-.5*(delta/.40)**2);
+   const rangeWeight=Math.max(.04,1-distance/(PREDATOR_SIGHT_M+15));
+   prey+=angleWeight*rangeWeight;
+ }
+ return [clamp(prey*.85,0,1),clamp(waterSignal*.55,0,1),clamp(blocked*.55,0,1)];
+}
+function predatorCommand(p){
+ const left=predatorRay(p,-.72),front=predatorRay(p,0),right=predatorRay(p,.72);
+ const input=[1,1-p.energyJ/PREDATOR_MAX_ENERGY_J,1-p.waterKg/PREDATOR_MAX_WATER_KG,
+  left[0],front[0],right[0],left[1],front[1],right[1],left[2],front[2],right[2]];
+ const hidden=new Float64Array(PREDATOR_HIDDEN);let k=0;
+ for(let h=0;h<PREDATOR_HIDDEN;h++){
+  let v=p.genes[k++];for(let j=0;j<PREDATOR_INPUTS;j++)v+=input[j]*p.genes[k++];
+  hidden[h]=Math.tanh(v);
+ }
+ let turn=p.genes[k++],motion=p.genes[k++];
+ for(let h=0;h<PREDATOR_HIDDEN;h++)turn+=hidden[h]*p.genes[k++];
+ for(let h=0;h<PREDATOR_HIDDEN;h++)motion+=hidden[h]*p.genes[k++];
+ return {turn:Math.tanh(turn)*.34,move:(.03+.97/(1+Math.exp(-motion)))*PREDATOR_SPEED_M_STEP};
+}
+function diePredator(p){
+ const i=animalCell(p),dry=p.structureKg+p.energyJ/PLANT_CHEM_J_PER_KG;
+ substrateKg[i]+=dry;soilHeat[i]+=dry*PLANT_CHEM_J_PER_KG;
+ soilWater[i]+=p.waterKg/CELL_MASS;
+ p.energyJ=0;p.structureKg=0;p.waterKg=0;predatorDeaths++;
+}
+function predatorCapture(p,prey){
+ const at=animalCell(p),preyDry=prey.structureKg+prey.energyJ/PLANT_CHEM_J_PER_KG;
+ const build=Math.min(preyDry*.15,Math.max(0,PREDATOR_MAX_STRUCTURE_KG-p.structureKg));
+ const energy=Math.min(Math.max(0,(preyDry-build)*PLANT_CHEM_J_PER_KG),Math.max(0,PREDATOR_MAX_ENERGY_J-p.energyJ));
+ const leftDry=Math.max(0,preyDry-build-energy/PLANT_CHEM_J_PER_KG);
+ p.structureKg+=build;p.energyJ+=energy;
+ substrateKg[at]+=leftDry;soilHeat[at]+=leftDry*PLANT_CHEM_J_PER_KG;
+ const drank=Math.min(Math.max(0,PREDATOR_MAX_WATER_KG-p.waterKg),prey.waterKg);
+ p.waterKg+=drank;soilWater[at]+=(prey.waterKg-drank)/CELL_MASS;
+ prey.energyJ=0;prey.waterKg=0;prey.structureKg=0;
+ predatorKills++;lastPredatorKills++;totalDeaths++;
+}
+function stepPredators(){
+ lastPredatorKills=0;
+ const born=[],survivors=[],captured=new Set();
+ for(const p of predators){
+  p.age++;
+  const i=animalCell(p),burn=Math.min(p.energyJ,PREDATOR_MAINTENANCE_J);
+  p.energyJ-=burn;substrateKg[i]+=burn/PLANT_CHEM_J_PER_KG;soilHeat[i]+=burn;
+  const lost=Math.min(p.waterKg,PREDATOR_WATER_LOSS_KG);
+  p.waterKg-=lost;soilWater[i]+=lost/CELL_MASS;
+  if(p.energyJ<=0||p.waterKg<=0||p.age>=PREDATOR_MAX_AGE){diePredator(p);continue;}
+  const {turn,move}=predatorCommand(p);
+  p.heading=(p.heading+turn+Math.PI*2)%(Math.PI*2);
+  const x=clamp(p.x+Math.cos(p.heading)*move,.0001,N*L-.0001);
+  const y=clamp(p.y+Math.sin(p.heading)*move,.0001,N*L-.0001);
+  const j=cellAt(x,y),canMove=j>=0&&water[j]<.30&&localSlopes[j]<.8;
+  const traveled=canMove?Math.hypot(x-p.x,y-p.y):0;
+  if(canMove){p.x=x;p.y=y;}
+  const at=animalCell(p),effort=Math.min(p.energyJ,traveled*PREDATOR_MOTION_J_PER_M);
+  p.energyJ-=effort;substrateKg[at]+=effort/PLANT_CHEM_J_PER_KG;soilHeat[at]+=effort;
+  // Predation only at contact; no automatic tracking or scripted target selection.
+  if(p.energyJ<PREDATOR_MAX_ENERGY_J*.89 || p.structureKg<PREDATOR_MAX_STRUCTURE_KG*.9){
+   let near=null,best=PREDATOR_ATTACK_RADIUS_M*PREDATOR_ATTACK_RADIUS_M;
+   for(const a of animals){
+    if(captured.has(a.id))continue;
+    const d=(a.x-p.x)**2+(a.y-p.y)**2;
+    if(d<best){best=d;near=a;}
+   }
+   if(near){captured.add(near.id);predatorCapture(p,near);}
+  }
+  if(water[at]>.005&&water[at]<.30&&p.waterKg<PREDATOR_MAX_WATER_KG*.92){
+   const drank=Math.min(.36,PREDATOR_MAX_WATER_KG-p.waterKg,water[at]*CELL_MASS);
+   water[at]-=drank/CELL_MASS;p.waterKg+=drank;
+  }
+  if(p.energyJ<=0||p.waterKg<=0){diePredator(p);continue;}
+  if(p.age>800&&p.age-p.lastBirth>820&&p.energyJ>PREDATOR_MAX_ENERGY_J*.76
+   &&p.waterKg>PREDATOR_MAX_WATER_KG*.66&&p.structureKg>.29
+   &&predators.length+born.length<PREDATOR_POP_CAP){
+   const childEnergy=p.energyJ*.43,childWater=p.waterKg*.42,childStructure=p.structureKg*.43;
+   p.energyJ-=childEnergy;p.waterKg-=childWater;p.structureKg-=childStructure;
+   p.lastBirth=p.age;
+   const id=nextPredatorId++,genes=Float64Array.from(p.genes);
+   for(let k=0;k<genes.length;k++)if(predatorRand(id,k,91)<predatorMutation/100)
+    genes[k]+=(.5-predatorRand(id,k,191))*.68;
+   born.push({id,x:p.x,y:p.y,heading:(p.heading+(predatorRand(id,21)-.5)*1.3+Math.PI*2)%(Math.PI*2),
+    energyJ:childEnergy,waterKg:childWater,structureKg:childStructure,age:0,lastBirth:-2000,
+    genes,generation:p.generation+1});predatorBirths++;
+  }
+  survivors.push(p);
+ }
+ predators=survivors.concat(born);
+ if(captured.size)animals=animals.filter(a=>!captured.has(a.id));
+}
+function followedPredator(){return predators.find(p=>p.id===selectedPredatorId)||predators[0]||null;}
+function visiblePrey(p){
+ if(!p)return [];
+ return animals.filter(a=>{
+  const dx=a.x-p.x,dy=a.y-p.y,dist=Math.hypot(dx,dy);
+  const b=Math.atan2(dy,dx)-p.heading;
+  return dist<=PREDATOR_SIGHT_M&&Math.abs(Math.atan2(Math.sin(b),Math.cos(b)))<=1.12;
+ });
+}
+function drawPredatorVision(){
+ if(!showPredatorVision)return;
+ const p=followedPredator();if(!p)return;
+ const s=canvas.width/(N*L),x=p.x*s,y=p.y*s;
+ ctx.save();ctx.beginPath();ctx.moveTo(x,y);
+ ctx.arc(x,y,PREDATOR_SIGHT_M*s,p.heading-1.12,p.heading+1.12,false);
+ ctx.closePath();ctx.fillStyle='rgba(244,119,164,.12)';ctx.fill();
+ ctx.strokeStyle='rgba(254,156,191,.76)';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);
+ for(const a of visiblePrey(p)){
+   ctx.beginPath();ctx.arc(a.x*s,a.y*s,7,0,2*Math.PI);
+   ctx.strokeStyle='#fff19e';ctx.lineWidth=2;ctx.stroke();
+ }
+ ctx.restore();
+}
+function updatePredatorVision(){
+ const label=$('predatorVisionInfo'),p=followedPredator();
+ if(!showPredatorVision){label.textContent='Vision : désactivée';return;}
+ if(!p){label.textContent='Vision : aucun prédateur';return;}
+ label.textContent='Vision du prédateur #'+p.id+' : '+visiblePrey(p).length+' proie(s) visible(s)';
+}
+function drawPredators(){
+ const scale=canvas.width/(N*L);
+ for(const p of predators){
+  const x=p.x*scale,y=p.y*scale,heading=p.heading;
+  if(showPredatorVision&&p===followedPredator()){ctx.beginPath();ctx.arc(x,y,11,0,2*Math.PI);ctx.strokeStyle='#ffe093';ctx.lineWidth=2;ctx.stroke();}
+  ctx.fillStyle=p.generation?'#ff93b3':'#e84d7a';
+  ctx.strokeStyle='rgba(25,12,24,.94)';ctx.lineWidth=1.6;
+  ctx.beginPath();ctx.moveTo(x+Math.cos(heading)*8,y+Math.sin(heading)*8);
+  ctx.lineTo(x+Math.cos(heading+2.48)*6,y+Math.sin(heading+2.48)*6);
+  ctx.lineTo(x+Math.cos(heading-2.48)*6,y+Math.sin(heading-2.48)*6);
+  ctx.closePath();ctx.fill();ctx.stroke();
+ }
+}
+
+function newWorld(){
+ seed=(Number($('seed').value)||0)>>>0;roughness=Number($('roughness').value);waterPct=Number($('waterAmount').value);
+ basinDepth=Number($('basinDepth').value);landform=$('landform').value;
+ fluidity=Number($('fluidity').value);distribution=$('waterDistribution').value;
+ evaporationRateMm=Number($('evaporationRate').value);retentionPct=Number($('retention').value);rainfallStrength=Number($('rainStrength').value);windStrength=Number($('windStrength').value);windMode=$('windMode').value;plantMutation=Number($('plantMutation').value);solarStrength=Number($('solarStrength').value);radiationStrength=Number($('radiationStrength').value);seedDensity=Number($('seedDensity').value);stabilityDuration=Number($('stabilityDuration').value);growthStrength=Number($('growthStrength').value);animalCount=Number($('animalCount').value);animalMutation=Number($('animalMutation').value);predatorCount=Number($('predatorCount').value);predatorMutation=Number($('predatorMutation').value);predatorInstinct=Number($('predatorInstinct').value);
+ $('seed').value=String(seed);
+ generateTerrain();buildLandClasses();generateWater();determineAutoWind();initialWater=Float64Array.from(water);
+ soilWater.fill(0);atmosphereWaterKg=0;latentEnergy=0;atmosphereAltitude=maxAltitude+100;vaporKg.fill(0);cloudKg.fill(0);rainCellKg.fill(0);rainAccumKg.fill(0);lastRainKg=0;totalRainKg=0;totalLandRainKg=0;totalWaterRainKg=0;lastTranspirationKg=0;cloudCoverCells=0;windVX=0;windVY=0;
+ initVegetation();initAnimals();initPredators();populationHistory=[{step:0,herb:animals.length,pred:predators.length}];
+ classes.set(baseClasses);classifyLandscape();selectedRegionId=-1;selectedCellIndex=-1;
+ tickCount=0;lastMovedKg=0;lastInfiltrationKg=0;lastEvaporationKg=0;
+ currentPotential=potential();currentMass=mass();initialMass=currentMass;
+ // Initial soil/atmosphere temperatures + an explicitly limited solar reservoir.
+ initThermal();lastSunlightJ=0;lastRadiationJ=0;initialEnergy=totalEnergy();
+ showError=false;running=false;accumulator=0;setPlaying(false);$('draftStatus').textContent='Terrain généré · seed '+seed+'.';$('draftStatus').classList.remove('pending');updateDisplay(true);
+}
+function resetWorld(){if(!initialWater)return;
+ water=Float64Array.from(initialWater);soilWater.fill(0);atmosphereWaterKg=0;latentEnergy=0;
+ vaporKg.fill(0);cloudKg.fill(0);rainCellKg.fill(0);rainAccumKg.fill(0);lastRainKg=0;totalRainKg=0;totalLandRainKg=0;totalWaterRainKg=0;lastTranspirationKg=0;cloudCoverCells=0;windVX=0;windVY=0;
+ initVegetation();initAnimals();initPredators();populationHistory=[{step:0,herb:animals.length,pred:predators.length}];
+ classes.set(baseClasses);classifyLandscape();selectedRegionId=-1;selectedCellIndex=-1;
+ tickCount=0;lastMovedKg=0;lastInfiltrationKg=0;lastEvaporationKg=0;
+ soilHeat=Float64Array.from(initialSoilHeat);airHeat=initialAirHeat;
+ solarEnergy=initialSolarEnergy;radiatedEnergy=0;lastSunlightJ=0;lastRadiationJ=0;recalcHeat();
+ currentPotential=potential();currentMass=mass();showError=false;running=false;accumulator=0;
+ setPlaying(false);updateDisplay(true);$('draftStatus').textContent='Retour aux conditions initiales.';
+}
+// Each pair exchange follows the downward free-surface gradient. The 0.42 upper bound
+// is strictly below the 0.5 pair-equalization fraction, guaranteeing energy descent.
+function exchange(i,j){const hi=terrain[i]+water[i],hj=terrain[j]+water[j],delta=hi-hj;if(Math.abs(delta)<1e-11)return 0;
+ let moved=0;if(delta>0){moved=Math.min(water[i],fluidity*delta);if(moved<=0)return 0;water[i]-=moved;water[j]+=moved;}
+ else{moved=Math.min(water[j],fluidity*(-delta));if(moved<=0)return 0;water[j]-=moved;water[i]+=moved;}
+ return moved;
+}
+function tick(){
+ const before=currentPotential;let moved=0;
+ // Identical surface dynamics to the archived V2.1b.
+ if(tickCount%2===0){
+  for(let y=0;y<N;y++)for(let x=0;x<N-1;x++){const i=y*N+x;moved+=exchange(i,i+1);}
+  for(let x=0;x<N;x++)for(let y=0;y<N-1;y++){const i=y*N+x;moved+=exchange(i,i+N);}
+ }else{
+  for(let x=N-1;x>=0;x--)for(let y=N-2;y>=0;y--){const i=y*N+x;moved+=exchange(i,i+N);}
+  for(let y=N-1;y>=0;y--)for(let x=N-2;x>=0;x--){const i=y*N+x;moved+=exchange(i,i+1);}
+ }
+ const afterFlow=potential();
+ airHeat+=before-afterFlow; // Gravity lost through dissipative flow warms the lumped air heat reservoir.
+
+ // Infiltration: local storage capacity, no subsurface lateral transport yet.
+ const soilCapacity=MAX_SOIL_CAPACITY_M*retentionPct/100;
+ let infiltratedDepth=0;
+ for(let i=0;i<SIZE;i++){
+  const amount=Math.min(water[i],Math.max(0,soilCapacity-soilWater[i]),INFILTRATION_DEPTH_M_PER_TICK);
+  if(amount>0){water[i]-=amount;soilWater[i]+=amount;infiltratedDepth+=amount;}
+ }
+ const afterInfiltration=potential();
+ airHeat+=afterFlow-afterInfiltration; // Infiltration lowers the water center of mass.
+
+ // Moisture persistence is tracked after infiltration and before that tick's growth.
+ trackSoilStability();
+ // Sunlight, conduction, photosynthesis and night-time cooling precede evaporation.
+ stepClimate();
+ stepPlantHydrology();
+ // Local evaporation: heat is taken from each soil cell and stored as latent energy
+ // and vapor gravitational potential. No condensate or precipitation yet.
+ let evaporatedDepth=0;
+ const evapM=evaporationRateMm/1000;
+ for(let i=0;i<SIZE;i++){
+  if(evapM===0)break;
+  const surfaceExposed=water[i]>0;
+  const source=surfaceExposed?water:soilWater;
+  const tempMultiplier=clamp((tempSoil(i)+10)/30,0,1.5);
+  const desired=evapM*(surfaceExposed?1:.35)*tempMultiplier;
+  if(desired<=0||source[i]<=0)continue;
+  // A small positive upper bound on the work of lifting evaporated vapor.
+  const energyPerMUpper=CELL_MASS*(LATENT_HEAT_J_PER_KG+G*(atmosphereAltitude+MAX_SOIL_CAPACITY_M));
+  const availableHeat=Math.max(0,soilHeat[i]-SOIL_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C));
+  const amount=Math.min(source[i],desired,availableHeat/energyPerMUpper);
+  if(amount<=0)continue;
+  const originalDepth=source[i];const transferred=amount*CELL_MASS;
+  // Exact gravity increase: surface water is removed from the top; soil water at terrain z.
+  const deltaPotential=G*transferred*(atmosphereAltitude-terrain[i]-(surfaceExposed?originalDepth-amount*.5:0));
+  const needed=transferred*LATENT_HEAT_J_PER_KG+deltaPotential;
+  soilHeat[i]-=needed;
+  source[i]-=amount;vaporKg[i]+=transferred;atmosphereWaterKg+=transferred;latentEnergy+=transferred*LATENT_HEAT_J_PER_KG;
+  evaporatedDepth+=amount;
+ }
+ stepCloudsAndRain();
+ currentPotential=potential();currentMass=mass();recalcHeat();
+ lastMovedKg=moved*CELL_MASS;lastInfiltrationKg=infiltratedDepth*CELL_MASS;
+ lastEvaporationKg=evaporatedDepth*CELL_MASS;
+ // Herbivore motion & feeding modify only existing spatial stocks. Their water
+ // elevation difference is compensated by sensible heat, as in infiltration.
+ const animalPotentialBefore=potential();stepHerbivores();stepPredators();
+ airHeat+=animalPotentialBefore-potential();
+ currentPotential=potential();currentMass=mass();recalcHeat();
+ tickCount++;classifyLandscape();
+ if(tickCount%25===0){populationHistory.push({step:tickCount,herb:animals.length,pred:predators.length});
+  if(populationHistory.length>1400)populationHistory=populationHistory.filter((p,i)=>i%2===0);}
+
+ const massError=Math.abs(currentMass-initialMass)/initialMass;
+ const energyError=Math.abs(totalEnergy()-initialEnergy)/initialEnergy;
+ const dryMassError=Math.abs(dryMass()-initialDryMass)/initialDryMass;
+ if(!Number.isFinite(currentMass)||!Number.isFinite(totalEnergy())||massError>1e-9||energyError>1e-9||dryMassError>1e-9||plantBiomass.some(v=>v < -1e-10)||substrateKg.some(v=>v < -1e-10)||animals.some(a=>a.energyJ< -1e-7||a.waterKg< -1e-7||a.structureKg< -1e-8)||predators.some(p=>p.energyJ< -1e-7||p.waterKg< -1e-7||p.structureKg< -1e-8)||solarEnergy < -1||airHeat < 0||soilHeat.some(v=>v < 0)){
+  running=false;setPlaying(false);showError=true;
+  $('draftStatus').textContent='Alerte : masse, énergie ou température hors bornes.';
+  $('draftStatus').classList.add('pending');
+ }
+}
+const cpoints=[[37,75,57],[65,104,79],[106,129,84],[158,152,110],[198,183,152]];
+function samplePalette(v){const t=clamp(v,0,1)*(cpoints.length-1),i=Math.min(cpoints.length-2,Math.floor(t)),q=t-i;return [0,1,2].map(k=>cpoints[i][k]*(1-q)+cpoints[i+1][k]*q);}
+function draw(){const p=pixels.data;let k=0;
+ const rainMin=view==='rainaccum'?Math.min(...rainAccumKg):0,rainMax=view==='rainaccum'?Math.max(...rainAccumKg):1;
+ const rainRange=Math.max(1,rainMax-rainMin);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x,h=water[i],z=terrain[i],t=z/maxAltitude;
+  let r,g,b;
+  if(view==='biome'){const rgb=REGION_RGB[classes[i]];r=rgb[0];g=rgb[1];b=rgb[2];}
+  else if(view==='vegetation'){const density=clamp(plantBiomass[i]/6,0,1);r=22+20*density;g=37+154*density;b=36+61*density;}
+  else if(view==='rainaccum'){
+    const density=clamp((rainAccumKg[i]-rainMin)/rainRange,0,1);
+    r=14+86*density;g=27+178*density;b=46+148*density;
+  }else if(view==='clouds'){
+    const density=clamp((cloudKg[i]-14)/13,0,1),vapor=clamp(vaporKg[i]/135,0,.65);
+    r=20+166*density+38*vapor;g=48+162*density+29*vapor;b=86+135*density+15*vapor;
+  }else if(view==='rain'){
+    const density=clamp(rainCellKg[i]/.65,0,1),cloud=clamp(cloudKg[i]/30,0,1);
+    r=16+60*cloud;g=34+185*density+55*cloud;b=55+181*density+88*cloud;
+  }else if((view==='animals'||view==='predators')){const density=clamp(plantBiomass[i]/5,0,1);r=18+20*density;g=36+105*density;b=36+48*density;if(water[i]>.05){r=19;g=64;b=127;}}else if(view==='soil'){
+    const moisture=clamp(soilWater[i]/Math.max(.001,MAX_SOIL_CAPACITY_M*retentionPct/100),0,1);
+    r=65-40*moisture;g=58+88*moisture;b=40+107*moisture;
+  }else if(view==='temperature'){
+    const u=clamp((tempSoil(i)+10)/45,0,1);
+    if(u<.5){const q=u*2;r=34+90*q;g=94+54*q;b=192-115*q;}
+    else{const q=(u-.5)*2;r=124+119*q;g=148-60*q;b=77-49*q;}
+  }else if(view==='water'){
+    if(h<.015){r=14;g=28;b=35;}else{const a=clamp(Math.log1p(h)*.45,0,1);r=13+22*a;g=58+97*a;b=93+128*a;}
+  }else{
+    [r,g,b]=samplePalette(t);
+    const west=terrain[y*N+Math.max(x-1,0)],east=terrain[y*N+Math.min(x+1,N-1)];
+    const north=terrain[Math.max(y-1,0)*N+x],south=terrain[Math.min(y+1,N-1)*N+x];
+    const shade=clamp(.91+.048*(west-east)+.04*(north-south),.60,1.27);
+    r*=shade;g*=shade;b*=shade;
+    if(view==='mix' && h>.012){
+      const op=clamp(.36+.6*(1-Math.exp(-h*.33)),.30,.95);
+      const deep=1-Math.exp(-h*.28);
+      const wr=20+12*deep,wg=104-32*deep,wb=152+26*deep;
+      r=r*(1-op)+wr*op;g=g*(1-op)+wg*op;b=b*(1-op)+wb*op;
+    }
+  }
+  // Visible vegetation is overlaid on landscapes and mixed physical relief,
+  // but no vegetation may cover deep water as a visual shortcut.
+  if((view==='biome'||view==='mix') && plantBiomass[i]>.025 && h<SEED_MAX_FLOOD_M){
+   const density=clamp(plantBiomass[i]/4,0,1),opacity=.22+.70*density;
+   r=r*(1-opacity)+29*opacity;g=g*(1-opacity)+176*opacity;b=b*(1-opacity)+78*opacity;
+  }
+  // Cloud shadows and white haze over the geographic and mixed views.
+  if((view==='biome'||view==='mix')&&cloudKg[i]>16){
+   const opacity=clamp((cloudKg[i]-16)/45,0,.32);
+   r=r*(1-opacity)+195*opacity;g=g*(1-opacity)+204*opacity;b=b*(1-opacity)+208*opacity;
+  }
+  p[k++]=clamp(Math.round(r),0,255);p[k++]=clamp(Math.round(g),0,255);p[k++]=clamp(Math.round(b),0,255);p[k++]=255;
+ }
+ sctx.putImageData(pixels,0,0);ctx.imageSmoothingEnabled=view!=='biome'&&view!=='vegetation';ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(small,0,0,canvas.width,canvas.height);
+ if(view==='biome'){
+  const scale=canvas.width/N;
+  // Boundaries of coherent categories: drawn over the physical-state raster.
+  ctx.strokeStyle='rgba(6,17,20,.55)';ctx.lineWidth=.8;ctx.beginPath();
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+   const i=y*N+x;if(x<N-1&&regionIds[i]!==regionIds[i+1]){const xx=(x+1)*scale;ctx.moveTo(xx,y*scale);ctx.lineTo(xx,(y+1)*scale);}
+   if(y<N-1&&regionIds[i]!==regionIds[i+N]){const yy=(y+1)*scale;ctx.moveTo(x*scale,yy);ctx.lineTo((x+1)*scale,yy);}
+  }
+  ctx.stroke();
+  // Show labels for the largest distinct patches; omit small fragments.
+  const labels=regions.filter(r=>r.count>=45).sort((a,b)=>b.count-a.count).slice(0,9);
+  const positions=[];ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 11px system-ui,sans-serif';
+  for(const r of labels){
+   const x=(r.cx+.5)*scale,y=(r.cy+.5)*scale;
+   if(positions.some(p=>Math.hypot(p.x-x,p.y-y)<68))continue;
+   positions.push({x,y});const caption=r.label==='Mer intérieure*'?'Mer intérieure':r.label;
+   const tw=ctx.measureText(caption).width;
+   ctx.fillStyle='rgba(6,19,24,.78)';ctx.fillRect(x-tw/2-7,y-11,tw+14,22);
+   ctx.fillStyle='#f3fff7';ctx.fillText(caption,x,y);
+  }
+ }
+ if(selectedRegionId>=0 && selectedRegionId<regions.length){
+  // Non-selected regions are dimmed without changing classification or masses.
+  ctx.fillStyle='rgba(2,12,20,.57)';const scale=canvas.width/N;
+  for(let i=0;i<SIZE;i++)if(regionIds[i]!==selectedRegionId)ctx.fillRect((i%N)*scale,Math.floor(i/N)*scale,scale+.6,scale+.6);
+  const r=regions[selectedRegionId];ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 15px system-ui,sans-serif';
+  const x=(r.cx+.5)*scale,y=(r.cy+.5)*scale;
+  ctx.fillStyle='rgba(4,20,25,.87)';const width=ctx.measureText(r.label).width+22;ctx.fillRect(x-width/2,y-16,width,32);ctx.fillStyle='#ffffff';ctx.fillText(r.label,x,y);
+ }
+
+ // Animals are not cells and are rendered at continuous meter positions.
+ if(view!=='water'&&view!=='soil'&&view!=='temperature'&&view!=='clouds'&&view!=='rain'&&view!=='rainaccum')drawPredatorVision();
+ if(view!=='water'&&view!=='soil'&&view!=='temperature'&&view!=='clouds'&&view!=='rain'&&view!=='rainaccum')drawHerbivores();
+ if(view!=='water'&&view!=='soil'&&view!=='temperature'&&view!=='clouds'&&view!=='rain'&&view!=='rainaccum')drawPredators();
+}
+function drawPopulationChart(){
+ const c=$('populationChart'),cx=c.getContext('2d'),w=c.width,h=c.height;
+ cx.clearRect(0,0,w,h);cx.fillStyle='#102832';cx.fillRect(0,0,w,h);
+ const x0=37,x1=w-42,y0=14,y1=h-23;
+ const herbMax=Math.max(20,Math.ceil(Math.max(...populationHistory.map(d=>d.herb),animals.length)/20)*20);
+ const predMax=Math.max(4,Math.ceil(Math.max(...populationHistory.map(d=>d.pred),predators.length)/4)*4);
+ const maxStep=Math.max(25,tickCount);
+ cx.strokeStyle='#23444d';cx.lineWidth=1;
+ for(let k=0;k<5;k++){
+  const y=y1-(y1-y0)*k/4;cx.beginPath();cx.moveTo(x0,y);cx.lineTo(x1,y);cx.stroke();
+ }
+ cx.font='11px system-ui,sans-serif';cx.textBaseline='middle';cx.fillStyle='#ffbb76';cx.textAlign='left';
+ cx.fillText(String(herbMax),3,y0+1);cx.fillText('0',12,y1);
+ cx.textAlign='right';cx.fillStyle='#f376a6';cx.fillText(String(predMax),w-4,y0+1);cx.fillText('0',w-17,y1);
+ cx.fillStyle='#a4bec3';cx.textAlign='left';cx.fillText('0',x0,y1+13);
+ cx.textAlign='right';cx.fillText(String(tickCount)+' pas',x1,y1+13);
+ const entries=populationHistory.length && populationHistory[populationHistory.length-1].step===tickCount?
+  populationHistory:[...populationHistory,{step:tickCount,herb:animals.length,pred:predators.length}];
+ for(const [key,max,color] of [['herb',herbMax,'#ffbb76'],['pred',predMax,'#f376a6']]){
+  cx.strokeStyle=color;cx.lineWidth=2.5;cx.beginPath();
+  entries.forEach((d,i)=>{
+   const x=x0+(x1-x0)*d.step/maxStep,y=y1-(y1-y0)*d[key]/max;
+   if(i===0)cx.moveTo(x,y);else cx.lineTo(x,y);
+  });cx.stroke();
+ }
+}
+function updateDisplay(redraw){
+ let wet=0;for(let i=0;i<SIZE;i++)if(water[i]>.035)wet++;
+ const e=totalEnergy(),md=initialMass?100*(currentMass-initialMass)/initialMass:0,ed=initialEnergy?100*(e-initialEnergy)/initialEnergy:0;
+ const reservoirs=reservoirMasses();
+ $('waterTotal').textContent=sci(currentMass);$('potEnergy').textContent=sci(currentPotential);$('heatEnergy').textContent=sci(heatEnergy);
+ const avgGround=(heatEnergy-airHeat)/SIZE/SOIL_HEAT_CAP_J_K+BASE_TEMP_C;
+ const airC=tempAir(),phase=(tickCount%DAY_STEPS)/DAY_STEPS,sun=sunlight(tickCount);
+ const dayNumber=Math.floor(tickCount/DAY_STEPS)+1;
+ $('airTemp').textContent=fmt(airC,2)+' °C';$('soilTemp').textContent=fmt(avgGround,2)+' °C';
+ $('airTempQuick').textContent=fmt(airC,1)+' °C';$('soilTempQuick').textContent=fmt(avgGround,1)+' °C';
+ $('solarEnergy').textContent=sci(solarEnergy)+' J';$('radiatedEnergy').textContent=sci(radiatedEnergy)+' J';
+ $('cycleClock').textContent=climateClock(tickCount)+' · '+fmt(tickCount%DAY_STEPS,0)+' / 1 000 pas';
+ $('cyclePhase').textContent=(phase===0?'☀ Lever du soleil':sun>1e-8?'☀ Jour':'☾ Nuit')+' · Jour '+dayNumber;
+ $('sunQuick').textContent=fmt(sun*solarStrength,0)+' %';
+ $('cycleMarker').style.left=(phase*100)+'%';
+ $('nightVeil').style.opacity=String(phase>.5?Math.min(.27,.09+.18*Math.sin((phase-.5)*Math.PI*2)):.02);
+ $('surfaceMass').textContent=sci(reservoirs.surface)+' kg';$('soilMass').textContent=sci(reservoirs.soil)+' kg';
+ $('atmosphereMass').textContent=sci(reservoirs.atmosphere-cloudKg.reduce((a,b)=>a+b,0))+' kg';$('cloudMass').textContent=sci(cloudKg.reduce((a,b)=>a+b,0))+' kg';$('rainMass').textContent=fmt(lastRainKg,2)+' kg';$('landRainTotal').textContent=sci(totalLandRainKg)+' kg';$('waterRainTotal').textContent=sci(totalWaterRainKg)+' kg';$('transpirationMass').textContent=fmt(lastTranspirationKg,2)+' kg';$('plantWaterMass').textContent=fmt(reservoirs.plants,2)+' kg';$('cloudQuick').textContent=fmt(100*cloudCoverCells/SIZE,1)+' %';const heading=Math.atan2(windVY,windVX);const windArrow=windStrength===0?'·':['→','↘','↓','↙','←','↖','↑','↗'][((Math.round(heading/Math.PI*4)%8)+8)%8];$('windQuick').textContent=windArrow+' '+fmt(Math.hypot(windVX,windVY)*L,1)+' m/pas';$('latentEnergy').textContent=sci(latentEnergy)+' J';
+ $('energyTotal').textContent=sci(e)+' J';$('massDrift').textContent=(Math.abs(md)<1e-9?'≈ 0':fmt(md,9))+' %';$('energyDrift').textContent=(Math.abs(ed)<1e-9?'≈ 0':fmt(ed,9))+' %';
+ $('massDrift').className=Math.abs(md)<1e-7?'positive':'bad';$('energyDrift').className=Math.abs(ed)<1e-7?'positive':'bad';
+ $('plantCells').textContent=fmt(plantCoveredCells,0)+' / '+fmt(SIZE,0);
+ $('plantMass').textContent=sci(plantBiomass.reduce((a,b)=>a+b,0))+' kg';
+ $('substrateMass').textContent=sci(substrateKg.reduce((a,b)=>a+b,0))+' kg';
+ $('stableCells').textContent=fmt(stableHabitatCells,0)+' / '+fmt(SIZE,0);$('plantOffspring').textContent=fmt(plantSeedBirths,0);$('droughtCells').textContent=fmt(plantStressedCells,0);
+ $('plantChemical').textContent=sci(plantChemicalEnergy)+' J';
+ const dryDrift=100*(dryMass()-initialDryMass)/initialDryMass;
+ $('plantMassDrift').textContent=(Math.abs(dryDrift)<1e-9?'≈ 0':fmt(dryDrift,9))+' %';
+ $('plantMassDrift').className=Math.abs(dryDrift)<1e-7?'positive':'bad';
+ $('livingAnimals').textContent=fmt(animals.length,0);
+ $('animalEvents').textContent=fmt(totalBirths,0)+' / '+fmt(totalDeaths,0);
+ $('animalMass').textContent=fmt(animalDryMass(),3)+' kg';
+ $('animalWater').textContent=fmt(animalBodyWater(),2)+' kg';
+ $('animalChemical').textContent=sci(animalChemical())+' J';
+ $('animalGrazed').textContent=fmt(lastGrazedKg,4)+' kg';
+ $('livingPredators').textContent=fmt(predators.length,0);$('predatorEvents').textContent=fmt(predatorBirths,0)+' / '+fmt(predatorDeaths,0);
+ $('predatorKills').textContent=fmt(predatorKills,0);$('predatorKillsStep').textContent=fmt(lastPredatorKills,0);updatePredatorVision();
+ $('predatorDry').textContent=fmt(predatorDryMass(),3)+' kg';$('predatorWater').textContent=fmt(predatorBodyWater(),2)+' kg';
+ $('wetCells').textContent=fmt(wet,0)+' / '+fmt(SIZE,0);$('lastFlow').textContent=sci(lastMovedKg)+' kg';$('lastInfiltration').textContent=sci(lastInfiltrationKg)+' kg';$('lastEvaporation').textContent=sci(lastEvaporationKg)+' kg';$('simTime').textContent='Jour '+dayNumber+' · '+climateClock(tickCount);$('tickCount').textContent=fmt(tickCount,0);
+ if(redraw){analyzeRegions();renderRegionsSidebar();draw();drawPopulationChart();}
+}
+function setPlaying(v){running=v;$('liveDot').classList.toggle('on',running);$('liveState').textContent=running?'EN COURS':'EN PAUSE';$('playSymbol').textContent=running?'Ⅱ':'▶';$('playText').textContent=running?'Pause':'Démarrer';}
+function markDirty(){const e=$('draftStatus');e.textContent='Paramètres modifiés : cliquez sur « Générer » pour appliquer.';e.classList.add('pending');}
+function reflectInput(){const r=Number($('roughness').value),p=Number($('waterAmount').value),f=Number($('fluidity').value);$('basinDepthVal').textContent=$('basinDepth').value+' %';$('roughnessVal').textContent=r+' %';$('waterAmountVal').textContent=p+' %';$('fluidityVal').textContent=fmt(f,2);$('waterHint').textContent='Profondeur moyenne équivalente : '+fmt(meanDepthForPct(p))+' m.';$('evaporationVal').textContent=fmt(Number($('evaporationRate').value),3)+' mm / pas';$('retentionVal').textContent=$('retention').value+' %';$('solarVal').textContent=$('solarStrength').value+' %';$('radiationVal').textContent=$('radiationStrength').value+' %';$('stabilityVal').textContent=$('stabilityDuration').value+' pas';$('seedDensityVal').textContent=$('seedDensity').value+' %';$('growthVal').textContent=$('growthStrength').value+' %';$('animalCountVal').textContent=$('animalCount').value;$('animalMutationVal').textContent=$('animalMutation').value+' %';$('rainVal').textContent=$('rainStrength').value+' %';$('windVal').textContent=$('windStrength').value+' %';$('plantMutationVal').textContent=$('plantMutation').value+' %';$('predatorCountVal').textContent=$('predatorCount').value;$('predatorMutationVal').textContent=$('predatorMutation').value+' %';$('predatorInstinctVal').textContent=$('predatorInstinct').value+' %';}
+function exportCsv(){let csv='x_m;y_m;altitude_m;surface_water_depth_m;surface_level_m;surface_water_kg;soil_water_equivalent_depth_m;soil_water_kg;slope;landscape_class;region_id;soil_temp_c;soil_moisture_stable_ticks;dormant_seed;plant_dry_biomass_kg;substrate_dry_kg;herbivores_in_cell;predators_in_cell;cloud_kg;vapor_kg;rain_kg;rain_accumulated_kg;plant_water_kg;plant_stress;plant_drought_trait;plant_water_use_trait;plant_heat_trait;plant_growth_trait;seed_dry_kg\n';for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+ const i=y*N+x;csv+=(x+.5)*L+';'+(y+.5)*L+';'+terrain[i].toFixed(8)+';'+water[i].toFixed(8)+';'+(terrain[i]+water[i]).toFixed(8)+';'+(water[i]*CELL_MASS).toFixed(5)+';'+soilWater[i].toFixed(8)+';'+(soilWater[i]*CELL_MASS).toFixed(5)+';'+localSlopes[i].toFixed(6)+';'+(regionAtCell(i)?.label||'')+';'+regionIds[i]+';'+tempSoil(i).toFixed(3)+';'+wetStreak[i]+';'+seedBank[i]+';'+plantBiomass[i].toFixed(6)+';'+substrateKg[i].toFixed(6)+';'+animals.filter(a=>animalCell(a)===i).length+';'+predators.filter(p=>animalCell(p)===i).length+';'+cloudKg[i].toFixed(6)+';'+vaporKg[i].toFixed(6)+';'+rainCellKg[i].toFixed(6)+';'+rainAccumKg[i].toFixed(6)+';'+plantWaterKg[i].toFixed(6)+';'+plantStress[i].toFixed(2)+';'+plantDrought[i].toFixed(4)+';'+plantWaterUse[i].toFixed(4)+';'+plantHeatTol[i].toFixed(4)+';'+plantGrowthGene[i].toFixed(4)+';'+seedDryKg[i].toFixed(6)+'\n';}
+ const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='monde_vj_v29_seed_'+seed+'_pas_'+tickCount+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),800);
+}
+function updateInspect(e){const rect=canvas.getBoundingClientRect();const x=Math.floor((e.clientX-rect.left)/rect.width*N),y=Math.floor((e.clientY-rect.top)/rect.height*N);if(x<0||x>=N||y<0||y>=N)return;
+ const i=y*N+x;hoveredCell=i;const info=$('cellInspect'),r=regionAtCell(i);info.innerHTML='Cellule '+(x+1)+', '+(y+1)+'<br><b>Paysage : '+(r?.label||'—')+'</b><br>Région : '+(r?fmt(r.hectares,2)+' ha':'—')+'<br>Altitude : '+fmt(terrain[i])+' m<br>Pente : '+fmt(localSlopes[i]*100,1)+' %<br>EAU : '+fmt(water[i],3)+' m<br>Sol : '+fmt(soilWater[i]*1000,1)+' mm équiv.<br>Sol : '+fmt(tempSoil(i),2)+' °C<br>Humidité stable : '+wetStreak[i]+' pas<br>Graines dormantes : '+(seedBank[i]?'oui':'non')+'<br>Biomasse végétale : '+fmt(plantBiomass[i],3)+' kg<br>Nuage : '+fmt(cloudKg[i],2)+' kg<br>Vapeur : '+fmt(vaporKg[i],2)+' kg<br>Pluie / pas : '+fmt(rainCellKg[i],2)+' kg<br>Pluie cumulée : '+fmt(rainAccumKg[i],2)+' kg<br>EAU plante : '+fmt(plantWaterKg[i],2)+' kg<br>Stress : '+fmt(plantStress[i],0)+' pas<br>Tolérance sécheresse : '+fmt(plantDrought[i],2);const nearAnimal=animals.find(a=>Math.hypot(a.x-(x+.5)*L,a.y-(y+.5)*L)<9);if(nearAnimal)info.innerHTML+='<br><b>Herbivore #'+nearAnimal.id+'</b> · génération '+nearAnimal.generation+'<br>Énergie : '+fmt(nearAnimal.energyJ/1e6,2)+' MJ · eau : '+fmt(nearAnimal.waterKg,1)+' kg';const nearPred=predators.find(p=>Math.hypot(p.x-(x+.5)*L,p.y-(y+.5)*L)<11);if(nearPred)info.innerHTML+='<br><b>Prédateur #'+nearPred.id+'</b> · génération '+nearPred.generation+'<br>Énergie : '+fmt(nearPred.energyJ/1e6,2)+' MJ';info.classList.add('visible');$('hoverHint').textContent='x = '+fmt((x+.5)*L,0)+' m · y = '+fmt((y+.5)*L,0)+' m';}
+function animation(t){let elapsed=Math.min(120,t-lastAnim);lastAnim=t;if(running&&!showError){accumulator+=elapsed;let bursts=0;while(accumulator>=65 && bursts<3){accumulator-=65;for(let j=0;j<speed;j++){tick();if(showError)break;}bursts++;if(showError)break;}if(bursts>0)updateDisplay(true);}
+ requestAnimationFrame(animation);
+}
+for(const id of ['landform','basinDepth','roughness','waterAmount','fluidity','seed','waterDistribution','evaporationRate','retention','solarStrength','radiationStrength','stabilityDuration','seedDensity','growthStrength','animalCount','animalMutation','rainStrength','windStrength','windMode','plantMutation','predatorCount','predatorMutation','predatorInstinct']){$(id).addEventListener('input',()=>{reflectInput();markDirty();});}
+$('generateBtn').addEventListener('click',newWorld);$('newSeedBtn').addEventListener('click',()=>{$('seed').value=String((Math.floor(Math.random()*4294967296))>>>0);reflectInput();newWorld();});$('resetBtn').addEventListener('click',resetWorld);
+$('playBtn').addEventListener('click',()=>{setPlaying(!running);lastAnim=performance.now();});$('stepBtn').addEventListener('click',()=>{setPlaying(false);tick();updateDisplay(true);});
+document.querySelectorAll('[data-speed]').forEach(btn=>btn.addEventListener('click',()=>{speed=Number(btn.dataset.speed);document.querySelectorAll('[data-speed]').forEach(b=>b.classList.toggle('active',b===btn));}));
+document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{view=btn.dataset.view;document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b===btn));$('mapModeLabel').textContent=view==='biome'?'PAYSAGES + VÉGÉTATION':view==='terrain'?'RELIEF':view==='water'?'EAU DE SURFACE':view==='soil'?'HUMIDITÉ DU SOL':view==='temperature'?'TEMPÉRATURE DU SOL':view==='vegetation'?'VÉGÉTATION':view==='animals'?'HERBIVORES':view==='predators'?'PRÉDATEURS':view==='clouds'?'VAPEUR ET NUAGES':view==='rain'?'PRÉCIPITATIONS':view==='rainaccum'?'PLUIE CUMULÉE':'RELIEF + EAU';draw();}));
+$('visionBtn').addEventListener('click',()=>{showPredatorVision=!showPredatorVision;$('visionBtn').classList.toggle('active',showPredatorVision);$('visionBtn').setAttribute('aria-pressed',String(showPredatorVision));updatePredatorVision();draw();});
+$('clearRegionBtn').addEventListener('click',()=>{selectedRegionId=-1;selectedCellIndex=-1;draw();renderRegionsSidebar();$('hoverHint').textContent='Survolez pour inspecter · cliquez pour choisir une région';});
+canvas.addEventListener('click',e=>{const rect=canvas.getBoundingClientRect(),x=Math.floor((e.clientX-rect.left)/rect.width*N),y=Math.floor((e.clientY-rect.top)/rect.height*N);if(x<0||x>=N||y<0||y>=N)return;const clickX=(e.clientX-rect.left)/rect.width*N*L,clickY=(e.clientY-rect.top)/rect.height*N*L;const chosen=predators.find(p=>Math.hypot(p.x-clickX,p.y-clickY)<22);if(chosen){selectedPredatorId=chosen.id;showPredatorVision=true;$('visionBtn').classList.add('active');$('visionBtn').setAttribute('aria-pressed','true');updatePredatorVision();draw();return;}selectedCellIndex=y*N+x;selectedRegionId=regionIds[selectedCellIndex];draw();renderRegionsSidebar();const r=regions[selectedRegionId];$('hoverHint').textContent=r.label+' · '+fmt(r.hectares,2)+' ha';});
+canvas.addEventListener('pointermove',updateInspect);canvas.addEventListener('pointerleave',()=>{$('cellInspect').classList.remove('visible');$('hoverHint').textContent='Survolez la carte pour inspecter une cellule';});$('exportBtn').addEventListener('click',exportCsv);
+document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;if(e.code==='Space'){e.preventDefault();setPlaying(!running);lastAnim=performance.now();}else if(e.code==='ArrowRight'){e.preventDefault();setPlaying(false);tick();updateDisplay(true);}else if(e.code==='KeyR'){e.preventDefault();resetWorld();}});
+reflectInput();newWorld();requestAnimationFrame(animation);
+// Nonvisual debug interface for reproducibility and invariant tests.
+window.__VJ_TEST__={
+ probeHunting:()=>{
+  const brain=predatorGenes(1),p={x:500,y:500,heading:0,energyJ:PREDATOR_START_ENERGY_J,
+    waterKg:PREDATOR_WATER_INITIAL_KG,genes:brain},saved=animals,result={};
+  try{for(const [name,theta] of [['left',-.70],['front',0],['right',.70],['absent',null]]){
+    animals=theta===null?[]:[{x:500+Math.cos(theta)*60,y:500+Math.sin(theta)*60}];
+    result[name]={sensors:[predatorRay(p,-.72)[0],predatorRay(p,0)[0],predatorRay(p,.72)[0]],...predatorCommand(p)};
+  }}finally{animals=saved;}return result;
+ },
+ getHuntDiagnostics:()=>({instinct:predatorInstinct,sightM:PREDATOR_SIGHT_M,selectedPredatorId:followedPredator()?.id||null,
+  seenNow:predators.map(p=>({id:p.id,visible:visiblePrey(p).length,command:predatorCommand(p)}))}),
+ getPopulationHistory:()=>populationHistory.map(d=>({...d})),getWeather:()=>({windVX,windVY,windSpeedCellsPerTick:Math.hypot(windVX,windVY),windMode,windStrength,windAutoAngle:autoWindAngle,totalLandRainKg,totalWaterRainKg,landRainFraction:totalRainKg?totalLandRainKg/totalRainKg:0,rainAccumMaxKg:Math.max(...rainAccumKg),rainAccumSamples:[rainAccumKg[0],rainAccumKg[17],rainAccumKg[5432],rainAccumKg[9999]],vaporKg:vaporKg.reduce((a,b)=>a+b,0),cloudKg:cloudKg.reduce((a,b)=>a+b,0),cloudCoverCells,lastRainKg,totalRainKg,lastTranspirationKg,plantWaterKg:plantWaterMass(),cloudSamples:[cloudKg[0],cloudKg[17],cloudKg[5432],cloudKg[9999]],rainSamples:[rainCellKg[0],rainCellKg[17],rainCellKg[5432],rainCellKg[9999]],rainCells:rainCellKg.reduce((a,b)=>a+(b>0),0),maxCloudKg:Math.max(...cloudKg),maxVaporKg:Math.max(...vaporKg),atmosphereCheck:atmosphereWaterKg-vaporKg.reduce((a,b)=>a+b,0)-cloudKg.reduce((a,b)=>a+b,0)}),getPlantEvolution:()=>({seedBirths:plantSeedBirths,seedMatterKg:seedMatterMass(),plantWaterKg:plantWaterMass(),stressedCells:plantStressedCells,plantsWithSeeds:seedBank.reduce((a,b)=>a+b,0),plantGeneDrought:[plantDrought[0],plantDrought[17],plantDrought[5432],plantDrought[9999]],maxPlantWater:Math.max(...plantWaterKg)}),getPredators:()=>({alive:predators.length,births:predatorBirths,deaths:predatorDeaths,kills:predatorKills,lastKills:lastPredatorKills,chemicalJ:predatorChemical(),dryMass:predatorDryMass(),bodyWater:predatorBodyWater(),individuals:predators.map(p=>({id:p.id,x:p.x,y:p.y,energyJ:p.energyJ,structureKg:p.structureKg,waterKg:p.waterKg,age:p.age,generation:p.generation,genes:Array.from(p.genes.slice(0,8))}))}),getHerbivores:()=>({alive:animals.length,births:totalBirths,deaths:totalDeaths,animalDryKg:animalDryMass(),animalWaterKg:animalBodyWater(),chemicalJ:animalChemical(),lastGrazedKg,individuals:animals.map(a=>({id:a.id,x:a.x,y:a.y,energyJ:a.energyJ,waterKg:a.waterKg,age:a.age,structureKg:a.structureKg,genes:a.genes.slice(0,4)}))}),getVegetation:()=>({plantCells:plantCoveredCells,stableCells:stableHabitatCells,biomassKg:plantBiomass.reduce((a,b)=>a+b,0),substrateKg:substrateKg.reduce((a,b)=>a+b,0),dryMass:dryMass(),initialDryMass,plantChemicalEnergy,lastPlantGrowthKg,biomassSamples:[plantBiomass[0],plantBiomass[17],plantBiomass[5432],plantBiomass[9999]],streakSamples:[wetStreak[0],wetStreak[17],wetStreak[5432],wetStreak[9999]],seedCells:seedBank.reduce((a,b)=>a+b,0),maxBiomass:Math.max(...plantBiomass),wetStreakMax:Math.max(...wetStreak)}),getLandscape:()=>({regions:regions.map(r=>({id:r.id,label:r.label,area:r.hectares,count:r.count})),totalRegions:regions.length,significant:largeRegionCount,counts:regionTypeCounts,cells:Array.from(classes),regionIds:Array.from(regionIds)}),getState:()=>({seed,landform,basinDepth,roughness,evaporationRateMm,retentionPct,solarStrength,radiationStrength,tickCount,
+ dayIndex:Math.floor(tickCount/DAY_STEPS)+1,dayPhase:(tickCount%DAY_STEPS),sunlight:sunlight(tickCount),airTemperatureC:tempAir(),avgSoilTemperatureC:(heatEnergy-airHeat)/SIZE/SOIL_HEAT_CAP_J_K+BASE_TEMP_C,
+ solarEnergy,radiatedEnergy,lastSunlightJ,lastRadiationJ,plantChemicalEnergy,plantCoveredCells,stableHabitatCells,airHeat,soilHeatSamples:[soilHeat[0],soilHeat[17],soilHeat[5432],soilHeat[9999]],soilTemperatureSamples:[tempSoil(0),tempSoil(17),tempSoil(5432),tempSoil(9999)],waterMass:currentMass,initialMass,reservoirs:reservoirMasses(),predatorAlive:predators.length,predatorBirths,predatorDeaths,predatorKills,predatorMass:predatorDryMass(),predatorWater:predatorBodyWater(),predatorChemicalEnergy:predatorChemical(),animalAlive:animals.length,animalBirths:totalBirths,animalDeaths:totalDeaths,animalMass:animalDryMass(),animalWater:animalBodyWater(),animalChemicalEnergy:animalChemical(),dryMass:dryMass(),initialDryMass,potential:currentPotential,heat:heatEnergy,latent:latentEnergy,initialEnergy,totalEnergy:totalEnergy(),lastMovedKg,lastInfiltrationKg,lastEvaporationKg,minAltitude:Math.min(...terrain),maxAltitude,minDepth:Math.min(...water),minSoilDepth:Math.min(...soilWater),maxSoilDepth:Math.max(...soilWater),maxDepth:Math.max(...water),wetCells:water.reduce((a,v)=>a+(v>.035?1:0),0),samples:[water[0],water[17],water[110],water[1004],water[5432],water[9999]],terrainSamples:[terrain[0],terrain[17],terrain[110],terrain[1004],terrain[5432],terrain[9999]],soilSamples:[soilWater[0],soilWater[17],soilWater[110],soilWater[1004],soilWater[5432],soilWater[9999]],landscapeRegions:largeRegionCount,landscapeCounts:regionTypeCounts,landscapeSamples:[classes[0],classes[17],classes[110],classes[1004],classes[5432],classes[9999]],showError}),step:n=>{for(let i=0;i<n;i++){tick();if(showError)break;}updateDisplay(true);},regen:newWorld,reset:resetWorld,terrain:()=>Array.from(terrain),rainAccum:()=>Array.from(rainAccumKg),vapor:()=>Array.from(vaporKg),cloud:()=>Array.from(cloudKg),water:()=>Array.from(water),soil:()=>Array.from(soilWater),temperatures:()=>Array.from(soilHeat,v=>v/SOIL_HEAT_CAP_J_K+BASE_TEMP_C),plants:()=>Array.from(plantBiomass),substrate:()=>Array.from(substrateKg),wetStreak:()=>Array.from(wetStreak)};
+})();
+</script>
+</body>
+</html>

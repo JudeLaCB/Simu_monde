@@ -221,3 +221,35 @@ Les rapports structurent une **comptabilité de matière/énergie idéalisée** 
 Les réseaux commencent avec des poids aléatoires, les stratégies de chasse efficaces ne sont ni prescrites ni garanties. Des extinctions de prédateurs peuvent survenir lorsque les proies deviennent rares, et une très forte densité peut provoquer la disparition locale des herbivores. La sélection naturelle sur plusieurs générations et une coévolution stable restent à établir empiriquement ; les populations initiales et taux métaboliques sont des paramètres expérimentaux, non une calibration zoologique.
 
 **PR empilée sur #27 (V2.8). Fusionner #22 → #23 → #24 → #25 → #26 → #27 → V2.9.**
+
+## V2.10 — Vision et instinct de chasse héréditaire
+
+Prototype HTML autonome : [v2_10_chasse_instinct_neuronal.html](v2_10_chasse_instinct_neuronal.html).
+
+# Monde VJ V2.10 — Vision et instinct de chasse
+
+Ouvrir `Monde_VJ_V2_10_Vision_Chasse.html` avec Chrome ou Edge. Pas d'installation nécessaire.
+
+## Nouveautés
+
+- Les prédateurs détectent les proies à 155 m dans des directions gauche, devant, droite avec des signaux progressifs (distance et angle).
+- Le réseau neuronal 12→8→2 conserve la décision du mouvement, mais les premiers prédateurs héritent d'un instinct neuronal de poursuite. Celui-ci est une hypothèse biologique **explicitement codée**, pas une émergence spontanée.
+- Curseur « Instinct neuronal de chasse » de 0 à 100 % (90 % par défaut) : génomes initiaux aléatoires à 0 %, biais neuronal vers les proies à intensité croissante ; tous les coefficients peuvent muter à la reproduction.
+- Rotation plus rapide (jusqu'à 0,34 rad/pas). Capture au contact uniquement, à moins de 8 m, et seulement si le prédateur a besoin de nourriture.
+- Bouton « Voir la vision » et clic sur un triangle de prédateur pour voir le cône de perception, les proies perçues et leur nombre.
+
+## Expérience comparée
+
+Seed 42, 50 herbivores et 4 prédateurs au départ :
+- V2.9 : 6 captures cumulées après 500 pas.
+- V2.10 avec instinct 90 % : 16 captures cumulées après 500 pas.
+
+Test isolé : proie à gauche → rotation -0,320 rad/pas ; proie à droite → +0,329 rad/pas.
+
+Après 4 600 pas : 18 captures, 12 herbivores et 2 prédateurs vivants dans le scénario testé. Ces résultats ne prouvent ni stabilité écologique ni apprentissage individuel.
+
+### Conservation et limites
+
+Tests navigateur Chromium : invariants numériques de masse d'eau, matière sèche et énergie (erreur relative de l'ordre de 1e-15), scénario zéro prédateur identique à V2.9 sur les grandeurs comparées à 400 pas, mobile 390 px sans débordement. Les capteurs ne considèrent pas encore l'occlusion par les obstacles, le relief ou la nuit. Seule l'évolution générationnelle (mutations + sélection) peut modifier les connexions ; aucun apprentissage du vivant n'est encore simulé.
+
+**Limite importante :** ce nouvel instinct est volontairement initialisé dans les poids neuronaux. Une capture plus fréquente ne constitue pas une preuve d'intelligence émergente ou d'équilibre proies-prédateurs. La vision ignore encore les occultations par les obstacles et n'est pas affectée par la nuit. La reproduction permet des variations génétiques, sans apprentissage au cours de la vie.
