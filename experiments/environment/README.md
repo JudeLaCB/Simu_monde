@@ -114,3 +114,42 @@ La variable `initialEnergy` est fixée après les allocations initiales de stock
 ### Limites et suite possible
 
 Les paramètres physiologiques sont expérimentaux. Les stratégies efficaces ne sont pas garanties par une évolution sélectionnée si les niches sont trop difficiles, et l'apparition d'intelligence n'est pas démontrée. À étudier : trajectoires des individus, génomes parent/descendance, durée des populations, absorption et transpiration réelles par les plantes, décomposition différée, cycle carbone/oxygène et mécanismes évolutifs plus robustes.
+
+
+## V2.7 — Nuages, pluies, transpiration et sélection des végétaux
+
+**Prototype autonome :** [v2_7_nuages_pluie_vegetation_evolutive.html](v2_7_nuages_pluie_vegetation_evolutive.html). Cette expérimentation HTML reprend la V2.6 et **ne modifie pas** le simulateur Python historique ni les versions HTML archivées.
+
+### Eau atmosphérique locale
+- L'atmosphère dispose désormais d'un champ **vapeur** et d'un champ **nuages** (100×100 cellules de 10×10 m, kg/cellule), transportés par un vent simplifié changeant progressivement de direction. Pour éviter les pertes d'eau en bord de carte, **les bordures atmosphériques sont périodiques** ; le sol garde ses bordures imperméables.
+- Le réservoir atmosphérique global affiché est la **somme vapeur + eau liquide suspendue dans les nuages**. La condensation, déclenchée lorsque la vapeur dépasse un seuil de saturation local dépendant de la température et du relief, transforme vapeur en nuage et **libère la chaleur latente dans l'air**. Les nuages peuvent se ré-évaporer quand l'air est sous-saturé.
+- Les précipitations n'apparaissent que lorsque l'eau liquide nuageuse atteint un seuil. Elles transfèrent de l'eau de l'atmosphère vers la surface et l'énergie potentielle de chute vers la chaleur. Curseur « Précipitations » (0 % désactive, sans contourner le réservoir).
+- **Pas encore** de calcul volumique de nuages, température atmosphérique par cellule, aérosols, humidité relative calibrée, vrai moteur de vent, saisons, météo réaliste.
+
+### Végétation autonome et sélection
+- La **germination** réclame une humidité localement stable sur la durée demandée ; les **plantes adultes** ne dépendent plus de ce streak et disposent d'une inertie physiologique face au manque d'eau. Une sécheresse **prolongée** peut encore provoquer leur dépérissement.
+- Leurs **racines prélèvent de l'eau dans le réservoir du sol**, stockent une petite quantité dans les plantes, puis les feuilles **transpirent** vers la vapeur atmosphérique en consommant de la chaleur et en transférant de l'énergie latente et gravitationnelle.
+- Chaque cellule porte quatre traits végétaux héritables (tolérance à la sécheresse, usage de l'eau, amplitude de tolérance thermique, vitesse de croissance). Des graines se dispersent localement depuis les plantes matures et peuvent muter. **La sélection vient des différences de survie/reproduction, sans fonction de score ni succès garanti**.
+- Chaque graine possède une **masse sèche de 4 g** : elle est prélevée sur le substrat au départ ou sur la biomasse parentale lors de la reproduction ; la matière et l'énergie chimiques restent comptabilisées.
+- Le substrat sec, la chimie, le métabolisme et les réserves hydriques sont **fortement idéalisés**. Pas de pollinisation, diversité taxonomique, cycle de CO₂/O₂, reproduction sexuée ou compétition explicite pour la lumière.
+
+### Énergie solaire et durée
+Le stock solaire initial a été augmenté de `3e14` à `3e16` J afin de permettre de longues simulations écologiques, tout en restant **fini**. Cela n'est ni une réserve astrophysique réaliste ni une preuve de durabilité indéfinie.
+
+### Bilans invariants
+```text
+Eau totale  = surface + sol + atmosphère (vapeur + nuages) + plantes + animaux
+Matière sèche = substrat + biomasse vivante + graines sèches + biomasse/énergie chimique animale équivalente
+Énergie = potentiel gravitationnel + chaleur sensible + chaleur latente + énergie solaire restante
+          + rayonnement sortant compté + énergie chimique végétale/graines + énergie chimique animale
+```
+La V2.7 introduit également les données géographiques de pluie, vapeur, nuage, eau végétale, stress et traits génétiques dans l'export CSV.
+
+### Contrôles navigateur (Chromium)
+- **Seed 42, réglages par défaut, 8 000 pas :** environ **61 herbivores vivants**, **90 naissances cumulées**, **802 cellules végétalisées** et **470 dispersions de graines cumulées**, avec **22,7 millions de kg d'eau tombés** en précipitations cumulées (cumul des transferts, et non masse nouvelle). Ce scénario montre une persistance à cet horizon, pas un équilibre démontré.
+- **1 000 pas :** environ **1,20 million de kg** de pluie cumulée. Présence mesurée de vapeur, nuages et précipitations spatialisées.
+- Configurations vérifiées : pluie désactivée (0 kg tombé en 1 300 pas), absence de graines (aucune plante à 900 pas), Soleil nul (aucune plante à 800 pas), forte mutation et 120 herbivores (1 200 pas), rétention nulle (aucune plante à 800 pas). Aucun échec du moteur ni de conservation dans les scénarios.
+- Réinitialisation : les mêmes observables après 500 pas sont reproduites **exactement**. Vérification du rendu mobile à 390 px, sans débordement horizontal.
+- Les tests sont des **tests d'intégration navigateur du prototype**, pas une calibration scientifique ni des tests du core historique.
+
+**PR empilée sur #25 (V2.6) ; fusionner les PR du plus ancien au plus récent.**
