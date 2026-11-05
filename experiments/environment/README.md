@@ -253,3 +253,42 @@ Après 4 600 pas : 18 captures, 12 herbivores et 2 prédateurs vivants dans le s
 Tests navigateur Chromium : invariants numériques de masse d'eau, matière sèche et énergie (erreur relative de l'ordre de 1e-15), scénario zéro prédateur identique à V2.9 sur les grandeurs comparées à 400 pas, mobile 390 px sans débordement. Les capteurs ne considèrent pas encore l'occlusion par les obstacles, le relief ou la nuit. Seule l'évolution générationnelle (mutations + sélection) peut modifier les connexions ; aucun apprentissage du vivant n'est encore simulé.
 
 **Limite importante :** ce nouvel instinct est volontairement initialisé dans les poids neuronaux. Une capture plus fréquente ne constitue pas une preuve d'intelligence émergente ou d'équilibre proies-prédateurs. La vision ignore encore les occultations par les obstacles et n'est pas affectée par la nuit. La reproduction permet des variations génétiques, sans apprentissage au cours de la vie.
+
+
+## V2.11 — Coévolution expérimentale : fuite, nutrition et prédation
+
+Prototype HTML autonome : [v2_11_fuite_alimentation_predation.html](v2_11_fuite_alimentation_predation.html) — les versions précédentes et `src/` ne sont pas modifiés.
+
+### Diagnostic de V2.10
+
+- Les prédateurs ont un instinct de poursuite et étaient plus rapides (8,8 m/pas) que les herbivores (5,2 m/pas) ; toute proie à moins de 8 m pouvait être capturée sans lutte, orientation d'attaque ou délai digestif.
+- Les herbivores percevaient une menace sans connexion de fuite garantie. Leur réseau de recherche alimentaire commençait également aléatoire.
+- **Témoin sans prédateur :** à seed 42, la population peut tomber à environ 9 individus au pas 3 000. La prédation aggrave donc une fragilité nutritionnelle/hydrique préexistante.
+
+### Changements
+
+- **Herbivores :** cinq capteurs de menace couvrant 360° jusqu'à 135 m alimentent cinq canaux neuronaux héréditaires. Instinct de fuite réglable **0–100 %** (75 % par défaut), vitesse de sprint modulée par le danger et par la fatigue qui récupère hors menace. Une fuite augmente le coût énergétique du déplacement ; aucun « aller au refuge » n'est programmé.
+- **Alimentation :** six neurones supplémentaires relient signaux locaux de végétation et d'eau aux moteurs rotation/vitesse. Instinct de recherche de ressources réglable **0–100 %** (70 % par défaut). **Ce sont des prédispositions génétiques introduites volontairement, pas des comportements apparus spontanément ; leurs connexions sont mutables et héréditaires.**
+- Les 122 anciens poids herbivores sont préservés dans le nouveau réseau étendu ; quand les deux instincts valent 0 %, le comportement d'origine peut être reproduit.
+- **Prédateurs :** 10,3 m/pas au maximum et dépense de mouvement de 70 J/m ; attaque seulement à moins de **5,4 m** dans le secteur frontal (angle de 0,8 rad), suivie de **220 pas de digestion/manipulation** sans nouvelle capture. Métabolisme de 950 J/pas. Les premières positions sont à 45–105 m d'un herbivore plutôt qu'à 11–49 m, pour éviter une capture immédiate.
+- La reproduction des prédateurs exige désormais >1 300 pas d'âge et >1 700 pas depuis la précédente, avec des réserves suffisantes (>83 % de l'énergie maximale). Aucune population ou nombre de captures n'est fixé artificiellement.
+- Graphique de population hérité, nouveau compteur d'herbivores en fuite, vue de vision des prédateurs conservée.
+
+### Mesures de contrôle (Chromium, seed 42, réglages par défaut)
+
+| Pas | Herbivores vivants | Prédateurs vivants | Captures cumulées |
+|---:|---:|---:|---:|
+| 3 000 | 38 | 8 | 17 |
+| 6 000 | 66 | 4 | 19 |
+| 9 000 | 150 | 4 | 28 |
+
+À 9 000 pas, **150 est le plafond technique navigateur** des herbivores, pas une preuve d'équilibre naturel. Sur une autre seed (517), la population prédatrice peut au contraire s'éteindre : aucune garantie de coexistence durable.
+
+### Tests
+
+- Sans prédateur, et avec fuite=0 / alimentation=0 : V2.11 reproduit exactement les grandeurs physiques, thermiques, végétales et animales comparées à V2.10 après 700 pas.
+- Reset après 1 800 pas et répétition : reproduction identique des grandeurs contrôlées.
+- Scénarios longs : eau totale, matière sèche et énergie conservées numériquement, écarts relatifs de l'ordre de 10⁻¹⁴ ou inférieurs ; pas d'alerte moteur sur les scénarios de référence ; pas de débordement mobile à 390px.
+- **Limites :** instincts construits et non appris, pas de combat probabiliste ou d'occlusion visuelle, carbone et thermodynamique simplifiés, nourriture/efficacité de chasse stylisées, cap des populations technique. L'équilibre écologique entre espèces reste **une hypothèse à tester sur plusieurs seeds et à très long terme**.
+
+Cette PR est empilée sur #29. Fusionner #22 → #23 → #24 → #25 → #26 → #27 → #28 → #29 → V2.11.
