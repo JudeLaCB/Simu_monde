@@ -180,3 +180,44 @@ Dans Chromium sur fichier HTML autonome : valeur de la seed 42, 11 000 pas conti
 ### Limites du laboratoire
 
 La vitesse du vent est exprimée en **mètres par pas** (10 m par cellule et 1 000 pas/jour) ; ce n'est ni une dynamique Navier–Stokes ni un vent calibré en m/s. Le mode automatique est un **forçage géographique heuristique** vers les terres, pas un champ de pression météorologique émergent. Les bords périodiques peuvent faire traverser plusieurs fois le monde de 1 km aux mêmes nuages. Une atmosphère 3D, des vents thermiques locaux, les fronts, les pluies au vent/sous le vent, le cycle carbone complet, la croissance végétale à très long terme et l'équilibre écologique sont des développements ultérieurs.
+
+
+## V2.9 — Prédateurs neuronaux et réseau trophique
+
+**Prototype autonome :** [v2_9_predateurs.html](v2_9_predateurs.html) ; reprend V2.8 sans modification des versions archivées ni du core Python.
+
+### Agents et interactions
+
+- Population initiale : **4 prédateurs par défaut**, réglage 0–40 ; conditions initiales échantillonnées autour des habitats des herbivores lorsque ceux-ci existent.
+- Prédateurs mobiles en coordonnées continues (mètres), chacun avec eau corporelle, matière sèche structurelle, énergie chimique, âge, génération et **122 coefficients** constituant son réseau 12→8→2 : capteurs locaux de proies directionnelles (gauche/avant/droite), d'eau, d'obstacles et de faim/soif ; sorties rotation/vitesse. Réseau initial aléatoire déterministe par seed et hérédité avec mutations.
+- **Aucune instruction de navigation vers une proie** ; capture seulement si un prédateur arrive à **moins de 8 m** d'un herbivore et a besoin de nourriture. Le réflexe de capture au contact est prédéfini, contrairement à la stratégie de déplacement.
+- Les herbivores perçoivent la présence de prédateurs comme un signal de menace incorporé à leurs entrées d'obstacles, mais aucun algorithme de fuite automatique n'est ajouté.
+- L'ingestion redistribue l'intégralité des stocks de la proie : matière sèche / énergie chimique vers le prédateur ; excédents vers substrat et chaleur ; eau vers le prédateur et le sol. Les pertes métaboliques retournent au sol. Reproduction et mort ne créent ni matière ni énergie.
+- Une naissance répartit les réserves corporelles du parent et transmet le génome avec mutation ; cap technique de 55 prédateurs, en supplément des 150 herbivores.
+- **Tableau « Évolution des populations »** avec deux échelles graphiques identifiées, mise à jour toutes les 25 itérations, vue « Prédateurs », compteurs de captures, naissances et morts, export CSV avec nombre de prédateurs par cellule.
+
+### Bilans comptables étendus
+
+```text
+Eau totale = eau de surface + sol + atmosphère + végétation + corps herbivores + corps prédateurs
+Masse sèche = substrat + graines + plantes + matière sèche herbivores + matière sèche prédateurs
+Énergie totale = énergie physique V2.8 + énergie chimique des herbivores + énergie chimique des prédateurs
+```
+
+Les rapports structurent une **comptabilité de matière/énergie idéalisée** : pas de chimie physiologique détaillée, pas de carcasse ou décomposition différée, pas d'apprentissage au cours de la vie.
+
+### Contrôles Chromium
+
+- **Seed 42 et paramètres par défaut : à 2 600 pas, 6 prédateurs vivants, 3 naissances cumulées, 7 herbivores capturés, 5 herbivores survivants ; aucune alerte de bilan.** C'est un exemple expérimental et non un équilibre écologique garantissant la survie des deux populations.
+- Avec **zéro prédateur**, les variables de V2.8 (eau, température, végétation, énergie, évolution des herbivores) sont **identiques au bit près** à 600 pas pour les observables comparées.
+- Réinitialisation et seconde exécution de 2 400 pas : état et génomes des prédateurs identiques.
+- **0 herbivore, 10 prédateurs : zéro capture après 1 400 pas**.
+- **120 herbivores et 40 prédateurs :** 1 400 pas sans alerte de bilan ou dépassement du cap, en dépit d'une très forte prédation.
+- Vérification du rendu mobile à 390px, sans débordement horizontal.
+- Conservation numérique eau / matière sèche / énergie, erreurs relatives inférieures à 1e-9 dans les scénarios testés.
+
+### Limites et étude ultérieure
+
+Les réseaux commencent avec des poids aléatoires, les stratégies de chasse efficaces ne sont ni prescrites ni garanties. Des extinctions de prédateurs peuvent survenir lorsque les proies deviennent rares, et une très forte densité peut provoquer la disparition locale des herbivores. La sélection naturelle sur plusieurs générations et une coévolution stable restent à établir empiriquement ; les populations initiales et taux métaboliques sont des paramètres expérimentaux, non une calibration zoologique.
+
+**PR empilée sur #27 (V2.8). Fusionner #22 → #23 → #24 → #25 → #26 → #27 → V2.9.**
