@@ -74,3 +74,41 @@ Il s'agit pour l'instant d'un **champ de hauteurs 2D représenté en 3D**, sans 
 **Couche 03 prévue :** température sol/atmosphère, jour/nuit, évaporation, advection des nuages, pluie et transpiration, en réintroduisant les bilans complets de V2.11.
 
 L'historique Python et les prototypes 2D ne sont pas modifiés. PR empilée sur **#31** (Atlas 3D couche 01).
+
+
+## Couche 03 — Atmosphère : Soleil, jour/nuit, nuages, vent et pluie
+
+**Prototype autonome :** [layer03_atmosphere.html](layer03_atmosphere.html), à ouvrir dans le navigateur. Le relief 3D (couche 01) et la dynamique d'eau surface/sol (couche 02) restent inchangés. Pas de modification des prototypes précédents ni de `src/`.
+
+### Modèle
+
+- **Jour/nuit** : 1 000 pas par jour, dont 500 éclairés. Température atmosphérique globale, température du sol par cellule, transfert sol-air, diffusion thermique entre cellules et refroidissement radiatif. Réservoir d'énergie solaire **fini** (initialement `3e16 J`), comme dans Monde VJ V2.11.
+- **Évaporation** : eau de surface ou de sol, limitée par la température locale et la chaleur disponible ; transferts en vapeur, énergie latente et énergie potentielle gravitationnelle comptabilisés.
+- **Nuages et pluie** : deux réservoirs atmosphériques spatialisés de 100×100 cellules, vapeur et nuages liquides. Vent dominant avec advection bilinéaire conservant la masse, condensation et réévaporation dépendant du seuil de saturation, pluie prélevée sur les nuages, réchauffement par condensation et chute gravitationnelle. Relief susceptible de favoriser les précipitations au vent.
+- **Vent** : 0–300 %, direction automatique **eau → terre** ou direction manuelle. Forçage géographique simplifié, pas de simulation Navier–Stokes ; bords atmosphériques périodiques, bords hydrologiques fermés.
+- **Vue 3D** : nuages représentés en halos aériens projetés selon la caméra, traits de pluie, et mini-carte alternativement relief/eau, nuages, pluie cumulée ou température du sol. La hauteur des nuages est **visuellement comprimée** pour dégager le terrain ; cette compression ne change pas l'altitude physique de référence de l'énergie. Fonctionne hors ligne avec WebGL2 ou en mode de secours Canvas.
+- **Inspection et CSV** : profondeur, eau du sol, températures, vapeur, nuages, pluie cumulée par cellule. Export OBJ du terrain conservé.
+
+### Bilans
+
+```text
+M_eau = M_surface + M_sol + M_vapeur + M_nuages
+E_total = E_gravitationnelle + E_sensible(sol + air) + E_latente(vapeur)
+          + E_solaire_restant + E_rayonnement_sortant
+```
+
+Pluie et évaporation déplacent l'eau entre réservoirs ; les précipitations cumulées représentent un **transfert** et non de l'eau créée. Le rayonnement émis est compté comme énergie sortie du système atmosphérique, mais reste dans le budget de comptabilité élargi.
+
+### Contrôles Chromium
+
+- **Seed 42, paramètres par défaut, 8 000 pas :** température de l'air **18,2 °C**, pluie cumulée **17,22 millions de kg**, dont **8,04 millions de kg** sur des cellules de terre ; erreur relative eau **1,8×10⁻¹⁵**, énergie **4,8×10⁻¹⁵**.
+- **Parité hydrologique stricte avec V2.11** lorsque les animaux, plantes et nouvelles phases atmosphériques sont désactivés : les **10 000 profondeurs de surface et les 10 000 réserves d'eau du sol sont identiques** après 350 pas.
+- Reset puis 300 pas : eau de surface et nuages identiques ; évaporation nulle : aucun nuage ni pluie ; pluie désactivée : eau atmosphérique présente sans précipitation ; Soleil nul : réserve solaire inchangée.
+- Test bassin côtier, vent est 300 % et 800 pas : pluie non nulle, bilans conservés. Export CSV et affichage mobile 390px validés, sans erreur JavaScript.
+- **Rendu 3D Canvas de secours testé visuellement ; chemin WebGL2 non validé**, car l'environnement Chromium ne dispose pas de WebGL2.
+
+### Limites et couche suivante
+
+Ce n'est **pas une atmosphère physiquement volumique** : champs de vapeur et nuages 2D projetés en 3D, température de l'air globale, vent non issu de la dynamique des pressions et précipitations paramétrées. Modèle climatique expérimental non calibré, aucun aquifère, pas d'érosion. **Pas encore de végétation, ni de transpiration des plantes, ni de faune** dans cet Atlas 3D. La couche 04 ajoutera la végétation et reconnectera les échanges eau/matière/énergie.
+
+**PR empilée sur #32 (Atlas 3D couche 02), elle-même empilée sur #31 et sur l'historique des versions 2D.**
