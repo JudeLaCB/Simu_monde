@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monde VJ — Atlas 3D · Couche 01</title>
+<style>
+:root{color-scheme:dark;--bg:#08141b;--panel:#101d26;--panel2:#152630;--stroke:rgba(181,209,207,.14);--text:#e9efed;--muted:#90a9ae;--mint:#96e0c3;--gold:#f0c98e;--accent:#4a9d93;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);overflow:hidden}button,input,select{font:inherit}button,select,input[type=number]{color:var(--text)}button{cursor:pointer}.app{height:100dvh;min-height:550px;display:grid;grid-template-rows:66px minmax(0,1fr)}header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 22px;background:#0c1821;border-bottom:1px solid var(--stroke);z-index:5}.logo{display:flex;align-items:center;gap:12px;font-weight:840;letter-spacing:.12em;font-size:16px;white-space:nowrap}.logo-glyph{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#6dada2,#1a4d55);color:#f1fff7;font-size:19px;box-shadow:0 6px 22px #58b4a327}.logo span{color:var(--mint)}.head-status{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}.head-status i{display:inline-block;width:8px;height:8px;background:#9be9c9;border-radius:50%;box-shadow:0 0 13px #9be9c9}.pill{padding:7px 11px;border:1px solid #4f7e75;background:#16332f;border-radius:20px;color:#b7edda;font-size:11px;font-weight:750;letter-spacing:.08em}.main{display:grid;grid-template-columns:318px minmax(0,1fr) 263px;min-height:0}.panel{background:var(--panel);padding:18px;min-height:0;overflow-y:auto;scrollbar-color:#33515a transparent;scrollbar-width:thin}.panel.left{border-right:1px solid var(--stroke)}.panel.right{border-left:1px solid var(--stroke)}.overline{font-size:10px;color:#8da6ae;font-weight:790;letter-spacing:.15em;text-transform:uppercase}.h2{font-size:23px;letter-spacing:-.035em;line-height:1.13;margin:7px 0 9px}.intro{color:var(--muted);font-size:12px;line-height:1.65;margin:0 0 21px}.section{margin:20px 0 8px;padding-top:15px;border-top:1px solid var(--stroke)}.section h3{margin:0 0 13px;font-size:12px;letter-spacing:.06em;color:#c5dbda}.field{margin:15px 0}.fieldtop{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;font-size:12px;color:#d6e4e2}.value{color:var(--mint);font-size:11px;font-variant-numeric:tabular-nums}.field input[type=range]{width:100%;accent-color:#70b5a4;height:4px;cursor:pointer}input[type=number],select{width:100%;padding:11px 12px;border:1px solid #34515b;background:#0c1b23;border-radius:9px;outline:none;font-size:12px}select:focus,input[type=number]:focus{border-color:#6dabaa}.rowInputs{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tiny{font-size:10px;color:#8da5a9;line-height:1.5;margin-top:8px}.btn{background:#18303a;border:1px solid #36535b;border-radius:9px;padding:10px 11px;font-size:12px;font-weight:710;transition:background .2s}.btn:hover{background:#25424c}.btn.primary{background:linear-gradient(135deg,#4ba896,#377c75);border-color:#66b7a3;color:#071c1b}.btn.primary:hover{filter:brightness(1.09)}.btnrow{display:flex;gap:8px;flex-wrap:wrap}.btnrow .btn{flex:1}.toggle{display:flex;gap:10px;align-items:center;font-size:12px;color:#c1d1d2;margin:13px 0}.toggle input{accent-color:#7bd0ac}.viewport{position:relative;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 50% 68%,#1a343a,#091b28 64%,#06141e)}#gl{width:100%;height:100%;display:block;touch-action:none;cursor:grab}#gl.dragging{cursor:grabbing}.vp-top{pointer-events:none;position:absolute;top:18px;left:22px;right:22px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.vp-title{font-size:22px;line-height:1.2;letter-spacing:-.045em;font-weight:840;text-shadow:0 3px 15px #041118}.vp-sub{font-size:12px;color:#bdd0cf;margin-top:6px;text-shadow:0 2px 8px #06161c}.tag{font-size:11px;background:#0d2830aa;border:1px solid #496e70;border-radius:999px;padding:8px 13px;color:#cde8dd}.vp-bottom{pointer-events:none;position:absolute;bottom:17px;left:22px;right:22px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.hint{font-size:11px;color:#b2c8cb;background:#0b1924bc;padding:10px 13px;border:1px solid #3450579c;border-radius:9px;backdrop-filter:blur(5px)}.compass{font-size:11px;color:#d5e5e1;background:#10242acc;padding:13px;border-radius:50%;width:59px;height:59px;display:grid;place-items:center;border:1px solid #4c656c;position:relative}.compass strong{font-size:16px;color:var(--gold)}.compass .needle{position:absolute;bottom:8px;color:#b2c5c6;font-size:9px}.minimap-box{position:absolute;right:20px;top:86px;background:#0b1b25df;border:1px solid #42606b;border-radius:13px;padding:9px;box-shadow:0 8px 30px #0005}.mini-label{display:flex;justify-content:space-between;gap:10px;font-size:10px;color:#b8cbcb;padding:2px 2px 7px}.mini-label b{color:#d0e5e2}.mini{width:156px;height:156px;display:block;border-radius:6px;image-rendering:pixelated}.marker{position:absolute;pointer-events:none;width:15px;height:15px;border:2px solid #fff5d8;border-radius:50%;box-shadow:0 0 0 5px #f4ba4f55,0 0 15px #ffbd6e;transform:translate(-50%,-50%);display:none}.metric{border:1px solid var(--stroke);border-radius:12px;background:#0e232b;padding:13px;margin-top:14px}.metric .num{font-size:22px;font-weight:820;letter-spacing:-.035em;margin:5px 0;color:#c9e9dc}.metric .sub{font-size:11px;color:#a7bfc1}.statpair{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:11px;border-bottom:1px solid var(--stroke)}.statpair:last-child{border-bottom:0}.statpair span{color:#9bb1b6}.statpair strong{color:#dbe9e5;font-weight:720}.stage{display:flex;gap:10px;align-items:flex-start;margin:15px 0;opacity:.49}.stage.active{opacity:1}.dot{height:26px;width:26px;border-radius:8px;background:#173139;border:1px solid #446069;display:grid;place-items:center;font-size:10px;color:#8fb4b9;flex:none}.stage.active .dot{background:#337569;border-color:#8ac9ae;color:#e8fff2}.stage b{font-size:12px}.stage small{display:block;color:#8da6aa;line-height:1.55;font-size:10px;margin-top:4px}.mini-meta{display:flex;justify-content:space-between;margin-top:6px;color:#789da0;font-size:9px}.small-btns{display:flex;gap:8px}.small-btns button{font-size:10px;padding:7px 8px}.readonly{color:#e7d8b5;font-size:11px;border-left:2px solid #b38e5d;padding:8px 10px;background:#2b282025;border-radius:3px;line-height:1.55}.error{position:absolute;inset:0;background:#0c1923;display:none;place-items:center;text-align:center;padding:25px;font-size:15px;color:#f0cecb;z-index:10}.error.show{display:grid}footer{margin-top:24px;font-size:10px;line-height:1.55;color:#79989d}#selectionInfo{color:#9fbdbe;line-height:1.6;font-size:11px;margin-top:8px}.contrast{color:var(--gold)}
+@media(max-width:1250px){.main{grid-template-columns:280px minmax(0,1fr) 220px}.panel{padding:14px}.minimap-box{display:none}}
+@media(max-width:940px){body{overflow:auto}.app{height:auto;min-height:100dvh}.main{display:flex;flex-direction:column}.viewport{height:58vh;min-height:390px;order:0}.panel.left{order:1;border-top:1px solid var(--stroke)}.panel.right{order:2;border-top:1px solid var(--stroke)}.panel{overflow:visible}.vp-top{top:13px;left:13px;right:13px}.vp-title{font-size:18px}.vp-bottom{left:12px;right:12px}.hint{max-width:310px;font-size:10px}.head-status{display:none}header{padding:0 13px}}
+@media(max-width:450px){.logo{font-size:14px}.pill{font-size:9px}.tag{display:none}.vp-sub{font-size:10px}.hint{max-width:250px}.viewport{min-height:335px;height:52vh}}
+</style>
+</head>
+<body>
+<div class="app"><header><div class="logo"><div class="logo-glyph">◭</div><div>MONDE <span>VJ</span></div></div><div class="head-status"><i></i> MOTEUR GÉOGRAPHIQUE EXPÉRIMENTAL · WEBGL2 · HORS LIGNE</div><div class="pill">ATLAS 3D · COUCHE 01 / 06</div></header>
+<main class="main">
+<aside class="panel left">
+<div class="overline">Architecture · Environnement</div><h1 class="h2">Le relief prend<br>du volume.</h1><p class="intro">Une projection 3D du <b>même générateur de terrain que V2.11</b>. On valide la topographie avant d'ajouter la physique et le vivant.</p>
+<div class="section"><h3>01 / Génération du terrain</h3></div>
+<div class="field"><label class="fieldtop" for="preset">Forme des reliefs</label><select id="preset"><option value="lakes">Massifs et bassins</option><option value="coast">Bassin côtier</option><option value="mountains">Chaînes et vallées</option></select></div>
+<div class="rowInputs"><div class="field"><label class="fieldtop" for="seed">Seed</label><input id="seed" type="number" step="1" value="42"></div><div class="field"><label class="fieldtop" for="scale">Hauteur × <b id="scaleVal" class="value">3,0</b></label><input id="scale" type="range" min="0.6" max="8" step="0.2" value="3"></div></div>
+<div class="field"><div class="fieldtop"><label for="rough">Rugosité</label><b id="roughVal" class="value">40</b></div><input id="rough" type="range" min="0" max="100" value="40"></div>
+<div class="field"><div class="fieldtop"><label for="basin">Profondeur des bassins</label><b id="basinVal" class="value">75 %</b></div><input id="basin" type="range" min="0" max="150" value="75"></div>
+<div class="btnrow"><button class="btn primary" id="generate">↻ &nbsp; Regénérer</button><button class="btn" id="newseed">Autre seed</button></div>
+<div class="section"><h3>02 / Affichage</h3></div>
+<div class="field"><label class="fieldtop" for="mode">Coloration du relief</label><select id="mode"><option value="nature">Naturelle / topographie</option><option value="elevation">Altitude</option><option value="slope">Pentes</option></select></div>
+<label class="toggle"><input id="contours" type="checkbox" checked> Courbes de niveau tous les 10 m</label>
+<label class="toggle"><input id="grid" type="checkbox"> Grille métrique (100 m)</label>
+<div class="btnrow"><button class="btn" id="orbit">Vue perspective</button><button class="btn" id="top">Vue du dessus</button></div>
+<div class="section"><h3>03 / Exporter la géométrie</h3></div>
+<div class="btnrow"><button id="exportCsv" class="btn">CSV · Altitudes</button><button id="exportObj" class="btn">OBJ · Mesh 3D</button></div>
+<p class="tiny">Le fichier OBJ contient les 10 000 points du terrain. On pourra le réutiliser pour construire les couches suivantes.</p>
+<footer>Prototype autonome · aucun accès réseau requis · aucune loi hydrologique modifiée.</footer>
+</aside>
+<section class="viewport" id="viewport"><canvas id="gl"></canvas><div class="vp-top"><div><div class="vp-title">Explorer notre monde en 3D.</div><div class="vp-sub">1 × 1 km · 100 × 100 échantillons · 10 m de résolution</div></div><div class="tag" id="viewTag">PERSPECTIVE 3D</div></div><div class="minimap-box"><div class="mini-label"><b>MINICARTE</b><span>1 km²</span></div><canvas id="minimap" class="mini" width="160" height="160"></canvas><div class="mini-meta"><span>SO</span><span>NE</span></div></div><div id="pickmarker" class="marker"></div><div class="vp-bottom"><div class="hint">Glisser : tourner · Molette : zoom · Clic droit : déplacer · Clic : inspecter</div><div class="compass"><strong id="north">N</strong><div class="needle" id="compassAngle">0°</div></div></div><div id="error" class="error">WebGL2 est indisponible sur ce navigateur. Essaie d'ouvrir le HTML avec Chrome ou Edge et d'activer l'accélération matérielle.</div></section>
+<aside class="panel right">
+<div class="overline">Télémétrie</div><div class="h2" style="font-size:20px">Profil du terrain</div>
+<div class="metric"><div class="overline">Altitude maximale</div><div class="num" id="maxHeight">—</div><div class="sub">Altitude normalisée à partir de z = 0</div></div>
+<div class="metric"><div class="overline">Altitude moyenne</div><div class="num" id="avgHeight">—</div><div class="sub">Calculée sur 10 000 cellules</div></div>
+<div class="metric"><div class="overline">Surface</div><div class="num">1,00 km²</div><div class="sub">Grille 100 × 100 / pas de 10 m</div></div>
+<div class="section"><h3>Point inspecté</h3></div><div id="selectionInfo">Clique sur une partie du terrain pour afficher ses coordonnées et sa pente.</div>
+<div class="section"><h3>Construction couche par couche</h3></div>
+<div class="stage active"><div class="dot">01</div><div><b>Relief 3D</b><small>Montagnes, vallées, pentes et maillage métrique.</small></div></div>
+<div class="stage"><div class="dot">02</div><div><b>Hydrologie</b><small>Lacs et écoulement de l'eau sur ce même relief.</small></div></div>
+<div class="stage"><div class="dot">03</div><div><b>Atmosphère</b><small>Soleil, vent, nuages et précipitations volumétriques.</small></div></div>
+<div class="stage"><div class="dot">04</div><div><b>Sol et végétation</b><small>Humidité, biomasse et croissance en 3D.</small></div></div>
+<div class="stage"><div class="dot">05</div><div><b>Faune</b><small>Herbivores, prédateurs et interactions spatiales.</small></div></div>
+<div class="stage"><div class="dot">06</div><div><b>Complexité</b><small>Érosion, cycle des nutriments et émergence.</small></div></div>
+<div class="section"></div><div class="readonly">À cette étape, l'eau et les êtres vivants ne sont <b>pas simulés</b> dans la scène 3D. C'est une fondation géométrique fidèle à V2.11.</div>
+</aside>
+</main></div>
+<script>
+(()=>{'use strict';
+const N=100,SIZE=N*N,L=10;
+let seed=42,roughness=40,basinDepth=75,landform='lakes',maxAltitude=0;
+let terrain=new Float64Array(SIZE),localSlopes=new Float64Array(SIZE),baseClasses=new Uint8Array(SIZE);
+const CLASS={PLAIN:0,HILL:1,MOUNTAIN:2,PLATEAU:3,VALLEY:4,MARSH:5,SHALLOW:6,DEEP:7};
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function hash2(x,y,s){let h=(Math.imul(x|0,374761393)+Math.imul(y|0,668265263)+Math.imul(s|0,1442695041))|0;h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function noise(x,y,f,s){const a=x*f,b=y*f;const ix=Math.floor(a),iy=Math.floor(b),u=a-ix,v=b-iy,fu=u*u*(3-2*u),fv=v*v*(3-2*v);const a0=hash2(ix,iy,s),a1=hash2(ix+1,iy,s),b0=hash2(ix,iy+1,s),b1=hash2(ix+1,iy+1,s);return (a0+(a1-a0)*fu)*(1-fv)+(b0+(b1-b0)*fu)*fv;}
+function featureRng(s){let state=(s^0x9e3779b9)>>>0;return ()=>{state=(state+0x6d2b79f5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
+function pickCenter(rng,sites,limit=.19,pad=.13){
+ for(let attempt=0;attempt<48;attempt++){
+  const x=pad+(1-2*pad)*rng(),y=pad+(1-2*pad)*rng();
+  if(sites.every(s=>(s.x-x)**2+(s.y-y)**2>limit*limit))return {x,y};
+ }
+ return {x:pad+(1-2*pad)*rng(),y:pad+(1-2*pad)*rng()};
+}
+function makeShape(rng,site,rx,ry,height,kind){return {...site,rx,ry,height,kind,ang:rng()*Math.PI*2,ring:2.8+2.8*rng()};}
+function generateTerrain(){
+ const rng=featureRng(seed+2117),features=[],mountainSites=[],basinSites=[];
+ const mountainous=landform==='mountains',coastal=landform==='coast';
+ const nMounts=mountainous?6:coastal?3:4;
+ const nBasins=mountainous?2:coastal?2:3;
+ for(let k=0;k<nMounts;k++){
+  const pos=pickCenter(rng,mountainSites,mountainous?.15:.20,.07);
+  mountainSites.push(pos);
+  features.push(makeShape(rng,pos,(mountainous?.07:.085)+.055*rng(),(mountainous?.12:.09)+.085*rng(),21+22*rng()+(mountainous?12:0),'hill'));
+ }
+ for(let k=0;k<nBasins;k++){
+  const pos=pickCenter(rng,basinSites,.22,.16);
+  basinSites.push(pos);
+  const depth=(18+15*rng())*(basinDepth/75);
+  features.push(makeShape(rng,pos,(mountainous?.07:.078)+.045*rng(),(mountainous?.13:.087)+.06*rng(),depth,mountainous?'valley':'basin'));
+ }
+ if(coastal){
+  // A broad lowland touching one random edge: if water collects, it can form a sea-like basin.
+  const edge=Math.floor(rng()*4),t=.27+.46*rng();
+  const pos=edge===0?{x:-.015,y:t}:edge===1?{x:1.015,y:t}:edge===2?{x:t,y:-.015}:{x:t,y:1.015};
+  features.push(makeShape(rng,pos,.33+.06*rng(),.30+.065*rng(),(30+9*rng())*(basinDepth/75),'sea'));
+ }
+ const raw=new Float64Array(SIZE);let min=Infinity,max=-Infinity;
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const nx=x/(N-1),ny=y/(N-1);
+  const warpX=.028*(noise(nx,ny,5,seed+78)-.5),warpY=.028*(noise(nx,ny,5,seed+91)-.5);
+  const px=nx+warpX,py=ny+warpY;
+  // Broad quiet plains, with microrelief governed only by the ruggedness setting.
+  const calm=(noise(nx,ny,2.5,seed+501)-.5)*4.2;
+  const fine=(noise(nx,ny,12,seed+502)-.5)*(0.7+roughness*.053);
+  const detailed=(noise(nx,ny,27,seed+503)-.5)*roughness*.022;
+  let altitude=35+calm+fine+detailed;
+  for(const f of features){
+   const dx=px-f.x,dy=py-f.y,c=Math.cos(f.ang),s=Math.sin(f.ang);
+   const ux=(dx*c+dy*s)/f.rx,uy=(-dx*s+dy*c)/f.ry;
+   const r2=ux*ux+uy*uy;
+   if(f.kind==='hill') altitude+=f.height*Math.exp(-1.5*r2);
+   else if(f.kind==='sea') altitude-=f.height*Math.exp(-1.0*r2);
+   else if(f.kind==='valley') altitude-=f.height*Math.exp(-1.3*r2);
+   else {
+    const r=Math.sqrt(r2);
+    altitude-=f.height*Math.exp(-1.7*r2);
+    // Broad shoulders yield a closed depression without hard edges.
+    altitude+=(f.ring*basinDepth/75)*Math.exp(-.5*((r-1.27)/.31)**2);
+   }
+  }
+  const i=y*N+x;raw[i]=altitude;min=Math.min(min,altitude);max=Math.max(max,altitude);
+ }
+ // Set the lowest land to z=0, avoiding negative reference potential energies.
+ for(let i=0;i<SIZE;i++)terrain[i]=raw[i]-min;
+ maxAltitude=Math.max(1,max-min);
+}
+function buildLandClasses(){
+ const span=9; // 90 m neighbourhood sampled in cardinal and diagonal directions.
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x,z=terrain[i];
+  const west=terrain[y*N+Math.max(0,x-1)],east=terrain[y*N+Math.min(N-1,x+1)];
+  const north=terrain[Math.max(0,y-1)*N+x],south=terrain[Math.min(N-1,y+1)*N+x];
+  const slope=Math.hypot(east-west,south-north)/(2*L);localSlopes[i]=slope;
+  let mean=0,k=0;
+  for(const [dx,dy] of [[span,0],[-span,0],[0,span],[0,-span],[span,span],[-span,span],[span,-span],[-span,-span]]){
+   const xx=Math.max(0,Math.min(N-1,x+dx)),yy=Math.max(0,Math.min(N-1,y+dy));mean+=terrain[yy*N+xx];k++;
+  }
+  mean/=k;
+  const high=z>maxAltitude*.62, crest=z-mean;
+  let code=CLASS.PLAIN;
+  if(high && (slope>.22 || crest>6.5)) code=CLASS.MOUNTAIN;
+  else if(high && slope<=.22)code=CLASS.PLATEAU;
+  else if(mean-z>3.3 && z<maxAltitude*.72)code=CLASS.VALLEY;
+  else if(slope>.13)code=CLASS.HILL;
+  baseClasses[i]=code;
+ }
+}
+let verticalScale=3,displayMode=0,contours=true,showGrid=false;
+const canvas=$('gl'), minimap=$('minimap'),vp=$('viewport');
+const gl=canvas.getContext('webgl2',{alpha:false,antialias:true,depth:true,preserveDrawingBuffer:true});
+const fallbackCtx=gl?null:canvas.getContext('2d');if(!gl){document.querySelector('.head-status').textContent='Mode Canvas 3D · rendu logiciel de secours';}
+const vs=`#version 300 es
+in vec3 aPos;in vec3 aNormal;in float aAlt;in float aSlope;in float aSide;
+uniform mat4 uPV;out vec3 vNorm;out float vAlt;out float vSlope;out float vSide;out vec3 vPos;
+void main(){gl_Position=uPV*vec4(aPos,1.0);vNorm=aNormal;vAlt=aAlt;vSlope=aSlope;vSide=aSide;vPos=aPos;}`;
+const fs=`#version 300 es
+precision highp float;in vec3 vNorm;in float vAlt;in float vSlope;in float vSide;in vec3 vPos;
+uniform float uMaxAlt;uniform int uMode;uniform bool uContours;out vec4 fragColor;
+vec3 ramp(float t){
+  vec3 a=vec3(.147,.291,.272),b=vec3(.237,.413,.342),c=vec3(.454,.563,.420),d=vec3(.668,.594,.454),e=vec3(.802,.793,.725);
+  if(t<.24)return mix(a,b,smoothstep(0.,.24,t));
+  if(t<.50)return mix(b,c,smoothstep(.24,.50,t));
+  if(t<.78)return mix(c,d,smoothstep(.50,.78,t));
+  return mix(d,e,smoothstep(.78,1.,t));
+}
+void main(){
+ float t=clamp(vAlt/uMaxAlt,0.,1.);vec3 col=ramp(t);
+ if(uMode==1){col=mix(vec3(.14,.34,.49),vec3(.95,.73,.44),pow(t,.8));}
+ if(uMode==2){col=mix(vec3(.13,.48,.43),vec3(.87,.38,.28),clamp(vSlope/.62,0.,1.));}
+ if(vSide>.5){col=mix(col,vec3(.085,.145,.158),.72);}
+ vec3 n=normalize(vNorm);vec3 sun=normalize(vec3(-.35,1.0,.58));
+ float light=.50+.50*max(0.,dot(n,sun));light+=.11*max(0.,dot(n,normalize(vec3(.4,1.,-.3))));
+ col*=light;
+ if(uContours && vSide<.5){float level=vAlt/10.;float c=abs(fract(level+.5)-.5);float w=fwidth(level)*1.3;float line=1.0-smoothstep(0.,max(w,.009),c);col=mix(col,col*.48,line*.48);}
+ float radial=length(vPos.xz)/1500.;col=mix(col,vec3(.29,.43,.44),clamp(radial*.11,0.,.15));
+ fragColor=vec4(pow(col,vec3(.95)),1.);
+}`;
+const lvs=`#version 300 es
+in vec3 aPos;uniform mat4 uPV;void main(){gl_Position=uPV*vec4(aPos,1.);}`;
+const lfs=`#version 300 es
+precision mediump float;uniform vec4 uColor;out vec4 col;void main(){col=uColor;}`;
+function shader(type,src){const sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));return sh;}
+function program(v,f){const p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,v));gl.attachShader(p,shader(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p;}
+let prog=null,lineProg=null,uni=null,luni=null;
+let meshVAO=null,meshVBO=null,meshIBO=null,gridVAO=null,gridVBO=null;
+let meshIndexCount=0,gridCount=0;
+if(gl){
+ try{prog=program(vs,fs);lineProg=program(lvs,lfs);}catch(e){$('error').textContent='Erreur moteur graphique : '+e.message;$('error').classList.add('show');return;}
+ uni={pv:gl.getUniformLocation(prog,'uPV'),max:gl.getUniformLocation(prog,'uMaxAlt'),mode:gl.getUniformLocation(prog,'uMode'),cont:gl.getUniformLocation(prog,'uContours')};
+ luni={pv:gl.getUniformLocation(lineProg,'uPV'),color:gl.getUniformLocation(lineProg,'uColor')};
+ meshVAO=gl.createVertexArray();meshVBO=gl.createBuffer();meshIBO=gl.createBuffer();
+ gridVAO=gl.createVertexArray();gridVBO=gl.createBuffer();
+}
+const coords={yaw:.7,pitch:.65,dist:1780,target:[0,54,0]},pointer={down:false,lastX:0,lastY:0,which:0,dragged:0};let selected=-1;
+let dirty=true,viewMode='perspective';
+function mark(){dirty=true;}
+// Column-major 4x4 matrices, OpenGL convention.
+function multiply(a,b){let o=new Float32Array(16);for(let col=0;col<4;col++)for(let row=0;row<4;row++){
+ o[col*4+row]=a[row]*b[col*4]+a[4+row]*b[col*4+1]+a[8+row]*b[col*4+2]+a[12+row]*b[col*4+3];
+}return o;}
+function perspective(fov,aspect,near,far){const f=1/Math.tan(fov/2),o=new Float32Array(16);o[0]=f/aspect;o[5]=f;o[10]=(far+near)/(near-far);o[11]=-1;o[14]=2*far*near/(near-far);return o;}
+function lookAt(eye,center,up){
+ const norm=v=>{let len=Math.hypot(...v)||1;return v.map(x=>x/len)};
+ const sub=(a,b)=>a.map((x,i)=>x-b[i]);const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+ const f=norm(sub(center,eye)),s=norm(cross(f,up)),u=cross(s,f);const o=new Float32Array(16);
+ o[0]=s[0];o[1]=u[0];o[2]=-f[0];o[4]=s[1];o[5]=u[1];o[6]=-f[1];o[8]=s[2];o[9]=u[2];o[10]=-f[2];
+ o[12]=-(s[0]*eye[0]+s[1]*eye[1]+s[2]*eye[2]);o[13]=-(u[0]*eye[0]+u[1]*eye[1]+u[2]*eye[2]);o[14]=f[0]*eye[0]+f[1]*eye[1]+f[2]*eye[2];o[15]=1;return o;
+}
+function eyePos(){const c=Math.cos(coords.pitch);return [coords.target[0]+coords.dist*c*Math.sin(coords.yaw),coords.target[1]+coords.dist*Math.sin(coords.pitch),coords.target[2]+coords.dist*c*Math.cos(coords.yaw)];}
+function viewProj(){const eye=eyePos();return multiply(perspective(Math.PI*44/180,Math.max(.1,canvas.width/canvas.height),.5,8000),lookAt(eye,coords.target,[0,1,0]));}
+function project(p,pv){const out=[0,0,0,0];for(let row=0;row<4;row++)out[row]=pv[row]*p[0]+pv[4+row]*p[1]+pv[8+row]*p[2]+pv[12+row];
+ if(out[3]<=0)return null;return [(out[0]/out[3]+1)*.5*canvas.clientWidth,(1-out[1]/out[3])*.5*canvas.clientHeight];}
+function heightAtWorld(x,z){const fx=x/L+49.5,fy=z/L+49.5;if(fx<0||fy<0||fx>99||fy>99)return -Infinity;const xx=Math.min(98,Math.floor(fx)),yy=Math.min(98,Math.floor(fy)),tx=fx-xx,ty=fy-yy;
+ const a=terrain[yy*N+xx],b=terrain[yy*N+xx+1],c=terrain[(yy+1)*N+xx],d=terrain[(yy+1)*N+xx+1];return ((a*(1-tx)+b*tx)*(1-ty)+(c*(1-tx)+d*tx)*ty)*verticalScale;}
+function pick(px,py){const eye=eyePos();const f=[coords.target[0]-eye[0],coords.target[1]-eye[1],coords.target[2]-eye[2]];
+ const norm=v=>{const n=Math.hypot(...v)||1;return v.map(x=>x/n)};
+ const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+ const forward=norm(f),right=norm(cross(forward,[0,1,0])),up=cross(right,forward);
+ const qx=(px/canvas.clientWidth*2-1)*Math.tan(Math.PI*44/360)*(canvas.clientWidth/canvas.clientHeight),qy=(1-py/canvas.clientHeight*2)*Math.tan(Math.PI*44/360);
+ const ray=norm(forward.map((v,i)=>v+qx*right[i]+qy*up[i]));let before=0,found=false,a=0,b=0;
+ for(let t=0;t<4200;t+=7){const x=eye[0]+ray[0]*t,z=eye[2]+ray[2]*t,y=eye[1]+ray[1]*t;const alt=heightAtWorld(x,z);
+ if(Number.isFinite(alt)&&y<=alt){a=before;b=t;found=true;break;}before=t;}
+ if(!found)return;
+ for(let k=0;k<15;k++){const m=(a+b)/2,x=eye[0]+ray[0]*m,z=eye[2]+ray[2]*m,y=eye[1]+ray[1]*m;const h=heightAtWorld(x,z);if(Number.isFinite(h)&&y<=h)b=m;else a=m;}
+ const t=b,x=eye[0]+ray[0]*t,z=eye[2]+ray[2]*t;
+ const ix=clamp(Math.round(x/L+49.5),0,99),iy=clamp(Math.round(z/L+49.5),0,99);selected=iy*N+ix;
+ const types=['Plaine','Colline','Montagne','Plateau','Vallée'];const i=selected;const html=`<strong class="contrast">${types[baseClasses[i]]||'Relief'}</strong><br>Coordonnées : x = ${(ix*10+5).toFixed(0)} m · y = ${(iy*10+5).toFixed(0)} m<br>Altitude : <b>${terrain[i].toFixed(2)} m</b><br>Pente : <b>${(localSlopes[i]*100).toFixed(1)} %</b><br>Cellule : (${ix}, ${iy})`;
+ $('selectionInfo').innerHTML=html;drawMinimap();mark();
+}
+function updateMarker(pv){const dot=$('pickmarker');if(selected<0){dot.style.display='none';return;}const i=selected,x=(i%N)*L-495,z=Math.floor(i/N)*L-495;
+ const pt=project([x,terrain[i]*verticalScale+4,z],pv);if(!pt||pt[0]<0||pt[0]>canvas.clientWidth||pt[1]<0||pt[1]>canvas.clientHeight){dot.style.display='none';return;}dot.style.display='block';dot.style.left=pt[0]+'px';dot.style.top=pt[1]+'px';}
+function createMesh(){const attrs=[],indices=[],h=terrain;function append(x,y,z,nx,ny,nz,alt,slope,side){attrs.push(x,y,z,nx,ny,nz,alt,slope,side);}
+ for(let row=0;row<N;row++)for(let col=0;col<N;col++){
+   const i=row*N+col,x=col*L-495,z=row*L-495;
+   const x0=Math.max(0,col-1),x1=Math.min(99,col+1),y0=Math.max(0,row-1),y1=Math.min(99,row+1);
+   const dx=(h[row*N+x1]-h[row*N+x0])*verticalScale/((x1-x0)*L);
+   const dz=(h[y1*N+col]-h[y0*N+col])*verticalScale/((y1-y0)*L);
+   const nn=1/Math.hypot(dx,1,dz);append(x,h[i]*verticalScale,z,-dx*nn,nn,-dz*nn,h[i],localSlopes[i],0);
+ }
+ for(let row=0;row<N-1;row++)for(let col=0;col<N-1;col++){
+   const k=row*N+col;indices.push(k,k+N,k+1,k+1,k+N,k+N+1);
+ }
+ // Visible skirts around the height field make the terrain into an actual volume.
+ const bottom=-35;const sideSegments=[];
+ for(let col=0;col<N-1;col++){sideSegments.push([col,col+1,[0,0,-1]]);sideSegments.push([(N-1)*N+col+1,(N-1)*N+col,[0,0,1]]);}
+ for(let row=0;row<N-1;row++){sideSegments.push([(row+1)*N,row*N,[-1,0,0]]);sideSegments.push([row*N+N-1,(row+1)*N+N-1,[1,0,0]]);}
+ for(const [i,j,normal] of sideSegments){const old=attrs.length/9;
+   for(const idx of [i,j]){const col=idx%N,row=Math.floor(idx/N),x=col*L-495,z=row*L-495;append(x,h[idx]*verticalScale,z,...normal,h[idx],localSlopes[idx],1)}
+   for(const idx of [j,i]){const col=idx%N,row=Math.floor(idx/N),x=col*L-495,z=row*L-495;append(x,bottom,z,...normal,h[idx],localSlopes[idx],1)}
+   indices.push(old,old+2,old+1,old+1,old+2,old+3);
+ }
+ if(!gl){meshIndexCount=indices.length;createGrid();mark();return;}
+ gl.bindVertexArray(meshVAO);gl.bindBuffer(gl.ARRAY_BUFFER,meshVBO);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(attrs),gl.STATIC_DRAW);
+ const stride=9*4;for(const [name,size,offset] of [['aPos',3,0],['aNormal',3,3],['aAlt',1,6],['aSlope',1,7],['aSide',1,8]]){const loc=gl.getAttribLocation(prog,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,stride,offset*4);}
+ gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,meshIBO);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(indices),gl.STATIC_DRAW);meshIndexCount=indices.length;gl.bindVertexArray(null);
+ createGrid();mark();
+}
+function createGrid(){const v=[];const push=(x,z)=>v.push(x,heightAtWorld(x,z)+1.6,z);
+ for(let k=0;k<100;k+=10){const x=k*10-495,z=k*10-495;for(let row=0;row<99;row++){const za=row*10-495,zb=(row+1)*10-495;push(x,za);push(x,zb);}for(let col=0;col<99;col++){const xa=col*10-495,xb=(col+1)*10-495;push(xa,z);push(xb,z);}}
+ if(!gl){gridCount=v.length/3;return;}
+ gl.bindVertexArray(gridVAO);gl.bindBuffer(gl.ARRAY_BUFFER,gridVBO);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(v),gl.STATIC_DRAW);const loc=gl.getAttribLocation(lineProg,'aPos');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);gridCount=v.length/3;gl.bindVertexArray(null);
+}
+function resize(){const dpr=Math.min(2,window.devicePixelRatio||1),w=Math.floor(canvas.clientWidth*dpr),h=Math.floor(canvas.clientHeight*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;if(gl)gl.viewport(0,0,w,h);mark();}}
+
+function colorForAlt(alt,slope,light,side){
+ let t=clamp(alt/Math.max(1,maxAltitude),0,1);
+ let palette;
+ if(displayMode===1)palette=[Math.round(32+205*t),Math.round(100+88*t),Math.round(125-59*t)];
+ else if(displayMode===2){const q=clamp(slope/.62,0,1);palette=[Math.round(37+190*q),Math.round(128-38*q),Math.round(110-30*q)];}
+ else{
+  const stops=[[39,75,70],[60,106,86],[115,144,107],[170,151,115],[207,204,187]];
+  const index=t<.24?0:t<.50?1:t<.78?2:3;
+  const a=[0,.24,.50,.78][index],b=[.24,.50,.78,1][index],q=clamp((t-a)/(b-a),0,1);
+  palette=stops[index].map((v,i)=>Math.round(v*(1-q)+stops[index+1][i]*q));
+ }
+ return 'rgb('+palette.map(c=>Math.round(clamp(c*(side?.62:light),0,255))).join(',')+')';
+}
+function renderFallback(){
+ // Low-cost perspective rendering in Canvas 2D for browsers with no WebGL2.
+ const ctx=fallbackCtx,w=canvas.clientWidth,h=canvas.clientHeight,dpr=canvas.width/Math.max(1,w);
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ const bg=ctx.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#0a1b29');bg.addColorStop(1,'#19404a');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+ const pv=viewProj(),eye=eyePos(),step=2,polys=[];
+ const vertex=(xx,yy)=>{const i=yy*N+xx,px=xx*L-495,pz=yy*L-495,py=terrain[i]*verticalScale;
+  return {x:px,y:py,z:pz,h:terrain[i],pt:project([px,py,pz],pv)};};
+ function add(poly,alt,slope,side=false){if(poly.some(v=>!v.pt))return;
+ const x=poly.reduce((sum,v)=>sum+v.x,0)/poly.length, y=poly.reduce((sum,v)=>sum+v.y,0)/poly.length,z=poly.reduce((sum,v)=>sum+v.z,0)/poly.length;
+ const depth=(x-eye[0])**2+(y-eye[1])**2+(z-eye[2])**2;
+ const minX=Math.min(...poly.map(v=>v.pt[0])),maxX=Math.max(...poly.map(v=>v.pt[0])),minY=Math.min(...poly.map(v=>v.pt[1])),maxY=Math.max(...poly.map(v=>v.pt[1]));
+ if(maxX<0||maxY<0||minX>w||minY>h)return;
+ let light=.91;if(!side){const dx=poly[1].h-poly[0].h,dz=poly[3].h-poly[0].h;light=clamp(1.06-.020*dx-.021*dz,.61,1.18);}
+ polys.push({poly,depth,alt,slope,side,light});}
+ for(let yy=0;yy<99;yy+=step)for(let xx=0;xx<99;xx+=step){const x1=Math.min(99,xx+step),y1=Math.min(99,yy+step),a=vertex(xx,yy),b=vertex(x1,yy),c=vertex(x1,y1),d=vertex(xx,y1),i=yy*N+xx;
+ add([a,b,c,d],(a.h+b.h+c.h+d.h)*.25,localSlopes[i]);}
+ const base=-35;
+ for(let k=0;k<99;k+=2){
+  const j=Math.min(99,k+2);
+  for(const seg of [[[k,0],[j,0]],[[j,99],[k,99]],[[0,j],[0,k]],[[99,k],[99,j]]]){
+   const a=vertex(...seg[0]),b=vertex(...seg[1]);const botB={...b,y:base,pt:project([b.x,base,b.z],pv)},botA={...a,y:base,pt:project([a.x,base,a.z],pv)};add([a,b,botB,botA],(a.h+b.h)/2,0,true);
+  }
+ }
+ polys.sort((a,b)=>b.depth-a.depth);
+ for(const {poly,alt,slope,side,light} of polys){ctx.beginPath();ctx.moveTo(...poly[0].pt);for(let j=1;j<poly.length;j++)ctx.lineTo(...poly[j].pt);ctx.closePath();ctx.fillStyle=colorForAlt(alt,slope,light,side);ctx.fill();ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=.75;ctx.stroke();
+  if(!side && contours){
+   const min=Math.min(...poly.map(v=>v.h)),max=Math.max(...poly.map(v=>v.h));
+   ctx.strokeStyle='rgba(15,38,38,.42)';ctx.lineWidth=.65;
+   for(let level=Math.ceil(min/10)*10;level<=max;level+=10){const pts=[];
+    for(let k=0;k<4;k++){const a=poly[k],b=poly[(k+1)%4];if((a.h<=level&&b.h>level)||(b.h<=level&&a.h>level)){
+      const f=(level-a.h)/(b.h-a.h);pts.push([a.pt[0]+f*(b.pt[0]-a.pt[0]),a.pt[1]+f*(b.pt[1]-a.pt[1])]);
+    }}if(pts.length>=2){ctx.beginPath();ctx.moveTo(...pts[0]);ctx.lineTo(...pts[1]);ctx.stroke();}
+   }
+  }
+ }
+ if(showGrid){ctx.strokeStyle='rgba(220,245,225,.30)';ctx.lineWidth=.7;
+  for(let i=0;i<100;i+=10){for(const fixed of ['x','z']){ctx.beginPath();let began=false;for(let j=0;j<100;j+=2){const x=fixed==='x'?i*10-495:j*10-495,z=fixed==='z'?i*10-495:j*10-495,pt=project([x,heightAtWorld(x,z)+2.5,z],pv);if(!pt)continue;if(!began){ctx.moveTo(...pt);began=true;}else ctx.lineTo(...pt);}if(began)ctx.stroke();}}
+ }
+}
+function render(){resize();if(!dirty){requestAnimationFrame(render);return;}dirty=false;
+ if(!gl){renderFallback();const pv=viewProj();updateMarker(pv);$('compassAngle').textContent=Math.round(((coords.yaw*180/Math.PI)%360+360)%360)+'°';requestAnimationFrame(render);return;}
+ gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.clearColor(.045,.105,.143,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ const pv=viewProj();gl.useProgram(prog);gl.uniformMatrix4fv(uni.pv,false,pv);gl.uniform1f(uni.max,maxAltitude);gl.uniform1i(uni.mode,displayMode);gl.uniform1i(uni.cont,contours?1:0);gl.bindVertexArray(meshVAO);gl.drawElements(gl.TRIANGLES,meshIndexCount,gl.UNSIGNED_INT,0);
+ if(showGrid){gl.useProgram(lineProg);gl.uniformMatrix4fv(luni.pv,false,pv);gl.uniform4f(luni.color,.85,.92,.88,.6);gl.bindVertexArray(gridVAO);gl.drawArrays(gl.LINES,0,gridCount);}gl.bindVertexArray(null);
+ updateMarker(pv);$('compassAngle').textContent=Math.round(((coords.yaw*180/Math.PI)%360+360)%360)+'°';
+ requestAnimationFrame(render);
+}
+function drawMinimap(){const mx=minimap.getContext('2d'),small=document.createElement('canvas');small.width=N;small.height=N;const ctx=small.getContext('2d'),img=ctx.createImageData(N,N);
+ for(let i=0;i<SIZE;i++){let alt=terrain[i]/maxAltitude,r,g,b;if(alt<.2){r=39;g=73;b=68;}else if(alt<.5){r=76;g=120;b=95;}else if(alt<.75){r=151;g=147;b=107;}else{r=204;g=196;b=168;}
+ let k=i*4;img.data[k]=r;img.data[k+1]=g;img.data[k+2]=b;img.data[k+3]=255;}
+ ctx.putImageData(img,0,0);mx.imageSmoothingEnabled=false;mx.clearRect(0,0,160,160);mx.drawImage(small,0,0,160,160);
+ if(selected>=0){const x=(selected%N)*1.6,y=Math.floor(selected/N)*1.6;mx.beginPath();mx.arc(x,y,4,0,2*Math.PI);mx.lineWidth=1.5;mx.strokeStyle='#ffedbf';mx.stroke();}
+}
+function refresh(){seed=(Number($('seed').value)||0)>>>0;roughness=Number($('rough').value);basinDepth=Number($('basin').value);landform=$('preset').value;verticalScale=Number($('scale').value);
+ generateTerrain();buildLandClasses();selected=-1;$('selectionInfo').textContent='Clique sur une partie du terrain pour afficher ses coordonnées et sa pente.';
+ createMesh();drawMinimap();const avg=terrain.reduce((a,b)=>a+b,0)/SIZE;$('maxHeight').textContent=maxAltitude.toFixed(1)+' m';$('avgHeight').textContent=avg.toFixed(1)+' m';mark();}
+function download(name,text,type){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+$('exportCsv').onclick=()=>{const output=['x_m,y_m,altitude_m,pente_ratio,classe'];const types=['plaine','colline','montagne','plateau','vallee'];
+ for(let i=0;i<SIZE;i++){const x=(i%N)*L+5,y=Math.floor(i/N)*L+5;output.push(`${x},${y},${terrain[i].toFixed(6)},${localSlopes[i].toFixed(6)},${types[baseClasses[i]]}`)}
+ download('monde_vj_3d_couche01_seed'+seed+'_altitudes.csv',output.join('\n'),'text/csv;charset=utf-8');};
+$('exportObj').onclick=()=>{const lines=['# Monde VJ - Couche 01, maillage 3D identique a V2.11','# metres, resolution 10 m','# 10000 sommets / 19602 triangles','o MondeVJ_Relief'];
+ for(let i=0;i<SIZE;i++)lines.push(`v ${((i%N)*L-495).toFixed(3)} ${(terrain[i]*verticalScale).toFixed(5)} ${(Math.floor(i/N)*L-495).toFixed(3)}`);
+ for(let y=0;y<N-1;y++)for(let x=0;x<N-1;x++){const k=y*N+x+1;lines.push(`f ${k} ${k+N} ${k+1}`);lines.push(`f ${k+1} ${k+N} ${k+N+1}`)}
+ download('monde_vj_3d_couche01_seed'+seed+'_relief.obj',lines.join('\n'),'text/plain;charset=utf-8');};
+$('generate').onclick=refresh;
+$('newseed').onclick=()=>{$('seed').value=(Math.floor(Math.random()*2**30)).toString();refresh();};
+$('scale').oninput=()=>{$('scaleVal').textContent=Number($('scale').value).toFixed(1).replace('.',',');verticalScale=Number($('scale').value);createMesh();mark();};
+$('rough').oninput=()=>{$('roughVal').textContent=$('rough').value;};$('basin').oninput=()=>{$('basinVal').textContent=$('basin').value+' %';};
+$('mode').onchange=()=>{displayMode={nature:0,elevation:1,slope:2}[$('mode').value];mark()};$('contours').onchange=()=>{contours=$('contours').checked;mark();};$('grid').onchange=()=>{showGrid=$('grid').checked;mark();};
+$('orbit').onclick=()=>{coords.yaw=.7;coords.pitch=.65;coords.dist=1780;coords.target=[0,54,0];viewMode='perspective';$('viewTag').textContent='PERSPECTIVE 3D';mark();};
+$('top').onclick=()=>{coords.yaw=0;coords.pitch=Math.PI/2-.008;coords.dist=1450;coords.target=[0,60,0];viewMode='top';$('viewTag').textContent='PLAN / DESSUS';mark();};
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('pointerdown',e=>{pointer.down=true;pointer.which=e.button;pointer.lastX=e.clientX;pointer.lastY=e.clientY;pointer.dragged=0;canvas.setPointerCapture(e.pointerId);canvas.classList.add('dragging');});
+canvas.addEventListener('pointermove',e=>{if(!pointer.down)return;const dx=e.clientX-pointer.lastX,dy=e.clientY-pointer.lastY;pointer.lastX=e.clientX;pointer.lastY=e.clientY;pointer.dragged+=Math.abs(dx)+Math.abs(dy);if(pointer.which===2||e.shiftKey){const f=coords.dist/900;coords.target[0]-=dx*f*Math.cos(coords.yaw);coords.target[2]+=dx*f*Math.sin(coords.yaw);coords.target[0]+=dy*f*Math.sin(coords.yaw);coords.target[2]+=dy*f*Math.cos(coords.yaw);}else{coords.yaw-=dx*.006;coords.pitch=clamp(coords.pitch+dy*.006,.10,Math.PI/2-.006);}mark();});
+canvas.addEventListener('pointerup',e=>{if(!pointer.down)return;pointer.down=false;canvas.classList.remove('dragging');if(pointer.dragged<8&&pointer.which!==2){const rect=canvas.getBoundingClientRect();pick(e.clientX-rect.left,e.clientY-rect.top);}});
+canvas.addEventListener('wheel',e=>{e.preventDefault();coords.dist=clamp(coords.dist*Math.exp(e.deltaY*.001),300,4000);mark();},{passive:false});
+canvas.addEventListener('dblclick',()=>{$('orbit').click();});
+window.addEventListener('resize',mark);window.addEventListener('keydown',e=>{if(e.target?.tagName==='INPUT'||e.target?.tagName==='SELECT')return;if(e.key==='r'||e.key==='R')$('orbit').click();});
+// Read-only diagnostics for parity testing with V2.11.
+window.__VJ3D_TEST__={getState:()=>({seed,roughness,basinDepth,landform,verticalScale,maxAltitude,selected,meshIndexCount,gridCount}),getHeightmap:()=>Array.from(terrain),getSlopes:()=>Array.from(localSlopes),getClasses:()=>Array.from(baseClasses),setCamera:(v)=>{Object.assign(coords,v);mark();}};
+refresh();requestAnimationFrame(render);
+})();
+</script></body></html>
