@@ -112,3 +112,36 @@ Pluie et évaporation déplacent l'eau entre réservoirs ; les précipitations c
 Ce n'est **pas une atmosphère physiquement volumique** : champs de vapeur et nuages 2D projetés en 3D, température de l'air globale, vent non issu de la dynamique des pressions et précipitations paramétrées. Modèle climatique expérimental non calibré, aucun aquifère, pas d'érosion. **Pas encore de végétation, ni de transpiration des plantes, ni de faune** dans cet Atlas 3D. La couche 04 ajoutera la végétation et reconnectera les échanges eau/matière/énergie.
 
 **PR empilée sur #32 (Atlas 3D couche 02), elle-même empilée sur #31 et sur l'historique des versions 2D.**
+
+
+## Couche 03b — Relief et transport des nuages par les vents
+
+**Prototype HTML hors ligne :** [layer03b_terrain_wind.html](layer03b_terrain_wind.html). Il reprend **tout** le terrain, l'eau et le cycle météo de la couche 03, en remplaçant le vent uniforme par un **champ horizontal par cellule (10 000 vecteurs)**.
+
+### Règles de vent
+
+- Direction dominante réglable : mode eau→terres, est, ouest, nord ou sud. Intensité 0–300 %.
+- Le champ local dépend des altitudes autour de chaque cellule. Une hausse de relief dans la direction du vent ralentit le flux ; le vent se dévie vers le passage latéral plus bas ; un corridor bas peut accélérer le flux ; un versant descendant est identifié comme abrité.
+- **Soulèvement au vent** : indice local qui accroît le refroidissement et la pluie en consommant l'eau nuageuse. **Versant sous le vent** : indice d'abri qui réduit ces effets. Les coefficients sont heuristiques.
+- Advection **bilinéaire avant et conservative**, différente pour chaque cellule, avec poids positifs et somme des poids égale à un. Les masses vapeur et nuages sont redistribuées, jamais créées. Le transport atmosphérique garde les frontières périodiques.
+- Le curseur « Influence du relief sur le vent » est réglable de 0 à 200 % (130 % par défaut). À 0 %, les vecteurs locaux coïncident avec le vent dominant uniforme. Cela permet une comparaison contrôlée dans **cette même version 03b**.
+- Nouvelles mini-cartes : **Champ de vent** (flèches), **Soulèvement / abri** ; inspection du vent local, indice de soulèvement et de protection ; colonnes ajoutées au CSV. Les nuages restent visualisés en 3D au-dessus du terrain.
+
+### Contrôles Chromium
+
+- Seed 42, paramètres défaut, **4 000 pas** :
+  - Influence du relief **0 %** : **46,3 %** des précipitations sur les terres, 0° de déviation par rapport au vent uniforme.
+  - Influence du relief **130 %** : **81,5 %** des précipitations sur les terres, déviation locale maximale **43,2°**.
+  - Influence du relief **200 %** : **84,1 %** sur les terres, déviation maximale **55,3°**.
+  - L'indicateur « terre » distingue les cellules avec moins de 5 cm d'eau libre **au moment où il pleut**, et non une classe de biomes fixée.
+- Bilan total d'eau et énergie, erreurs relatives numériques inférieures à 1e-13 dans ces scénarios.
+- Test seed 517, relief « Chaînes et vallées », vent 300 %, relief 200 %, **2 300 pas**, réservoirs non négatifs et erreurs relatives inférieures à 1e-9.
+- **Répétabilité exacte** après reset + 250 pas ; désactivation totale du vent ⇒ tous les vecteurs nuls.
+- **Hydrologie identique à la couche 03** lorsque évaporation et pluie sont coupées : même terrain, 10 000 hauteurs d'eau de surface et 10 000 réserves d'eau du sol après 600 pas.
+- Affichage mobile 390 px sans débordement ; test du fallback Canvas. **Rendu GPU WebGL2 non validé** dans l'environnement de tests.
+
+### Limites
+
+Le champ de vitesse est **horizontal et dépend du relief**, pas un solveur d'air volumique 3D. L'indice de soulèvement ne correspond pas à un calcul explicite de vitesse verticale ni à une pression atmosphérique. Le vent dominant et son énergie cinétique sont des forçages externes non inclus dans les bilans mécaniques. Les déviations et la pluie orographique ne sont **pas calibrées météorologiquement**. Pas de tourbillons turbulents résolus, couches d'altitude, fronts ni Navier–Stokes ; bords atmosphériques périodiques. La conservation comptable de l'eau et de l'énergie de la couche 03 demeure.
+
+La version est archivée séparément ; **aucune modification des versions précédentes ni du moteur Python historique**. PR empilée sur #33.
