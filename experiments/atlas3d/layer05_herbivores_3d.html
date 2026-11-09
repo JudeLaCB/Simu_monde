@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monde VJ — Atlas 3D · Couche 05 : Herbivores 3D</title>
+<style>
+:root{color-scheme:dark;--bg:#08141b;--panel:#101d26;--panel2:#152630;--stroke:rgba(181,209,207,.14);--text:#e9efed;--muted:#90a9ae;--mint:#96e0c3;--gold:#f0c98e;--accent:#4a9d93;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);overflow:hidden}button,input,select{font:inherit}button,select,input[type=number]{color:var(--text)}button{cursor:pointer}.app{height:100dvh;min-height:550px;display:grid;grid-template-rows:66px minmax(0,1fr)}header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 22px;background:#0c1821;border-bottom:1px solid var(--stroke);z-index:5}.logo{display:flex;align-items:center;gap:12px;font-weight:840;letter-spacing:.12em;font-size:16px;white-space:nowrap}.logo-glyph{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#6dada2,#1a4d55);color:#f1fff7;font-size:19px;box-shadow:0 6px 22px #58b4a327}.logo span{color:var(--mint)}.head-status{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}.head-status i{display:inline-block;width:8px;height:8px;background:#9be9c9;border-radius:50%;box-shadow:0 0 13px #9be9c9}.pill{padding:7px 11px;border:1px solid #4f7e75;background:#16332f;border-radius:20px;color:#b7edda;font-size:11px;font-weight:750;letter-spacing:.08em}.main{display:grid;grid-template-columns:318px minmax(0,1fr) 263px;min-height:0}.panel{background:var(--panel);padding:18px;min-height:0;overflow-y:auto;scrollbar-color:#33515a transparent;scrollbar-width:thin}.panel.left{border-right:1px solid var(--stroke)}.panel.right{border-left:1px solid var(--stroke)}.overline{font-size:10px;color:#8da6ae;font-weight:790;letter-spacing:.15em;text-transform:uppercase}.h2{font-size:23px;letter-spacing:-.035em;line-height:1.13;margin:7px 0 9px}.intro{color:var(--muted);font-size:12px;line-height:1.65;margin:0 0 21px}.section{margin:20px 0 8px;padding-top:15px;border-top:1px solid var(--stroke)}.section h3{margin:0 0 13px;font-size:12px;letter-spacing:.06em;color:#c5dbda}.field{margin:15px 0}.fieldtop{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;font-size:12px;color:#d6e4e2}.value{color:var(--mint);font-size:11px;font-variant-numeric:tabular-nums}.field input[type=range]{width:100%;accent-color:#70b5a4;height:4px;cursor:pointer}input[type=number],select{width:100%;padding:11px 12px;border:1px solid #34515b;background:#0c1b23;border-radius:9px;outline:none;font-size:12px}select:focus,input[type=number]:focus{border-color:#6dabaa}.rowInputs{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tiny{font-size:10px;color:#8da5a9;line-height:1.5;margin-top:8px}.btn{background:#18303a;border:1px solid #36535b;border-radius:9px;padding:10px 11px;font-size:12px;font-weight:710;transition:background .2s}.btn:hover{background:#25424c}.btn.primary{background:linear-gradient(135deg,#4ba896,#377c75);border-color:#66b7a3;color:#071c1b}.btn.primary:hover{filter:brightness(1.09)}.btnrow{display:flex;gap:8px;flex-wrap:wrap}.btnrow .btn{flex:1}.toggle{display:flex;gap:10px;align-items:center;font-size:12px;color:#c1d1d2;margin:13px 0}.toggle input{accent-color:#7bd0ac}#cloudOverlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block;z-index:1}.viewport{position:relative;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 50% 68%,#1a343a,#091b28 64%,#06141e)}#gl{width:100%;height:100%;display:block;touch-action:none;cursor:grab}#gl.dragging{cursor:grabbing}.vp-top{z-index:3;pointer-events:none;position:absolute;top:18px;left:22px;right:22px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.vp-title{font-size:22px;line-height:1.2;letter-spacing:-.045em;font-weight:840;text-shadow:0 3px 15px #041118}.vp-sub{font-size:12px;color:#bdd0cf;margin-top:6px;text-shadow:0 2px 8px #06161c}.tag{font-size:11px;background:#0d2830aa;border:1px solid #496e70;border-radius:999px;padding:8px 13px;color:#cde8dd}.vp-bottom{z-index:3;pointer-events:none;position:absolute;bottom:17px;left:22px;right:22px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.hint{font-size:11px;color:#b2c8cb;background:#0b1924bc;padding:10px 13px;border:1px solid #3450579c;border-radius:9px;backdrop-filter:blur(5px)}.compass{font-size:11px;color:#d5e5e1;background:#10242acc;padding:13px;border-radius:50%;width:59px;height:59px;display:grid;place-items:center;border:1px solid #4c656c;position:relative}.compass strong{font-size:16px;color:var(--gold)}.compass .needle{position:absolute;bottom:8px;color:#b2c5c6;font-size:9px}.minimap-box{z-index:3;position:absolute;right:20px;top:86px;background:#0b1b25df;border:1px solid #42606b;border-radius:13px;padding:9px;box-shadow:0 8px 30px #0005}.mini-label{display:flex;justify-content:space-between;gap:10px;font-size:10px;color:#b8cbcb;padding:2px 2px 7px}.mini-label b{color:#d0e5e2}.mini{width:156px;height:156px;display:block;border-radius:6px;image-rendering:pixelated}.marker{z-index:3;position:absolute;pointer-events:none;width:15px;height:15px;border:2px solid #fff5d8;border-radius:50%;box-shadow:0 0 0 5px #f4ba4f55,0 0 15px #ffbd6e;transform:translate(-50%,-50%);display:none}.metric{border:1px solid var(--stroke);border-radius:12px;background:#0e232b;padding:13px;margin-top:14px}.metric .num{font-size:22px;font-weight:820;letter-spacing:-.035em;margin:5px 0;color:#c9e9dc}.metric .sub{font-size:11px;color:#a7bfc1}.statpair{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:11px;border-bottom:1px solid var(--stroke)}.statpair:last-child{border-bottom:0}.statpair span{color:#9bb1b6}.statpair strong{color:#dbe9e5;font-weight:720}.stage{display:flex;gap:10px;align-items:flex-start;margin:15px 0;opacity:.49}.stage.active{opacity:1}.dot{height:26px;width:26px;border-radius:8px;background:#173139;border:1px solid #446069;display:grid;place-items:center;font-size:10px;color:#8fb4b9;flex:none}.stage.active .dot{background:#337569;border-color:#8ac9ae;color:#e8fff2}.stage b{font-size:12px}.stage small{display:block;color:#8da6aa;line-height:1.55;font-size:10px;margin-top:4px}.mini-meta{display:flex;justify-content:space-between;margin-top:6px;color:#789da0;font-size:9px}.small-btns{display:flex;gap:8px}.small-btns button{font-size:10px;padding:7px 8px}.readonly{color:#e7d8b5;font-size:11px;border-left:2px solid #b38e5d;padding:8px 10px;background:#2b282025;border-radius:3px;line-height:1.55}.error{position:absolute;inset:0;background:#0c1923;display:none;place-items:center;text-align:center;padding:25px;font-size:15px;color:#f0cecb;z-index:10}.error.show{display:grid}.sim-toolbar{position:absolute;bottom:78px;left:50%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:8px;background:#0c202adb;border:1px solid #56847f;border-radius:15px;padding:8px;box-shadow:0 8px 35px #0008;backdrop-filter:blur(8px)}.sim-toolbar .btn{padding:10px 15px;white-space:nowrap}.sim-count{color:#cbdedc;white-space:nowrap;font-size:11px;padding:0 10px}.sim-count b{font-variant-numeric:tabular-nums;color:var(--mint);font-size:13px}
+footer{margin-top:24px;font-size:10px;line-height:1.55;color:#79989d}#selectionInfo{color:#9fbdbe;line-height:1.6;font-size:11px;margin-top:8px}.contrast{color:var(--gold)}
+@media(max-width:1250px){.main{grid-template-columns:280px minmax(0,1fr) 220px}.panel{padding:14px}.minimap-box{display:none}}
+@media(max-width:940px){body{overflow:auto}.app{height:auto;min-height:100dvh}.main{display:flex;flex-direction:column}.viewport{height:58vh;min-height:390px;order:0}.panel.left{order:1;border-top:1px solid var(--stroke)}.panel.right{order:2;border-top:1px solid var(--stroke)}.panel{overflow:visible}.vp-top{top:13px;left:13px;right:13px}.vp-title{font-size:18px}.vp-bottom{left:12px;right:12px}.hint{max-width:310px;font-size:10px}.head-status{display:none}header{padding:0 13px}}
+@media(max-width:450px){#animalFloating{display:none}.sim-toolbar{bottom:76px;padding:5px;gap:3px}.sim-toolbar .btn{font-size:10px;padding:8px 6px}.sim-count{padding:0 5px}.logo{font-size:14px}.pill{font-size:9px}.tag{display:none}.vp-sub{font-size:10px}.hint{max-width:250px}.viewport{min-height:335px;height:52vh}}
+</style>
+</head>
+<body>
+<div class="app"><header><div class="logo"><div class="logo-glyph">◭</div><div>MONDE <span>VJ</span></div></div><div class="head-status"><i></i> MOTEUR ÉCOLOGIQUE EXPÉRIMENTAL · FAUNE 3D · HORS LIGNE</div><div class="pill">ATLAS 3D · HERBIVORES · 05</div></header>
+<main class="main">
+<aside class="panel left">
+<div class="overline">Architecture · Environnement</div><h1 class="h2">Un monde vivant :<br>les premiers herbivores.</h1><p class="intro">Après 2 000 pas de climat et de croissance végétale, une première population d’<b>herbivores quadrupèdes 3D</b> est introduite. Ils se déplacent avec un réseau neuronal héréditaire, broutent, boivent, vieillissent et se reproduisent. Aucune apparition artificielle après la première introduction.</p>
+<div class="section"><h3>01 / Génération du terrain</h3></div>
+<div class="field"><label class="fieldtop" for="preset">Forme des reliefs</label><select id="preset"><option value="lakes">Massifs et bassins</option><option value="coast">Bassin côtier</option><option value="mountains">Chaînes et vallées</option></select></div>
+<div class="rowInputs"><div class="field"><label class="fieldtop" for="seed">Seed</label><input id="seed" type="number" step="1" value="42"></div><div class="field"><label class="fieldtop" for="scale">Hauteur × <b id="scaleVal" class="value">3,0</b></label><input id="scale" type="range" min="0.6" max="8" step="0.2" value="3"></div></div>
+<div class="field"><div class="fieldtop"><label for="rough">Rugosité</label><b id="roughVal" class="value">40</b></div><input id="rough" type="range" min="0" max="100" value="40"></div>
+<div class="field"><div class="fieldtop"><label for="basin">Profondeur des bassins</label><b id="basinVal" class="value">75 %</b></div><input id="basin" type="range" min="0" max="150" value="75"></div>
+<div class="btnrow"><button class="btn primary" id="generate">↻ &nbsp; Regénérer</button><button class="btn" id="newseed">Autre seed</button></div>
+<div class="section"><h3>02 / Hydrologie · surface et sol</h3></div>
+<div class="field"><div class="fieldtop"><label for="waterAmount">Quantité initiale d’eau</label><b id="waterVal" class="value">30 %</b></div><input id="waterAmount" type="range" min="5" max="100" step="5" value="30"></div>
+<div class="field"><label class="fieldtop" for="waterDistribution">Distribution initiale</label><select id="waterDistribution"><option value="patches">Pluies anciennes / poches</option><option value="highland">Sources sur les hauteurs</option><option value="level">Eau déjà à niveau</option></select></div>
+<div class="field"><div class="fieldtop"><label for="fluidity">Fluidité de l’écoulement</label><b id="fluidityVal" class="value">0,22</b></div><input id="fluidity" type="range" min="0.04" max="0.42" step="0.02" value="0.22"></div>
+<div class="field"><div class="fieldtop"><label for="retention">Rétention du sol</label><b id="retentionVal" class="value">60 %</b></div><input id="retention" type="range" min="0" max="100" step="5" value="60"></div>
+<p class="tiny">Les modifications de la quantité, de la distribution et de la rétention s’appliquent lors de « Régénérer ». La fluidité agit immédiatement. 1 pas = une itération physique ; 1 000 pas = 24 h.</p>
+<div class="btnrow"><button id="play" class="btn primary">▶ &nbsp; Simuler</button><button id="step" class="btn">+ 1 pas</button><button id="advance" class="btn">+ 100 pas</button><button id="growForest" class="btn">🌳 + 1 000 pas</button></div>
+<div class="rowInputs"><div class="field"><label class="fieldtop" for="speed">Vitesse d’exécution</label><select id="speed"><option value="1">1×</option><option value="4" selected>4×</option><option value="12">12×</option></select></div><div class="field"><label class="fieldtop" for="opacity">Transparence de l’eau <b id="opacityVal" class="value">75 %</b></label><input id="opacity" type="range" min="20" max="100" value="75" step="5"></div></div>
+<div class="btnrow"><button id="resetWater" class="btn">↺ Revenir à l’eau initiale</button></div>
+<div class="section"><h3>03 / Atmosphère & climat</h3></div>
+<div class="field"><div class="fieldtop"><label for="solarStrength">Apport solaire</label><b id="solarVal" class="value">100 %</b></div><input id="solarStrength" type="range" min="0" max="250" value="100" step="10"></div>
+<div class="field"><div class="fieldtop"><label for="radiationStrength">Refroidissement radiatif</label><b id="radiationVal" class="value">100 %</b></div><input id="radiationStrength" type="range" min="0" max="250" value="100" step="10"></div>
+<div class="field"><div class="fieldtop"><label for="evaporation">Évaporation</label><b id="evapVal" class="value">0,004 mm/pas</b></div><input id="evaporation" type="range" min="0" max="0.020" value="0.004" step="0.001"></div>
+<div class="field"><div class="fieldtop"><label for="windStrength">Force du vent</label><b id="windVal" class="value">180 %</b></div><input id="windStrength" type="range" min="0" max="300" value="180" step="10"></div>
+<div class="field"><div class="fieldtop"><label for="terrainWind">Influence du relief sur le vent</label><b id="terrainWindVal" class="value">130 %</b></div><input id="terrainWind" type="range" min="0" max="200" value="130" step="10"></div>
+<label class="toggle"><input type="checkbox" id="showWindArrows" checked> Afficher les flèches du vent sur la mini-carte</label>
+<div class="field"><label class="fieldtop" for="windMode">Direction dominante</label><select id="windMode"><option value="auto">Des masses d’eau vers les terres</option><option value="east">Vers l’est</option><option value="west">Vers l’ouest</option><option value="north">Vers le nord</option><option value="south">Vers le sud</option></select></div>
+<div class="field"><div class="fieldtop"><label for="rainStrength">Intensité des précipitations</label><b id="rainVal" class="value">100 %</b></div><input id="rainStrength" type="range" min="0" max="250" value="100" step="10"></div>
+<p class="tiny">Le cycle complet dure 1 000 pas (500 de jour, 500 de nuit). Le Soleil est un réservoir <b>fini</b>. Le champ de vent tient compte des pentes, dévie autour des obstacles et favorise le soulèvement au vent des montagnes. Il reste une approximation de surface, pas une simulation 3D de la dynamique de l’air.</p>
+
+<div class="section"><h3>04 / Vie végétale · arbres 3D</h3></div>
+<div class="field"><div class="fieldtop"><label for="seedDensity">Graines initiales</label><b id="seedDensityVal" class="value">60 %</b></div><input id="seedDensity" type="range" min="0" max="100" step="5" value="60"></div>
+<div class="field"><div class="fieldtop"><label for="stabilityDuration">Humidité stable avant germination</label><b id="stabilityVal" class="value">160 pas</b></div><input id="stabilityDuration" type="range" min="40" max="500" step="20" value="160"></div>
+<div class="field"><div class="fieldtop"><label for="growthStrength">Vitesse biologique de croissance</label><b id="growthVal" class="value">100 %</b></div><input id="growthStrength" type="range" min="0" max="250" step="10" value="100"></div>
+<div class="field"><div class="fieldtop"><label for="plantMutation">Mutation des graines</label><b id="mutationVal" class="value">12 %</b></div><input id="plantMutation" type="range" min="0" max="100" step="2" value="12"></div>
+<div class="field"><div class="fieldtop"><label for="forestDensity">Arbres affichés</label><b id="forestDensityVal" class="value">100 %</b></div><input id="forestDensity" type="range" min="10" max="100" step="5" value="100"></div>
+<div class="field"><div class="fieldtop"><label for="treeSize">Taille affichée des arbres</label><b id="treeSizeVal" class="value">2,2×</b></div><input id="treeSize" type="range" min="0.7" max="3.5" step="0.1" value="2.2"></div>
+<div class="field"><label class="fieldtop" for="treeDetail">Détail de la géométrie 3D</label><select id="treeDetail"><option value="auto" selected>Auto · tous les arbres, LOD adaptatif</option><option value="detail">Détaillé partout · très exigeant</option></select></div>
+<label class="toggle"><input type="checkbox" id="showTrees" checked> Afficher les arbres (feuillus + conifères)</label>
+<p class="tiny"><b>Démarre avec zéro arbre visible :</b> utilise 🌳 + 1 000 pas pour observer la germination et les premiers peuplements. Les graines initiales et la durée de germination nécessitent « Régénérer ». Les autres réglages agissent sur le monde en cours. La densité et la taille affichées ne changent <b>jamais la biomasse réelle</b>. Un arbre par cellule au maximum. À 100 %, <b>aucun arbre vivant n’est filtré</b> ; le mode Auto réduit uniquement les polygones des arbres éloignés. Les graines non germées ne sont pas des arbres.</p>
+<div class="section"><h3>05 / Herbivores · arrivée au pas 2 000</h3></div>
+<div class="readonly">Le monde évolue d’abord <b>2 000 pas sans animaux</b>. À ce seuil, jusqu’à 50 herbivores (réglable) sont introduits une seule fois, uniquement sur des habitats praticables. La population évolue ensuite par naissances et morts, sans réapparition programmée.</div>
+<div class="field"><div class="fieldtop"><label for="animalCount">Population initiale</label><b id="animalCountVal" class="value">50</b></div><input id="animalCount" type="range" min="0" max="150" step="5" value="50"></div>
+<div class="field"><div class="fieldtop"><label for="animalForage">Instinct neuronal de recherche de nourriture</label><b id="animalForageVal" class="value">70 %</b></div><input id="animalForage" type="range" min="0" max="100" step="5" value="70"></div>
+<div class="field"><div class="fieldtop"><label for="animalMutation">Mutation des réseaux héréditaires</label><b id="animalMutationVal" class="value">14 %</b></div><input id="animalMutation" type="range" min="0" max="100" step="1" value="14"></div>
+<div class="field"><div class="fieldtop"><label for="animalScale">Taille VISUELLE du quadrupède</label><b id="animalScaleVal" class="value">3,0×</b></div><input id="animalScale" type="range" min="1" max="6" step="0.5" value="3"></div>
+<label class="toggle"><input type="checkbox" id="showAnimals" checked> Afficher tous les herbivores 3D</label>
+<div class="btnrow"><button class="btn primary" id="toAnimals">⏩ Atteindre le pas 2 000</button><button class="btn" id="followAnimal">⌖ Suivre un herbivore</button></div>
+<p class="tiny" id="animalArrival">Première introduction dans 2 000 pas. La population initiale et les taux de mutation sont appliqués au moment de l’introduction ; les changements ultérieurs nécessitent de régénérer le monde.</p>
+<div class="section"><h3>06 / Affichage</h3></div>
+<div class="field"><label class="fieldtop" for="mode">Coloration du relief</label><select id="mode"><option value="nature">Naturelle / topographie</option><option value="elevation">Altitude</option><option value="slope">Pentes</option></select></div>
+<label class="toggle"><input id="contours" type="checkbox" checked> Courbes de niveau tous les 10 m</label>
+<label class="toggle"><input id="grid" type="checkbox"> Grille métrique (100 m)</label>
+<label class="toggle"><input id="showWater" type="checkbox" checked> Afficher les surfaces d’eau</label>
+<label class="toggle"><input type="checkbox" id="showClouds" checked> Afficher les nuages 3D</label>
+<label class="toggle"><input type="checkbox" id="showRain" checked> Afficher les traits de pluie</label>
+<div class="field"><label class="fieldtop" for="miniMode">Vue de la mini-carte</label><select id="miniMode"><option value="terrain">Relief et eau</option><option value="clouds">Nuages (concentration)</option><option value="rain">Précipitations cumulées</option><option value="temperature">Température du sol</option><option value="vegetation">Biomasse / forêt</option><option value="herbivores">Herbivores vivants</option><option value="soil">Humidité du sol</option><option value="wind">Champ de vent et relief</option><option value="uplift">Soulèvement / abri du relief</option></select></div>
+<div class="btnrow"><button class="btn" id="orbit">Vue perspective</button><button class="btn" id="top">Vue du dessus</button></div>
+<div class="section"><h3>07 / Exporter les données</h3></div>
+<div class="btnrow"><button id="exportCsv" class="btn">CSV · Environnement + herbivores</button><button id="exportObj" class="btn">OBJ · Relief 3D</button></div>
+<p class="tiny">Le CSV contient les réservoirs physiques, la végétation et le nombre d’herbivores par cellule. Les informations individuelles des animaux sont exportées séparément en CSV. OBJ exporte le relief solide.</p>
+<footer>Prototype autonome hors ligne · quadrupèdes procéduraux 3D · physiologie et comportements idéalisés, sans prédateurs ni cycle CO₂/O₂ détaillé.</footer>
+</aside>
+<section class="viewport" id="viewport"><canvas id="gl"></canvas><canvas id="cloudOverlay" aria-hidden="true"></canvas><div class="vp-top"><div><div class="vp-title">Un monde qui accueille la faune.</div><div class="vp-sub">1 × 1 km · 10 000 cellules · forêts, cycles physiques et herbivores 3D</div></div><div class="tag" id="viewTag">PERSPECTIVE · ATMOSPHÈRE 3D</div></div><div class="sim-toolbar"><button id="playFloating" class="btn primary">▶ Simuler</button><button id="advanceFloating" class="btn">+100 pas</button><button id="growForestFloating" class="btn">🌳 +1 000</button><div class="sim-count">Pas <b id="ticksFloating">0</b> · <span id="animalFloating">🐾 dans 2 000</span></div></div><div class="minimap-box"><div class="mini-label"><b>MINICARTE</b><span>1 km²</span></div><canvas id="minimap" class="mini" width="160" height="160"></canvas><div class="mini-meta"><span>SO</span><span>NE</span></div></div><div id="pickmarker" class="marker"></div><div class="vp-bottom"><div class="hint">Glisser : tourner · Molette : zoom · Clic droit : déplacer · Clic : inspecter</div><div class="compass"><strong id="north">N</strong><div class="needle" id="compassAngle">0°</div></div></div><div id="error" class="error">WebGL2 est indisponible sur ce navigateur. Essaie d'ouvrir le HTML avec Chrome ou Edge et d'activer l'accélération matérielle.</div></section>
+<aside class="panel right">
+<div class="overline">Télémétrie</div><div class="h2" style="font-size:20px">Climat et réservoirs</div>
+<div class="metric"><div class="overline">Altitude maximale</div><div class="num" id="maxHeight">—</div><div class="sub">Altitude normalisée à partir de z = 0</div></div>
+<div class="metric"><div class="overline">Altitude moyenne</div><div class="num" id="avgHeight">—</div><div class="sub">Calculée sur 10 000 cellules</div></div>
+<div class="metric"><div class="overline">Surface</div><div class="num">1,00 km²</div><div class="sub">Grille 100 × 100 / pas de 10 m</div></div>
+<div class="metric"><div class="overline">Simulation / pas</div><div class="num" id="ticks">0</div><div class="sub">Évolution de l’eau par échange local</div></div>
+<div class="metric"><div class="overline">Eau totale du monde</div><div class="num" id="totalWater">—</div><div class="sub">Surface + sol + vapeur + nuages + plantes : masse constante</div></div>
+<div class="statpair"><span>En surface</span><strong id="surfaceWater">—</strong></div>
+<div class="statpair"><span>Dans le sol</span><strong id="soilWaterValue">—</strong></div>
+<div class="statpair"><span>Surface recouverte</span><strong id="wetArea">—</strong></div>
+<div class="statpair"><span>Profondeur maximale</span><strong id="deepest">—</strong></div>
+<div class="statpair"><span>Écoulement / pas</span><strong id="moved">—</strong></div>
+<div class="statpair"><span>Infiltration / pas</span><strong id="infiltrated">—</strong></div>
+<div class="statpair"><span>Erreur relative de masse</span><strong id="massErr">—</strong></div>
+<div class="statpair"><span>Erreur relative d’énergie</span><strong id="energyErr">—</strong></div><div class="statpair"><span>Erreur de matière sèche</span><strong id="dryErr">—</strong></div>
+<div class="section"><h3>Atmosphère et chaleur</h3></div>
+<div class="statpair"><span>Heure · cycle 1 000 pas</span><strong id="dayClock">06:00</strong></div>
+<div class="statpair"><span>Phase</span><strong id="dayPhase">Lever du jour</strong></div>
+<div class="statpair"><span>Température de l’air</span><strong id="airTemp">—</strong></div>
+<div class="statpair"><span>Température moyenne du sol</span><strong id="soilTemp">—</strong></div>
+<div class="statpair"><span>Eau en vapeur</span><strong id="vapourMass">—</strong></div>
+<div class="statpair"><span>Eau des nuages</span><strong id="cloudMass">—</strong></div>
+<div class="statpair"><span>Pluie / pas</span><strong id="rainLast">—</strong></div>
+<div class="statpair"><span>Écart du vent à la direction dominante</span><strong id="meanDeflect">—</strong></div><div class="statpair"><span>Soulèvement et abri (relief)</span><strong id="upliftStats">—</strong></div>
+<div class="statpair"><span>Pluie cumulée · terre</span><strong id="rainLand">—</strong></div>
+<div class="statpair"><span>Pluie cumulée · eaux</span><strong id="rainWater">—</strong></div>
+<div class="statpair"><span>Évaporation / pas</span><strong id="evapLast">—</strong></div>
+<div class="statpair"><span>Vent (cellules/pas)</span><strong id="windVector">—</strong></div>
+<div class="statpair"><span>Énergie solaire disponible</span><strong id="solarRemain">—</strong></div>
+<div class="section"><h3>Écosystème végétal</h3></div>
+<div class="metric"><div class="overline">Cellules portant des arbres</div><div class="num" id="treeCells">0</div><div class="sub">Arbres vivants déduits de la biomasse locale</div></div>
+<div class="statpair"><span>Biomasse vivante</span><strong id="treeBiomass">—</strong></div>
+<div class="statpair"><span>Matière sèche du sol</span><strong id="drySubstrate">—</strong></div>
+<div class="statpair"><span>Réserves d’eau des plantes</span><strong id="treeWater">—</strong></div>
+<div class="statpair"><span>Graines dormantes</span><strong id="treeSeeds">—</strong></div>
+<div class="statpair"><span>Graines dispersées</span><strong id="treeBirths">—</strong></div>
+<div class="statpair"><span>Sol stable / germinable</span><strong id="treeStable">—</strong></div>
+<div class="statpair"><span>Plantes stressées</span><strong id="treeStress">—</strong></div>
+<div class="statpair"><span>Transpiration / pas</span><strong id="treeTranspiration">—</strong></div>
+<div class="statpair"><span>Croissance nette / pas</span><strong id="treeGrowth">—</strong></div>
+<div class="statpair"><span>Arbres 3D affichés</span><strong id="treeMeshes">—</strong></div><div class="statpair"><span>Triangles arbres (WebGL2)</span><strong id="treeTriangles">—</strong></div>
+<div class="section"><h3>Herbivores</h3></div>
+<div class="metric"><div class="overline">Population vivante</div><div class="num" id="animalPopulation">0</div><div class="sub" id="animalStatus">Arrivée programmée au pas 2 000</div></div>
+<div class="statpair"><span>Naissances</span><strong id="animalBirths">0</strong></div>
+<div class="statpair"><span>Décès</span><strong id="animalDeaths">0</strong></div>
+<div class="statpair"><span>Biomasse broutée / pas</span><strong id="animalGrazed">0 kg</strong></div>
+<div class="statpair"><span>Eau bue / pas</span><strong id="animalDrunk">0 kg</strong></div>
+<div class="statpair"><span>Eau corporelle</span><strong id="animalWater">0 kg</strong></div>
+<div class="statpair"><span>Énergie chimique animale</span><strong id="animalEnergy">0 J</strong></div>
+<div class="statpair"><span>Triangles animaux (WebGL2)</span><strong id="animalTriangles">—</strong></div>
+<div class="metric"><div class="overline">Individu suivi</div><div class="sub" id="animalSelected">Choisis un herbivore dans la scène ou utilise « Suivre ».</div></div>
+<div class="btnrow"><button class="btn" id="exportAnimals">CSV · individus vivants</button></div>
+<div class="section"><h3>Point inspecté</h3></div><div id="selectionInfo">Clique sur le terrain ou un lac pour inspecter l’altitude, la profondeur de l’eau et l’humidité du sol.</div>
+<div class="section"><h3>Construction couche par couche</h3></div>
+<div class="stage active"><div class="dot">01</div><div><b>Relief 3D</b><small>Montagnes, vallées, pentes et maillage métrique.</small></div></div>
+<div class="stage active"><div class="dot">02</div><div><b>Hydrologie</b><small>Lacs émergents, écoulement, infiltration et réservoir d’eau.</small></div></div>
+<div class="stage active"><div class="dot">03</div><div><b>Atmosphère</b><small>Cycle jour/nuit, températures, évaporation, nuages, vent et pluie.</small></div></div>
+<div class="stage active"><div class="dot">04</div><div><b>Sol et végétation</b><small>Graines, arbres 3D, racines, transpiration et mutations.</small></div></div>
+<div class="stage active"><div class="dot">05</div><div><b>Faune</b><small>Herbivores 3D, réseaux neuronaux, faim, soif, reproduction. Prédateurs non ajoutés.</small></div></div>
+<div class="stage"><div class="dot">06</div><div><b>Complexité</b><small>Érosion, cycle des nutriments et émergence.</small></div></div>
+<div class="section"></div><div class="readonly">Les nuages au-dessus du relief représentent une <b>masse d’eau liquide condensée</b> transportée par le vent. La pluie restitue cette eau à la surface. Les arbres en volume correspondent à la biomasse simulée. Ils n’apparaissent pas à des emplacements imposés. Herbivores introduits une seule fois au pas 2 000 ; pas encore de prédateurs, d’écoulement souterrain ni de cycle carbone réaliste.</div>
+</aside>
+</main></div>
+<script>
+(()=>{'use strict';
+const N=100,SIZE=N*N,L=10;
+let seed=42,roughness=40,basinDepth=75,landform='lakes',maxAltitude=0;
+let terrain=new Float64Array(SIZE),localSlopes=new Float64Array(SIZE),baseClasses=new Uint8Array(SIZE);
+const CELL_MASS=1000*L*L, G=9.81, SOIL_INFILTRATION_M_STEP=.012, SOIL_CAPACITY_M=.8;
+let water=new Float64Array(SIZE),soilWater=new Float64Array(SIZE),initialWater=null;
+let waterPct=30,distribution='patches',fluidity=.22,retentionPct=60,waterOpacity=.75;
+let tickCount=0,initialMass=0,currentMass=0,initialEnergy=0,currentPotential=0,dissipatedHeat=0,lastMoved=0,lastInfiltration=0;
+let running=false,simSpeed=4,simAccum=0,simFrame=performance.now();
+// Atmosphère V2.11 + nouvelle végétation couplée à ses stocks d’eau, matière et énergie.
+const DAY_STEPS=1000,DAYLIGHT_STEPS=500,SECONDS_PER_STEP=86.4;
+const SOIL_HEAT_CAP_J_K=1.5e8,AIR_HEAT_CAP_J_K=3e11,SOIL_AIR_COUPLING_J_K=2.2e5;
+const SOIL_DIFFUSIVITY_J_K=6e5,SOLAR_PEAK_J_STEP=4.8e10,INITIAL_SOLAR_J=3e16;
+const AIR_COOL_J_K_STEP=6.5e8,BASE_TEMP_C=-40,MIN_TEMP_C=-25,RADIATION_REFERENCE_C=-3;
+const LATENT_HEAT_J_PER_KG=2.45e6,RAIN_CLOUD_THRESHOLD_KG=15;
+let soilHeat=new Float64Array(SIZE), initialSoilHeat=null,airHeat=0,initialAirHeat=0,solarEnergy=0,radiatedEnergy=0,latentEnergy=0;
+let sunlightWeights=new Float64Array(SIZE),sumSunlightWeights=0,solarStrength=100,radiationStrength=100;
+let lastSunlightJ=0,lastRadiationJ=0,atmosphereAltitude=0;
+let vaporKg=new Float64Array(SIZE),cloudKg=new Float64Array(SIZE),vaporBuffer=new Float64Array(SIZE),cloudBuffer=new Float64Array(SIZE);
+let rainCellKg=new Float64Array(SIZE),rainAccumKg=new Float64Array(SIZE),lastRainKg=0,totalRainKg=0,totalLandRainKg=0,totalWaterRainKg=0,cloudCoverCells=0;
+let evaporationRateMm=.004,lastEvaporationKg=0,windStrength=180,windMode='auto',autoWindAngle=0,windVX=0,windVY=0,rainfallStrength=100;
+let terrainWind=130,showWindArrows=true,windFieldTick=-100,windFieldDirty=true,windMeanTurn=0,windLiftedCells=0,windShadowCells=0;
+let windFieldX=new Float64Array(SIZE),windFieldY=new Float64Array(SIZE),windLift=new Float64Array(SIZE),windShadow=new Float64Array(SIZE);
+let showClouds=true,showRain=true,miniMode='terrain';
+// La couche 04 ajoute des individus végétaux à stocks limités, sans modifier l'écoulement.
+const PLANT_CHEM_J_PER_KG=18e6,SEED_DRY_KG=.004,MAX_BIOMASS_KG_CELL=28;
+// Faune V2.11 : agent neuronal vivant au sol, quadrupède réellement maillé en 3D.
+const ANIMAL_SPAWN_STEP=2000,ANIMAL_START_ENERGY_J=2.1e6,ANIMAL_MAX_ENERGY_J=3.7e6;
+const ANIMAL_STRUCTURE_START_KG=.12,ANIMAL_MAX_STRUCTURE_KG=.24,ANIMAL_INITIAL_WATER_KG=4;
+const ANIMAL_MAX_WATER_KG=6,ANIMAL_MAINTENANCE_J=2100,ANIMAL_MOTION_J_PER_M=95;
+const ANIMAL_WATER_LOSS_KG=.003,ANIMAL_MOVEMENT_M_PER_STEP=5.2,ANIMAL_MAX_LIFETIME=4300;
+const ANIMAL_OLD_INPUTS=12,ANIMAL_OLD_HIDDEN=8,ANIMAL_INPUTS=17,ANIMAL_HIDDEN=19;
+const ANIMAL_GENOME_LENGTH=(ANIMAL_INPUTS+1)*ANIMAL_HIDDEN+(ANIMAL_HIDDEN+1)*2;
+const ANIMAL_SPRINT_EXTRA_M_STEP=4.3,ANIMAL_POP_CAP=150;
+let animalCount=50,animalForage=70,animalFlight=75,animalMutation=14,animalScale=3,showAnimals=true;
+let animals=[],nextAnimalId=1,animalsIntroduced=false,initialAnimalsPlaced=0,totalBirths=0,totalDeaths=0;
+let lastGrazedKg=0,lastDrunkKg=0,lastFleeing=0,selectedAnimalId=null,animalVertexCount=0;
+const predators=[]; // Les prédateurs arriveront dans une couche ultérieure.
+
+const SEED_MOISTURE_MIN=.12,SEED_MAX_FLOOD_M=.14,STABILITY_TOLERANCE=.075;
+let seedDensity=60,stabilityDuration=160,growthStrength=100,plantMutation=12,forestDensity=100,treeSize=2.2,showTrees=true,treeDetail="auto";
+let seedBank=new Uint8Array(SIZE),seedDryKg=new Float64Array(SIZE);
+let plantBiomass=new Float64Array(SIZE),substrateKg=new Float64Array(SIZE),plantWaterKg=new Float64Array(SIZE);
+let plantDrought=new Float64Array(SIZE),plantWaterUse=new Float64Array(SIZE),plantHeatTol=new Float64Array(SIZE),plantGrowthGene=new Float64Array(SIZE),plantFormGene=new Float64Array(SIZE);
+let plantStress=new Float64Array(SIZE),wetReference=new Float64Array(SIZE),wetStreak=new Uint16Array(SIZE);
+let plantChemicalEnergy=0,initialDryMass=0,plantSeedBirths=0,plantCoveredCells=0,stableHabitatCells=0,stressedCells=0,lastPlantGrowthKg=0,lastTranspirationKg=0;
+let treeMeshDirty=true,treeDrawnCount=0,lastTreeMeshStep=-1,treeMeshRefreshTimer=null;
+
+const CLASS={PLAIN:0,HILL:1,MOUNTAIN:2,PLATEAU:3,VALLEY:4,MARSH:5,SHALLOW:6,DEEP:7};
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function hash2(x,y,s){let h=(Math.imul(x|0,374761393)+Math.imul(y|0,668265263)+Math.imul(s|0,1442695041))|0;h=Math.imul(h^(h>>>13),1274126177);h^=h>>>16;return (h>>>0)/4294967295;}
+function noise(x,y,f,s){const a=x*f,b=y*f;const ix=Math.floor(a),iy=Math.floor(b),u=a-ix,v=b-iy,fu=u*u*(3-2*u),fv=v*v*(3-2*v);const a0=hash2(ix,iy,s),a1=hash2(ix+1,iy,s),b0=hash2(ix,iy+1,s),b1=hash2(ix+1,iy+1,s);return (a0+(a1-a0)*fu)*(1-fv)+(b0+(b1-b0)*fu)*fv;}
+function featureRng(s){let state=(s^0x9e3779b9)>>>0;return ()=>{state=(state+0x6d2b79f5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
+function pickCenter(rng,sites,limit=.19,pad=.13){
+ for(let attempt=0;attempt<48;attempt++){
+  const x=pad+(1-2*pad)*rng(),y=pad+(1-2*pad)*rng();
+  if(sites.every(s=>(s.x-x)**2+(s.y-y)**2>limit*limit))return {x,y};
+ }
+ return {x:pad+(1-2*pad)*rng(),y:pad+(1-2*pad)*rng()};
+}
+function makeShape(rng,site,rx,ry,height,kind){return {...site,rx,ry,height,kind,ang:rng()*Math.PI*2,ring:2.8+2.8*rng()};}
+function generateTerrain(){
+ const rng=featureRng(seed+2117),features=[],mountainSites=[],basinSites=[];
+ const mountainous=landform==='mountains',coastal=landform==='coast';
+ const nMounts=mountainous?6:coastal?3:4;
+ const nBasins=mountainous?2:coastal?2:3;
+ for(let k=0;k<nMounts;k++){
+  const pos=pickCenter(rng,mountainSites,mountainous?.15:.20,.07);
+  mountainSites.push(pos);
+  features.push(makeShape(rng,pos,(mountainous?.07:.085)+.055*rng(),(mountainous?.12:.09)+.085*rng(),21+22*rng()+(mountainous?12:0),'hill'));
+ }
+ for(let k=0;k<nBasins;k++){
+  const pos=pickCenter(rng,basinSites,.22,.16);
+  basinSites.push(pos);
+  const depth=(18+15*rng())*(basinDepth/75);
+  features.push(makeShape(rng,pos,(mountainous?.07:.078)+.045*rng(),(mountainous?.13:.087)+.06*rng(),depth,mountainous?'valley':'basin'));
+ }
+ if(coastal){
+  // A broad lowland touching one random edge: if water collects, it can form a sea-like basin.
+  const edge=Math.floor(rng()*4),t=.27+.46*rng();
+  const pos=edge===0?{x:-.015,y:t}:edge===1?{x:1.015,y:t}:edge===2?{x:t,y:-.015}:{x:t,y:1.015};
+  features.push(makeShape(rng,pos,.33+.06*rng(),.30+.065*rng(),(30+9*rng())*(basinDepth/75),'sea'));
+ }
+ const raw=new Float64Array(SIZE);let min=Infinity,max=-Infinity;
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const nx=x/(N-1),ny=y/(N-1);
+  const warpX=.028*(noise(nx,ny,5,seed+78)-.5),warpY=.028*(noise(nx,ny,5,seed+91)-.5);
+  const px=nx+warpX,py=ny+warpY;
+  // Broad quiet plains, with microrelief governed only by the ruggedness setting.
+  const calm=(noise(nx,ny,2.5,seed+501)-.5)*4.2;
+  const fine=(noise(nx,ny,12,seed+502)-.5)*(0.7+roughness*.053);
+  const detailed=(noise(nx,ny,27,seed+503)-.5)*roughness*.022;
+  let altitude=35+calm+fine+detailed;
+  for(const f of features){
+   const dx=px-f.x,dy=py-f.y,c=Math.cos(f.ang),s=Math.sin(f.ang);
+   const ux=(dx*c+dy*s)/f.rx,uy=(-dx*s+dy*c)/f.ry;
+   const r2=ux*ux+uy*uy;
+   if(f.kind==='hill') altitude+=f.height*Math.exp(-1.5*r2);
+   else if(f.kind==='sea') altitude-=f.height*Math.exp(-1.0*r2);
+   else if(f.kind==='valley') altitude-=f.height*Math.exp(-1.3*r2);
+   else {
+    const r=Math.sqrt(r2);
+    altitude-=f.height*Math.exp(-1.7*r2);
+    // Broad shoulders yield a closed depression without hard edges.
+    altitude+=(f.ring*basinDepth/75)*Math.exp(-.5*((r-1.27)/.31)**2);
+   }
+  }
+  const i=y*N+x;raw[i]=altitude;min=Math.min(min,altitude);max=Math.max(max,altitude);
+ }
+ // Set the lowest land to z=0, avoiding negative reference potential energies.
+ for(let i=0;i<SIZE;i++)terrain[i]=raw[i]-min;
+ maxAltitude=Math.max(1,max-min);
+}
+function buildLandClasses(){
+ const span=9; // 90 m neighbourhood sampled in cardinal and diagonal directions.
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x,z=terrain[i];
+  const west=terrain[y*N+Math.max(0,x-1)],east=terrain[y*N+Math.min(N-1,x+1)];
+  const north=terrain[Math.max(0,y-1)*N+x],south=terrain[Math.min(N-1,y+1)*N+x];
+  const slope=Math.hypot(east-west,south-north)/(2*L);localSlopes[i]=slope;
+  let mean=0,k=0;
+  for(const [dx,dy] of [[span,0],[-span,0],[0,span],[0,-span],[span,span],[-span,span],[span,-span],[-span,-span]]){
+   const xx=Math.max(0,Math.min(N-1,x+dx)),yy=Math.max(0,Math.min(N-1,y+dy));mean+=terrain[yy*N+xx];k++;
+  }
+  mean/=k;
+  const high=z>maxAltitude*.62, crest=z-mean;
+  let code=CLASS.PLAIN;
+  if(high && (slope>.22 || crest>6.5)) code=CLASS.MOUNTAIN;
+  else if(high && slope<=.22)code=CLASS.PLATEAU;
+  else if(mean-z>3.3 && z<maxAltitude*.72)code=CLASS.VALLEY;
+  else if(slope>.13)code=CLASS.HILL;
+  baseClasses[i]=code;
+ }
+}
+// --- COUCHE 02: la même loi d'écoulement eau/surface que V2.11 ---
+function meanDepthForPct(pct){return .05+6*(pct/100);}
+function generateWater(){const wgt=new Float64Array(SIZE);let sum=0;const meanDepth=meanDepthForPct(waterPct);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const idx=y*N+x,nx=x/(N-1),ny=y/(N-1);let w=1;
+  if(distribution==='patches'){const r=.6*noise(nx,ny,3,seed+1901)+.4*noise(nx,ny,8,seed+1902);w=Math.pow(Math.max(0,r-.43),1.45);}
+  else if(distribution==='highland'){const r=.7*noise(nx,ny,3,seed+1901)+.3*noise(nx,ny,8,seed+1902);w=Math.max(0,(terrain[idx]/maxAltitude)*.78+r*.4-.30);w=w*w;}
+  wgt[idx]=w;sum+=w;
+ }
+ if(distribution==='level'){
+  let lo=0,hi=maxAltitude+meanDepth*SIZE;
+  for(let k=0;k<52;k++){
+   const level=(lo+hi)*.5;let volume=0;
+   for(let i=0;i<SIZE;i++)volume+=Math.max(0,level-terrain[i]);
+   if(volume<meanDepth*SIZE)lo=level;else hi=level;
+  }
+  const level=(lo+hi)*.5;for(let i=0;i<SIZE;i++)water[i]=Math.max(0,level-terrain[i]);
+  return;
+ }
+ if(sum<=1e-10){wgt.fill(1);sum=SIZE;}
+ const scale=meanDepth*SIZE/sum;for(let i=0;i<SIZE;i++)water[i]=wgt[i]*scale;
+}
+function potential(){let e=G*atmosphereAltitude*atmosphereMass();for(let i=0;i<SIZE;i++){const h=water[i];e+=G*CELL_MASS*(h*(terrain[i]+.5*h)+soilWater[i]*terrain[i]);e+=G*plantWaterKg[i]*terrain[i];}for(const a of animals)e+=G*a.waterKg*(terrain[animalCell(a)]+.5);return e;}
+
+function plantWaterMass(){let m=0;for(let i=0;i<SIZE;i++)m+=plantWaterKg[i];return m;}
+function dryMass(){let m=0;for(let i=0;i<SIZE;i++)m+=substrateKg[i]+plantBiomass[i]+seedDryKg[i];for(const a of animals)m+=a.structureKg+a.energyJ/PLANT_CHEM_J_PER_KG;return m;}
+function initVegetation(){
+ seedBank.fill(0);seedDryKg.fill(0);plantBiomass.fill(0);plantWaterKg.fill(0);
+ wetReference.fill(0);wetStreak.fill(0);plantStress.fill(0);
+ plantChemicalEnergy=0;plantCoveredCells=0;stableHabitatCells=0;stressedCells=0;
+ plantSeedBirths=0;lastPlantGrowthKg=0;lastTranspirationKg=0;initialDryMass=0;
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x;
+  substrateKg[i]=38+62*hash2(x,y,seed+3083);
+  initialDryMass+=substrateKg[i];
+  plantDrought[i]=hash2(x,y,seed+3401);
+  plantWaterUse[i]=hash2(x,y,seed+3409);
+  plantHeatTol[i]=hash2(x,y,seed+3413);
+  plantGrowthGene[i]=hash2(x,y,seed+3427);
+  plantFormGene[i]=hash2(x,y,seed+3529);
+  // Seed biomass is removed from the finite local dry substrate.
+  if(hash2(x,y,seed+1907)<seedDensity/100){
+   seedBank[i]=1;seedDryKg[i]=SEED_DRY_KG;substrateKg[i]-=SEED_DRY_KG;
+   plantChemicalEnergy+=SEED_DRY_KG*PLANT_CHEM_J_PER_KG;
+  }
+ }
+ treeMeshDirty=true;lastTreeMeshStep=-1;
+}
+function trackSoilStability(){
+ const capacity=SOIL_CAPACITY_M*retentionPct/100;stableHabitatCells=0;
+ for(let i=0;i<SIZE;i++){
+  const moisture=capacity>0?clamp(soilWater[i]/capacity,0,1):0;
+  const difference=Math.abs(moisture-wetReference[i]);
+  wetReference[i]+=.035*(moisture-wetReference[i]);
+  const suitable=moisture>=SEED_MOISTURE_MIN&&water[i]<SEED_MAX_FLOOD_M&&localSlopes[i]<.40;
+  wetStreak[i]=suitable&&difference<STABILITY_TOLERANCE?Math.min(65535,wetStreak[i]+1):0;
+  if(wetStreak[i]>=stabilityDuration)stableHabitatCells++;
+ }
+}
+function disperseTreeSeeds(){
+ if(tickCount%100!==0 || sunlight(tickCount)<.15)return;
+ for(let i=0;i<SIZE;i++){
+  if(plantBiomass[i]<2.5||plantStress[i]>250)continue;
+  const x=i%N,y=(i/N)|0;
+  if(hash2(x,y,seed+tickCount*19)>.20)continue;
+  const dir=Math.floor(hash2(x,y,seed+tickCount*7+8)*8);
+  const dx=[-1,0,1,-1,1,-1,0,1][dir],dy=[-1,-1,-1,0,0,1,1,1][dir];
+  if(x+dx<0||y+dy<0||x+dx>=N||y+dy>=N)continue;
+  const j=(y+dy)*N+x+dx;
+  if(seedBank[j]||plantBiomass[j]>.003||water[j]>.15||localSlopes[j]>.48)continue;
+  // The dry seed contains mass and chemical energy already present in its parent.
+  plantBiomass[i]-=SEED_DRY_KG;seedDryKg[j]=SEED_DRY_KG;seedBank[j]=1;plantSeedBirths++;
+  const genes=[plantDrought,plantWaterUse,plantHeatTol,plantGrowthGene,plantFormGene];
+  for(let t=0;t<genes.length;t++){
+   const mutate=hash2(x+dx,y+dy,seed+tickCount*3+t*173)<plantMutation/100;
+   const variation=mutate?(hash2(x,y,seed+tickCount*17+t*103)-.5)*.36:0;
+   genes[t][j]=clamp(genes[t][i]+variation,0,1);
+  }
+ }
+}
+function stepVegetation(sunBudgetJ){
+ let capturedJ=0,netGrowth=0,covered=0,stressed=0;
+ const perCellBudget=sunBudgetJ/SIZE,soilCap=SOIL_CAPACITY_M*retentionPct/100;
+ for(let i=0;i<SIZE;i++){
+  let biomass=plantBiomass[i];const T=tempSoil(i);
+  const moisture=soilCap>0?clamp(soilWater[i]/soilCap,0,1):0;
+  const droughtLimit=.055+.135*(1-plantDrought[i]);
+  const minT=4-7*plantHeatTol[i],maxT=38+7*plantHeatTol[i];
+  const goodTemp=T>=minT&&T<=maxT;
+  const canGerminate=biomass<.001&&seedBank[i]&&wetStreak[i]>=stabilityDuration&&moisture>=SEED_MOISTURE_MIN&&goodTemp&&water[i]<SEED_MAX_FLOOD_M;
+  if(canGerminate&&perCellBudget>0){
+   biomass+=seedDryKg[i];plantBiomass[i]=biomass;seedDryKg[i]=0;seedBank[i]=0;
+  }
+  // Existing trees retain their root system; only seeds need a long stable wet period.
+  if(biomass>=.001&&goodTemp&&moisture>droughtLimit&&water[i]<.20&&perCellBudget>0&&growthStrength>0){
+   const moistureFactor=clamp((moisture-droughtLimit)/.36,0,1);
+   const tempFactor=clamp((T-minT)/16,0,1)*clamp((maxT-T)/11,0,1);
+   const rootFactor=biomass<.010?1:clamp(.5+plantWaterKg[i]/Math.max(.05,biomass*.25),.22,1);
+   const maximum=.033*growthStrength/100*(.65+.70*plantGrowthGene[i])*moistureFactor*tempFactor*rootFactor;
+   const shade=clamp(1-cloudKg[i]/450,.3,1);
+   const added=Math.max(0,Math.min(maximum,substrateKg[i],MAX_BIOMASS_KG_CELL-biomass,perCellBudget*shade/PLANT_CHEM_J_PER_KG));
+   if(added>0){substrateKg[i]-=added;plantBiomass[i]+=added;capturedJ+=added*PLANT_CHEM_J_PER_KG;plantChemicalEnergy+=added*PLANT_CHEM_J_PER_KG;netGrowth+=added;}
+  }
+  biomass=plantBiomass[i];
+  if(biomass>.0001){
+   const dry=moisture<droughtLimit&&plantWaterKg[i]<Math.max(.03,biomass*.16);
+   const unsuitable=!goodTemp||water[i]>.25;
+   if(dry||unsuitable)plantStress[i]=Math.min(3000,plantStress[i]+(unsuitable?2:1));
+   else plantStress[i]=Math.max(0,plantStress[i]-3);
+   if(plantStress[i]>200)stressed++;
+   if(plantStress[i]>370){
+    const lost=Math.min(plantBiomass[i],(1.3-plantDrought[i])*(.00050+(plantStress[i]-370)*.0000015)*(unsuitable?1.4:1));
+    plantBiomass[i]-=lost;substrateKg[i]+=lost;
+    const chemical=lost*PLANT_CHEM_J_PER_KG;plantChemicalEnergy-=chemical;soilHeat[i]+=chemical;netGrowth-=lost;
+   }
+   if(plantBiomass[i]>.025)covered++;
+  }else plantStress[i]=Math.max(0,plantStress[i]-4);
+ }
+ plantCoveredCells=covered;stressedCells=stressed;lastPlantGrowthKg=netGrowth;
+ disperseTreeSeeds();return capturedJ;
+}
+function stepPlantHydrology(){
+ const light=sunlight(tickCount);lastTranspirationKg=0;
+ for(let i=0;i<SIZE;i++){
+  const biomass=plantBiomass[i];
+  if(biomass<=.001){if(plantWaterKg[i]>0){soilWater[i]+=plantWaterKg[i]/CELL_MASS;plantWaterKg[i]=0;}continue;}
+  const capacity=Math.min(70,biomass*3+.05);
+  const uptake=Math.max(0,Math.min(.32,capacity-plantWaterKg[i],soilWater[i]*CELL_MASS));
+  if(uptake>0){soilWater[i]-=uptake/CELL_MASS;plantWaterKg[i]+=uptake;}
+  if(light<=0||plantWaterKg[i]<=0)continue;
+  const desired=(.025+.012*biomass)*(.55+plantWaterUse[i])*light*clamp((tempSoil(i)+7)/28,0,1.3);
+  const potentialRise=G*(atmosphereAltitude-terrain[i]);
+  const heatBudget=Math.max(0,soilHeat[i]-SOIL_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C));
+  const transpired=Math.max(0,Math.min(desired,plantWaterKg[i],heatBudget/(LATENT_HEAT_J_PER_KG+potentialRise)));
+  if(transpired<=0)continue;
+  plantWaterKg[i]-=transpired;vaporKg[i]+=transpired;latentEnergy+=transpired*LATENT_HEAT_J_PER_KG;
+  soilHeat[i]-=transpired*(LATENT_HEAT_J_PER_KG+potentialRise);lastTranspirationKg+=transpired;
+ }
+}
+
+const animalCell=a=>Math.min(N-1,Math.floor(a.y/L))*N+Math.min(N-1,Math.floor(a.x/L));
+const cellAt=(x,y)=>{if(x<0||y<0||x>=N*L||y>=N*L)return -1;return Math.min(N-1,Math.floor(y/L))*N+Math.min(N-1,Math.floor(x/L));};
+const animalRand=(n,k,salt=0)=>hash2((n*37+k*13)%9991,(n*23+k*17)%9973,(seed+8513+salt)>>>0);
+function randomGenes(id){
+ const arr=new Float64Array(ANIMAL_GENOME_LENGTH),old=new Float64Array(122);
+ for(let k=0;k<old.length;k++)old[k]=(animalRand(id,k)*2-1)*.80;
+ const stride=ANIMAL_INPUTS+1, oldStride=ANIMAL_OLD_INPUTS+1, out=stride*ANIMAL_HIDDEN;
+ // Existing herbivore neurons and weights remain strictly unchanged when no predator is sensed.
+ for(let h=0;h<ANIMAL_OLD_HIDDEN;h++)for(let j=0;j<oldStride;j++)arr[h*stride+j]=old[h*oldStride+j];
+ arr[out]=old[104];arr[out+1]=old[105];
+ for(let h=0;h<ANIMAL_OLD_HIDDEN;h++){
+  arr[out+2+h]=old[106+h];arr[out+2+ANIMAL_HIDDEN+h]=old[114+h];
+ }
+ const instinct=animalFlight/100;
+ // Five independent neurons encode the intensity of detected predators. No external pathfinder.
+ for(let k=0;k<5;k++)arr[(8+k)*stride+1+12+k]=5.6*instinct;
+ // Six inherited foraging channels react to vegetation and drinkable water,
+ // avoiding prescribed coordinates or paths. They are disabled at 0%.
+ const forage=animalForage/100;
+ for(const [k,input] of [[0,3],[1,5],[2,4],[3,6],[4,8],[5,7]])
+  arr[(13+k)*stride+1+input]=3.6*forage;
+ for(const [k,weight] of [[0,-1.15],[1,1.15],[3,-.80],[4,.80]])
+  arr[out+2+13+k]=weight*forage;
+ for(const k of [2,5])arr[out+2+ANIMAL_HIDDEN+13+k]=1.0*forage;
+ // Negative left turn = towards left; herbivores turn AWAY from the detected threat.
+ for(const [k,w] of [[0,2.75],[2,-2.75],[3,2.30],[4,-2.30]])arr[out+2+8+k]=w*instinct;
+ for(let k=0;k<5;k++)arr[out+2+ANIMAL_HIDDEN+8+k]=3.1*instinct;
+ return arr;
+}
+// Unique introduction once the ecosystem has completed two 1,000-step day cycles.
+// Seeds + vegetation are environmental prerequisites, but no fixed habitat locations are prescribed.
+function initAnimals(){
+ animalsIntroduced=true;animals=[];nextAnimalId=1;totalBirths=0;totalDeaths=0;
+ lastGrazedKg=0;lastDrunkKg=0;selectedAnimalId=null;initialAnimalsPlaced=0;
+ let placed=0;const required=ANIMAL_STRUCTURE_START_KG+ANIMAL_START_ENERGY_J/PLANT_CHEM_J_PER_KG;
+ for(let t=0;t<animalCount*200&&placed<animalCount;t++){
+  const x=(.5+Math.floor(animalRand(t+25,3)*N))*L;
+  const y=(.5+Math.floor(animalRand(t+25,4)*N))*L;
+  const i=cellAt(x,y);if(i<0||water[i]>.13||localSlopes[i]>.35||plantBiomass[i]<.025||substrateKg[i]<required+.15)continue;
+  const available=(water[i]+soilWater[i])*CELL_MASS;
+  if(available<ANIMAL_INITIAL_WATER_KG)continue;
+  // Local material and water are transferred into an initial animal, never injected.
+  let rest=ANIMAL_INITIAL_WATER_KG;
+  const surface=Math.min(rest,water[i]*CELL_MASS);water[i]-=surface/CELL_MASS;rest-=surface;
+  soilWater[i]-=rest/CELL_MASS;substrateKg[i]-=required;
+  const id=nextAnimalId++;
+  animals.push({id,x,y,heading:animalRand(id,99)*Math.PI*2,
+   energyJ:ANIMAL_START_ENERGY_J,waterKg:ANIMAL_INITIAL_WATER_KG,
+   structureKg:ANIMAL_STRUCTURE_START_KG,age:0,lastBirth:-2000,stamina:1,
+   genes:randomGenes(id),generation:0,stepPhase:0,action:'stand'});
+  placed++;
+ }
+ initialAnimalsPlaced=placed;
+ // The initial animals are made of substrate mass and water already present.
+ // Their chemical reserve is financed by local sensible heat in this stylized model.
+ // A final gravitational adjustment below prevents spurious accounting gains.
+}
+// Herbivores can detect a nearby predator as a moving obstacle/threat.
+// The network (not a hand-written avoidance rule) decides what to do with it.
+function localRay(a,offset,range){
+ let plant=0,aqua=0,blocked=0;
+ const angle=a.heading+offset;
+ const dx=Math.cos(angle),dy=Math.sin(angle);
+ for(const distance of [14,35,65,95]){
+  const j=cellAt(a.x+dx*distance,a.y+dy*distance);
+  const weight=1/(1+distance*.016);
+  if(j<0){blocked+=weight;continue;}
+  plant+=Math.min(1,plantBiomass[j]/3.5)*weight;
+  aqua+=((water[j]>.009&&water[j]<.24)?1:0)*weight;
+  blocked+=(water[j]>.31||localSlopes[j]>.5?1:0)*weight;
+ }
+ if(predators.length){
+  for(const pdr of predators){
+   const rx=pdr.x-a.x,ry=pdr.y-a.y,along=rx*dx+ry*dy;
+   if(along<=0||along>95)continue;
+   const sideways=Math.abs(rx*dy-ry*dx);
+   if(sideways<8+along*.30)blocked+=.9*(1-along/110);
+  }
+ }
+ return [Math.min(1,plant*.65),Math.min(1,aqua*.55),Math.min(1,blocked*.55)];
+}
+// Smooth 360° directional danger sensing. Angles are relative to animal's own heading.
+// Predator coordinates are sensed locally but no movement target or trajectory is prescribed.
+function threatRays(a){
+ if(!predators.length)return [0,0,0,0,0];
+ const offsets=[-.95,0,.95,-2.35,2.35],result=[];
+ for(const offset of offsets){
+  const dx=Math.cos(a.heading+offset),dy=Math.sin(a.heading+offset);
+  let signal=0;
+  for(const p of predators){
+   const rx=p.x-a.x,ry=p.y-a.y,d=Math.hypot(rx,ry);
+   if(d>HERBIVORE_THREAT_RANGE_M||d<.001)continue;
+   const alignment=(rx*dx+ry*dy)/d,delta=Math.acos(clamp(alignment,-1,1));
+   signal+=Math.exp(-.5*(delta/.62)**2)*(1-d/HERBIVORE_THREAT_RANGE_M);
+  }
+  result.push(clamp(signal*1.25,0,1));
+ }
+ return result;
+}
+function animalNeuralCommand(a){
+ const left=localRay(a,-.70),forward=localRay(a,0),right=localRay(a,.70);
+ const danger=threatRays(a);
+ const input=[1,1-a.energyJ/ANIMAL_MAX_ENERGY_J,1-a.waterKg/ANIMAL_MAX_WATER_KG,
+  left[0],forward[0],right[0],left[1],forward[1],right[1],left[2],forward[2],right[2],...danger];
+ const hidden=new Float64Array(ANIMAL_HIDDEN);
+ let k=0;for(let h=0;h<ANIMAL_HIDDEN;h++){
+  let n=a.genes[k++];for(let j=0;j<ANIMAL_INPUTS;j++)n+=input[j]*a.genes[k++];
+  hidden[h]=Math.tanh(n);
+ }
+ let turn=a.genes[k++],motion=a.genes[k++];
+ for(let h=0;h<ANIMAL_HIDDEN;h++)turn+=hidden[h]*a.genes[k++];
+ for(let h=0;h<ANIMAL_HIDDEN;h++)motion+=hidden[h]*a.genes[k++];
+ // The sprint is a short-lived physical capability constrained by fatigue.
+ const emergency=Math.max(...danger)*(animalFlight/100);
+ return {turn:Math.tanh(turn)*(.30+.07*emergency),
+  move:(.18+.82/(1+Math.exp(-motion)))*(ANIMAL_MOVEMENT_M_PER_STEP+ANIMAL_SPRINT_EXTRA_M_STEP*emergency*(a.stamina??1)),
+  danger:emergency};
+}
+function dieAnimal(a){
+ const at=animalCell(a),dry=a.structureKg+a.energyJ/PLANT_CHEM_J_PER_KG;
+ // Simplification: carcass decomposes immediately into local substrate and heat.
+ substrateKg[at]+=dry;soilHeat[at]+=a.structureKg*PLANT_CHEM_J_PER_KG+a.energyJ;
+ soilWater[at]+=a.waterKg/CELL_MASS;
+ a.energyJ=0;a.structureKg=0;a.waterKg=0;totalDeaths++;
+}
+function stepHerbivores(){
+ lastGrazedKg=0;lastDrunkKg=0;lastFleeing=0;
+ const born=[],survivors=[];
+ for(const a of animals){
+  a.age++;
+  // Expense of maintaining a body; mass is returned as simplified local waste.
+  const expense=Math.min(a.energyJ,ANIMAL_MAINTENANCE_J);
+  a.energyJ-=expense;
+  const at=animalCell(a);substrateKg[at]+=expense/PLANT_CHEM_J_PER_KG;soilHeat[at]+=expense;
+  // Water is excreted to local ground rather than being destroyed.
+  const lost=Math.min(a.waterKg,ANIMAL_WATER_LOSS_KG);
+  a.waterKg-=lost;soilWater[at]+=lost/CELL_MASS;
+  if(a.energyJ<=0||a.waterKg<=0||a.age>=ANIMAL_MAX_LIFETIME){dieAnimal(a);continue;}
+  const {turn,move,danger}=animalNeuralCommand(a);if(danger>.25)lastFleeing++;a.heading=(a.heading+turn+Math.PI*2)%(Math.PI*2);
+  const x=Math.max(.0001,Math.min(N*L-.0001,a.x+Math.cos(a.heading)*move));
+  const y=Math.max(.0001,Math.min(N*L-.0001,a.y+Math.sin(a.heading)*move));
+  const to=cellAt(x,y);
+  const traversable=to>=0&&water[to]<.28&&localSlopes[to]<.75;
+  const travelled=traversable?Math.hypot(x-a.x,y-a.y):0;
+  if(traversable){a.x=x;a.y=y;}
+  a.stepPhase=(a.stepPhase||0)+travelled*.35; a.action=travelled>.12?'walk':'stand';
+  const c=animalCell(a);
+  const effort=Math.min(a.energyJ,travelled*ANIMAL_MOTION_J_PER_M*(1+1.0*danger));
+  a.energyJ-=effort;substrateKg[c]+=effort/PLANT_CHEM_J_PER_KG;soilHeat[c]+=effort;
+  // Grazing/drinking are local, hard-wired contact physiology, not navigation plans.
+  if((a.energyJ<ANIMAL_MAX_ENERGY_J*.92||a.structureKg<.20)&&plantBiomass[c]>.005){
+    const building=a.structureKg<.20;
+    const desired=Math.min(.012,Math.max(0,(ANIMAL_MAX_ENERGY_J-a.energyJ)/PLANT_CHEM_J_PER_KG)+(building?.003:0));
+    const eaten=Math.min(plantBiomass[c],desired);
+    const structured=building?Math.min(eaten*.25,.20-a.structureKg):0;
+    const storedJ=Math.min((eaten-structured)*PLANT_CHEM_J_PER_KG,ANIMAL_MAX_ENERGY_J-a.energyJ);
+    const excess=eaten-structured-storedJ/PLANT_CHEM_J_PER_KG;
+    plantBiomass[c]-=eaten;plantChemicalEnergy-=eaten*PLANT_CHEM_J_PER_KG;
+    a.structureKg+=structured;a.energyJ+=storedJ;
+    if(excess>0){substrateKg[c]+=excess;soilHeat[c]+=excess*PLANT_CHEM_J_PER_KG;}
+    lastGrazedKg+=eaten;if(eaten>0&&travelled<.6)a.action='graze';
+  }
+  if(water[c]>.005 && water[c]<.28 && a.waterKg<ANIMAL_MAX_WATER_KG*.93){
+    const drank=Math.min(.30,ANIMAL_MAX_WATER_KG-a.waterKg,water[c]*CELL_MASS);
+    water[c]-=drank/CELL_MASS;a.waterKg+=drank;lastDrunkKg+=drank;if(drank>0&&travelled<.6)a.action='drink';
+  }
+  if(a.energyJ<=0||a.waterKg<=0){dieAnimal(a);continue;}
+  if(a.age>900 && a.age-a.lastBirth>650 && a.energyJ>ANIMAL_MAX_ENERGY_J*.88
+    &&a.waterKg>ANIMAL_MAX_WATER_KG*.70&&a.structureKg>.16&&animals.length+born.length<ANIMAL_POP_CAP){
+    const childEnergy=a.energyJ*.46,childWater=a.waterKg*.43,childStructure=a.structureKg*.45;
+    a.energyJ-=childEnergy;a.waterKg-=childWater;a.structureKg-=childStructure;
+    a.lastBirth=a.age;
+    const id=nextAnimalId++,genes=Float64Array.from(a.genes);
+    for(let j=0;j<genes.length;j++){
+      if(animalRand(id,j,91)<animalMutation/100)genes[j]+=(.5-animalRand(id,j,191))*.70;
+    }
+    born.push({id,x:a.x,y:a.y,heading:(a.heading+(animalRand(id,21)-.5)*1.2+Math.PI*2)%(Math.PI*2),
+      energyJ:childEnergy,waterKg:childWater,structureKg:childStructure,age:0,lastBirth:-2000,stamina:1,genes,generation:a.generation+1,stepPhase:0,action:'stand'});
+    totalBirths++;
+  }
+  survivors.push(a);
+ }
+ animals=survivors.concat(born);
+}
+
+function atmosphereMass(){let m=0;for(let i=0;i<SIZE;i++)m+=vaporKg[i]+cloudKg[i];return m;}
+function reservoirMass(){let m=0;for(let i=0;i<SIZE;i++)m+=(water[i]+soilWater[i])*CELL_MASS+vaporKg[i]+cloudKg[i]+plantWaterKg[i];for(const a of animals)m+=a.waterKg;return m;}
+
+// COUCHE 03: chaleur, évaporation, vent, condensation et pluie.
+const tempSoil=i=>soilHeat[i]/SOIL_HEAT_CAP_J_K+BASE_TEMP_C;
+const tempAir=()=>airHeat/AIR_HEAT_CAP_J_K+BASE_TEMP_C;
+const sunlight=step=>{const phase=step%DAY_STEPS;return phase<DAYLIGHT_STEPS?Math.sin(Math.PI*phase/DAYLIGHT_STEPS):0;};
+const climateClock=step=>{const h=(6+(step%DAY_STEPS)*SECONDS_PER_STEP/3600)%24;return String(Math.floor(h)).padStart(2,'0')+':'+String(Math.floor(h%1*60)).padStart(2,'0');};
+function initThermal(){
+ airHeat=AIR_HEAT_CAP_J_K*(14-BASE_TEMP_C);initialAirHeat=airHeat;let sum=0;
+ for(let i=0;i<SIZE;i++){
+  const initTemp=16-4*(terrain[i]/maxAltitude)-1.8*Math.min(1,localSlopes[i]);
+  soilHeat[i]=SOIL_HEAT_CAP_J_K*(initTemp-BASE_TEMP_C);
+  sunlightWeights[i]=clamp(1+.15*terrain[i]/maxAltitude-.5*localSlopes[i],.6,1.2);sum+=sunlightWeights[i];
+ }sumSunlightWeights=sum;initialSoilHeat=Float64Array.from(soilHeat);
+ solarEnergy=INITIAL_SOLAR_J;radiatedEnergy=0;lastSunlightJ=0;lastRadiationJ=0;
+}
+function animalChemical(){let e=0;for(const a of animals)e+=a.structureKg*PLANT_CHEM_J_PER_KG+a.energyJ;return e;}
+function totalEnergy(){let heat=airHeat;for(let i=0;i<SIZE;i++)heat+=soilHeat[i];return potential()+heat+latentEnergy+solarEnergy+radiatedEnergy+plantChemicalEnergy+animalChemical();}
+function determineAutoWind(){
+ let wetX=0,wetY=0,wetSum=0,dryX=0,dryY=0,drySum=0;
+ for(let i=0;i<SIZE;i++){
+  const x=i%N,y=(i/N)|0,z=terrain[i]/Math.max(1,maxAltitude);
+  // Include low basins as likely sources after runoff, even when initially rain is patchy.
+  const wetWeight=Math.min(1,water[i]*.25)+Math.max(0,.30-z)*.6;
+  const dryWeight=Math.max(0,Math.min(1,(z-.23)*2.5))*(water[i]<.08?1:.16);
+  wetX+=x*wetWeight;wetY+=y*wetWeight;wetSum+=wetWeight;
+  dryX+=x*dryWeight;dryY+=y*dryWeight;drySum+=dryWeight;
+ }
+ const dx=dryX/Math.max(1,drySum)-wetX/Math.max(1,wetSum);
+ const dy=dryY/Math.max(1,drySum)-wetY/Math.max(1,wetSum);
+ autoWindAngle=Math.hypot(dx,dy)>4?Math.atan2(dy,dx):2*Math.PI*hash2(47,29,seed+6223);
+}
+function windVector(){
+ const angles={east:0,west:Math.PI,north:-Math.PI*.5,south:Math.PI*.5};
+ const base=windMode==='auto'?autoWindAngle:(angles[windMode]??0);
+ // Small veering and gusts: no rotating reversal to trap clouds above a lake.
+ const angle=base+.085*Math.sin(tickCount/1600+.4)+.055*Math.sin(tickCount/390+.8);
+ const cellsPerTick=windStrength/100*.68*(1+.08*Math.sin(tickCount/190+.5));
+ windVX=cellsPerTick*Math.cos(angle);windVY=cellsPerTick*Math.sin(angle);
+ return [windVX,windVY];
+}
+// Relief-aware horizontally projected flow (heuristic, not full fluid mechanics).
+// Sample 30–70 m ahead to detect mountain fronts and valley corridors.
+function heightSample(x,y){
+ const px=clamp(x,0,N-1),py=clamp(y,0,N-1),ix=Math.floor(px),iy=Math.floor(py),dx=px-ix,dy=py-iy;
+ const a=terrain[iy*N+ix],b=terrain[iy*N+Math.min(N-1,ix+1)];
+ const c=terrain[Math.min(N-1,iy+1)*N+ix],d=terrain[Math.min(N-1,iy+1)*N+Math.min(N-1,ix+1)];
+ return (a*(1-dx)+b*dx)*(1-dy)+(c*(1-dx)+d*dx)*dy;
+}
+function buildWindField(vx,vy){
+ const speed=Math.hypot(vx,vy),strength=terrainWind/100;
+ if(speed<1e-12){windFieldX.fill(0);windFieldY.fill(0);windLift.fill(0);windShadow.fill(0);windMeanTurn=0;windLiftedCells=0;windShadowCells=0;return;}
+ const ux=vx/speed,uy=vy/speed,nx=-uy,ny=ux;
+ let turnSum=0,upCount=0,downCount=0;
+ for(let i=0;i<SIZE;i++){
+  const x=i%N,y=(i/N)|0,h=terrain[i];
+  // Compare the terrain ahead with the upwind flank. These are metric-scale
+  // samples of the same heightmap used by the hydraulic solver.
+  const upstream=heightSample(x-ux*4,y-uy*4),ahead=heightSample(x+ux*4,y+uy*4);
+  const crest=heightSample(x+ux*7,y+uy*7);
+  const rise=Math.max(0,ahead-upstream),fall=Math.max(0,upstream-ahead);
+  const barrier=clamp((.70*rise+.30*Math.max(0,crest-h))/18,0,1.35);
+  const right=heightSample(x+ux*4+nx*3,y+uy*4+ny*3);
+  const left=heightSample(x+ux*4-nx*3,y+uy*4-ny*3);
+  // Flow turns toward the lower pass, but retains enough forward momentum to
+  // cross a crest: no artificial blocking or mass losses.
+  const lateral=clamp((left-right)/20,-1,1)*clamp(barrier,0,1.2)*strength*.95;
+  const channel=clamp((Math.min(left,right)-h)/16,0,1);
+  const lee=clamp(fall/17,0,1.5)*strength;
+  const slowdown=clamp(1-.56*barrier*strength+.20*lee+.20*channel*strength,.30,1.65);
+  let dx=ux+nx*lateral,dy=uy+ny*lateral;
+  const norm=Math.hypot(dx,dy);dx/=norm;dy/=norm;
+  windFieldX[i]=speed*slowdown*dx;windFieldY[i]=speed*slowdown*dy;
+  const lift=clamp(rise/13,0,2.5)*clamp(speed*slowdown/1.4,0,2)*strength;
+  windLift[i]=lift;windShadow[i]=lee;
+  if(lift>.22)upCount++;
+  if(lee>.22)downCount++;
+  turnSum+=Math.abs(Math.atan2(uy*dx-ux*dy,ux*dx+uy*dy));
+ }
+ windMeanTurn=turnSum/SIZE;windLiftedCells=upCount;windShadowCells=downCount;
+}
+// Bilinear forward deposition with a different velocity for every source cell.
+// All weights are positive and sum to one: vapor + cloud mass is conserved.
+// Atmospheric edges remain periodic; the topographic gradient is not periodic.
+function transportAtmosphere(){
+ vaporBuffer.fill(0);cloudBuffer.fill(0);
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x,mv=vaporKg[i],mc=cloudKg[i];
+  if(mv===0&&mc===0)continue;
+  const tx=x+windFieldX[i],ty=y+windFieldY[i];
+  const x0=Math.floor(tx),y0=Math.floor(ty),fx=tx-x0,fy=ty-y0;
+  const ax=((x0%N)+N)%N,bx=(ax+1)%N,ay=((y0%N)+N)%N,by=(ay+1)%N;
+  const w00=(1-fx)*(1-fy),w10=fx*(1-fy),w01=(1-fx)*fy,w11=fx*fy;
+  const aa=ay*N+ax,ab=ay*N+bx,ba=by*N+ax,bb=by*N+bx;
+  vaporBuffer[aa]+=mv*w00;vaporBuffer[ab]+=mv*w10;vaporBuffer[ba]+=mv*w01;vaporBuffer[bb]+=mv*w11;
+  cloudBuffer[aa]+=mc*w00;cloudBuffer[ab]+=mc*w10;cloudBuffer[ba]+=mc*w01;cloudBuffer[bb]+=mc*w11;
+ }
+ [vaporKg,vaporBuffer]=[vaporBuffer,vaporKg];
+ [cloudKg,cloudBuffer]=[cloudBuffer,cloudKg];
+}
+function stepCloudsAndRain(){
+ rainCellKg.fill(0);lastRainKg=0;cloudCoverCells=0;
+ const [vx,vy]=windVector();
+ if(windFieldDirty || tickCount-windFieldTick>=12){buildWindField(vx,vy);windFieldTick=tickCount;windFieldDirty=false;}
+ transportAtmosphere();
+ const airC=tempAir();
+ // Condensation is enhanced on windward slopes, reduced on sheltered lee faces.
+ // No water is added to the system through the orographic term.
+ for(let i=0;i<SIZE;i++){
+  const x=i%N,y=(i/N)|0;
+  const lift=windLift[i],shelter=windShadow[i];
+  const localCooling=4*(terrain[i]/Math.max(1,maxAltitude))+.8*localSlopes[i]
+     +Math.min(5,lift*3.1)-Math.min(3.5,shelter*2.4);
+  const saturation=clamp(10+1.7*(airC+15-localCooling),8,110);
+  const excess=Math.max(0,vaporKg[i]-saturation);
+  if(excess>0){
+   const condensed=excess*.30;
+   vaporKg[i]-=condensed;cloudKg[i]+=condensed;
+   latentEnergy-=condensed*LATENT_HEAT_J_PER_KG;
+   airHeat+=condensed*LATENT_HEAT_J_PER_KG;
+  }
+  // Daytime re-evaporation returns clouds to vapor only by spending heat.
+  if(cloudKg[i]>0 && vaporKg[i]<saturation){
+   const wanted=Math.min(cloudKg[i],(saturation-vaporKg[i])*.028*sunlight(tickCount));
+   const available=Math.max(0,(airHeat-AIR_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C))/LATENT_HEAT_J_PER_KG);
+   const reevaporated=Math.min(wanted,available);
+   if(reevaporated>0){cloudKg[i]-=reevaporated;vaporKg[i]+=reevaporated;airHeat-=reevaporated*LATENT_HEAT_J_PER_KG;latentEnergy+=reevaporated*LATENT_HEAT_J_PER_KG;}
+  }
+  // Lower precipitation rate leaves cloud water aloft long enough to travel;
+  // uplift accelerates rain only when the cloud has accumulated sufficient liquid.
+  const cloudExcess=Math.max(0,cloudKg[i]-RAIN_CLOUD_THRESHOLD_KG);
+  const rainFactor=(.009+.042*rainfallStrength/100)
+    *clamp((1+Math.min(2.8,lift*1.05))/(1+Math.min(1.4,shelter*.62)),.40,4.3);
+  const rain=rainfallStrength>0?Math.min(cloudKg[i],cloudExcess*rainFactor):0;
+  if(rain>0){
+   const waterDepth=water[i],addedDepth=rain/CELL_MASS;
+   cloudKg[i]-=rain;water[i]+=addedDepth;
+   const lostPotential=G*rain*(atmosphereAltitude-terrain[i]-waterDepth-addedDepth*.5);
+   airHeat+=lostPotential;
+   rainCellKg[i]=rain;rainAccumKg[i]+=rain;
+   lastRainKg+=rain;totalRainKg+=rain;
+   if(waterDepth<.05)totalLandRainKg+=rain;else totalWaterRainKg+=rain;
+  }
+  if(cloudKg[i]>18)cloudCoverCells++;
+ }
+}
+
+function stepClimate(){
+ const gain=Math.min(solarEnergy,SOLAR_PEAK_J_STEP*(solarStrength/100)*sunlight(tickCount));
+ solarEnergy-=gain;lastSunlightJ=gain;
+ // First let germinated plants capture a finite share of *this tick's* sunlight.
+ // Unused radiation is still delivered to the soil/air, and each dry kg fixes a
+ // matching chemical-energy stock so E_total remains accounted for.
+ const photosynthesized=stepVegetation(gain*.14);
+ const heatGain=gain-photosynthesized;
+ const soilShare=heatGain*.86;
+ for(let i=0;i<SIZE;i++)soilHeat[i]+=soilShare*sunlightWeights[i]/sumSunlightWeights;
+ airHeat+=heatGain-soilShare;
+ // Local soil-air heat exchange; every transfer is equal and opposite.
+ for(let i=0;i<SIZE;i++){
+  const diff=tempSoil(i)-tempAir();
+  const equalization=diff/(1/SOIL_HEAT_CAP_J_K+1/AIR_HEAT_CAP_J_K);
+  const transfer=Math.sign(diff)*Math.min(Math.abs(equalization),Math.abs(diff)*SOIL_AIR_COUPLING_J_K);
+  soilHeat[i]-=transfer;airHeat+=transfer;
+ }
+ // Neighbour-to-neighbour soil diffusion: no matter or energy created.
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){
+  const i=y*N+x;
+  for(const j of [x<N-1?i+1:-1,y<N-1?i+N:-1]){
+   if(j<0)continue;
+   const q=(soilHeat[i]-soilHeat[j])/SOIL_HEAT_CAP_J_K*SOIL_DIFFUSIVITY_J_K;
+   soilHeat[i]-=q;soilHeat[j]+=q;
+  }
+ }
+ // Long-wave radiation is recorded in a sink, not destroyed.
+ const outgoing=Math.min(Math.max(0,airHeat-AIR_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C)),
+   AIR_COOL_J_K_STEP*(radiationStrength/100)*Math.max(0,tempAir()-RADIATION_REFERENCE_C));
+ airHeat-=outgoing;radiatedEnergy+=outgoing;lastRadiationJ=outgoing;
+}
+
+// V2.11 échange sur la différence de niveaux libres. fluidity ≤ 0.42 pour dissiper l'énergie.
+function exchange(i,j){const hi=terrain[i]+water[i],hj=terrain[j]+water[j],delta=hi-hj;if(Math.abs(delta)<1e-11)return 0;
+ let moved=0;if(delta>0){moved=Math.min(water[i],fluidity*delta);if(moved<=0)return 0;water[i]-=moved;water[j]+=moved;}
+ else{moved=Math.min(water[j],fluidity*(-delta));if(moved<=0)return 0;water[j]-=moved;water[i]+=moved;}
+ return moved;
+}
+function hydroTick(){const before=currentPotential;let moved=0;
+ if(tickCount%2===0){
+  for(let y=0;y<N;y++)for(let x=0;x<N-1;x++){const i=y*N+x;moved+=exchange(i,i+1);}
+  for(let x=0;x<N;x++)for(let y=0;y<N-1;y++){const i=y*N+x;moved+=exchange(i,i+N);}
+ }else{
+  for(let x=N-1;x>=0;x--)for(let y=N-2;y>=0;y--){const i=y*N+x;moved+=exchange(i,i+N);}
+  for(let y=N-1;y>=0;y--)for(let x=N-2;x>=0;x--){const i=y*N+x;moved+=exchange(i,i+1);}
+ }
+ const afterFlow=potential();airHeat+=before-afterFlow;
+ const soilCapacity=SOIL_CAPACITY_M*retentionPct/100;
+ let infiltrated=0;
+ for(let i=0;i<SIZE;i++){const amount=Math.min(water[i],Math.max(0,soilCapacity-soilWater[i]),SOIL_INFILTRATION_M_STEP);
+  if(amount>0){water[i]-=amount;soilWater[i]+=amount;infiltrated+=amount;}
+ }
+ const afterInfiltration=potential();airHeat+=afterFlow-afterInfiltration;
+ trackSoilStability();
+ // 1 000 pas / journée : apport solaire, échanges thermiques et rayonnement.
+ stepClimate();
+ stepPlantHydrology();
+ // Evaporation locale : retrait de la surface (ou du sol) et transfert massique vers la vapeur.
+ lastEvaporationKg=0;const evapM=evaporationRateMm/1000;
+ for(let i=0;i<SIZE;i++){
+  if(evapM<=0)break;const surfaceExposed=water[i]>0,source=surfaceExposed?water:soilWater;
+  const tempMultiplier=clamp((tempSoil(i)+10)/30,0,1.5);
+  const desired=evapM*(surfaceExposed?1:.35)*tempMultiplier;
+  if(desired<=0||source[i]<=0)continue;
+  const upper=CELL_MASS*(LATENT_HEAT_J_PER_KG+G*(atmosphereAltitude+SOIL_CAPACITY_M));
+  const available=Math.max(0,soilHeat[i]-SOIL_HEAT_CAP_J_K*(MIN_TEMP_C-BASE_TEMP_C));
+  const amount=Math.min(source[i],desired,available/upper);
+  if(amount<=0)continue;const originalDepth=source[i],transferred=amount*CELL_MASS;
+  const gravity=G*transferred*(atmosphereAltitude-terrain[i]-(surfaceExposed?originalDepth-amount*.5:0));
+  soilHeat[i]-=transferred*LATENT_HEAT_J_PER_KG+gravity;
+  source[i]-=amount;vaporKg[i]+=transferred;latentEnergy+=transferred*LATENT_HEAT_J_PER_KG;
+  lastEvaporationKg+=transferred;
+ }
+ stepCloudsAndRain();
+ lastMoved=moved*CELL_MASS;lastInfiltration=infiltrated*CELL_MASS;
+ tickCount++;
+ if(tickCount===ANIMAL_SPAWN_STEP && !animalsIntroduced){
+  const before=totalEnergy();initAnimals();
+  // The difference includes newly accounted chemical stores + changed water potential.
+  // Convert soil sensible heat to bodily energy so no energy is created at introduction.
+  airHeat+=before-totalEnergy();
+ }else if(tickCount>ANIMAL_SPAWN_STEP && animalsIntroduced && animals.length){
+  const previousPotential=potential();stepHerbivores();
+  // Water has changed compartment or altitude (drinking, excretion, motion).
+  // Convert the potential difference to/from sensible heat, as in hydrology.
+  airHeat+=previousPotential-potential();
+ }
+ currentMass=reservoirMass();currentPotential=potential();
+ if(Math.abs(currentMass-initialMass)/Math.max(1,initialMass)>1e-9 || Math.abs((totalEnergy()-initialEnergy)/Math.max(1,Math.abs(initialEnergy)))>1e-9 || Math.abs((dryMass()-initialDryMass)/Math.max(1,initialDryMass))>1e-9 || plantBiomass.some(v=>v< -1e-9) || substrateKg.some(v=>v< -1e-9) || plantWaterKg.some(v=>v< -1e-9) || animals.some(a=>a.energyJ< -1e-6||a.waterKg< -1e-6||a.structureKg< -1e-9)){
+  running=false;setPlaying(false);$('error').textContent='Alerte sur le bilan de masse ou d’énergie.';$('error').classList.add('show');
+ }
+}
+function setPlaying(v){running=v;$('play').textContent=v?'Ⅱ  Pause':'▶  Simuler';$('playFloating').textContent=v?'Ⅱ Pause':'▶ Simuler';}
+function resetWater(){
+ water=Float64Array.from(initialWater);soilWater.fill(0);vaporKg.fill(0);cloudKg.fill(0);rainCellKg.fill(0);rainAccumKg.fill(0);
+ vaporBuffer.fill(0);cloudBuffer.fill(0);lastRainKg=0;totalRainKg=0;totalLandRainKg=0;totalWaterRainKg=0;
+ windVX=0;windVY=0;windFieldDirty=true;windFieldTick=-100;windMeanTurn=0;lastEvaporationKg=0;latentEnergy=0;tickCount=0;lastMoved=0;lastInfiltration=0;
+ initVegetation();
+ animals=[];animalsIntroduced=false;initialAnimalsPlaced=0;nextAnimalId=1;totalBirths=0;totalDeaths=0;lastGrazedKg=0;lastDrunkKg=0;selectedAnimalId=null;animalVertexCount=0;followMode=false;fastAdvanceToken++;
+ atmosphereAltitude=maxAltitude+100;
+ initThermal();currentMass=reservoirMass();initialMass=currentMass;currentPotential=potential();initialEnergy=totalEnergy();dissipatedHeat=0;
+ simAccum=0;setPlaying(false);$('toAnimals').textContent='⏩ Atteindre le pas 2 000';$('error').classList.remove('show');finishWaterRender();}
+function advance(n){for(let k=0;k<n;k++){hydroTick();if($('error').classList.contains('show'))break;}
+ finishWaterRender();}
+function formatKg(m){return m>=1e9?(m/1e9).toFixed(3)+' Md kg':m>=1e6?(m/1e6).toFixed(2)+' M kg':(m/1e3).toFixed(1)+' t';}
+function updateWaterStats(){let surface=0,soil=0,wet=0,deepest=0;
+ for(let i=0;i<SIZE;i++){const h=water[i];surface+=h*CELL_MASS;soil+=soilWater[i]*CELL_MASS;if(h>.035)wet++;deepest=Math.max(h,deepest);}
+ $('ticks').textContent=tickCount.toLocaleString('fr-FR');$('ticksFloating').textContent=tickCount.toLocaleString('fr-FR');$('totalWater').textContent=formatKg(currentMass);
+ $('surfaceWater').textContent=formatKg(surface);$('soilWaterValue').textContent=formatKg(soil);
+ $('wetArea').textContent=(wet*.01).toFixed(2)+' ha';$('deepest').textContent=deepest.toFixed(2)+' m';
+ $('moved').textContent=formatKg(lastMoved);$('infiltrated').textContent=formatKg(lastInfiltration);
+ $('massErr').textContent=(Math.abs(currentMass-initialMass)/Math.max(1,initialMass)*100).toExponential(1)+' %';
+ $('energyErr').textContent=(Math.abs(totalEnergy()-initialEnergy)/Math.max(1,Math.abs(initialEnergy))*100).toExponential(1)+' %';
+ $('dayClock').textContent=climateClock(tickCount);$('dayPhase').textContent=sunlight(tickCount)>0?'Jour · '+Math.round(sunlight(tickCount)*100)+' % de lumière':'Nuit';
+ $('airTemp').textContent=tempAir().toFixed(1)+' °C';let meanT=0;for(let i=0;i<SIZE;i++)meanT+=tempSoil(i);$('soilTemp').textContent=(meanT/SIZE).toFixed(1)+' °C';
+ let v=0,c=0;for(let i=0;i<SIZE;i++){v+=vaporKg[i];c+=cloudKg[i];}
+ $('vapourMass').textContent=formatKg(v);$('cloudMass').textContent=formatKg(c);
+ $('rainLast').textContent=formatKg(lastRainKg);$('rainLand').textContent=formatKg(totalLandRainKg);
+ $('rainWater').textContent=formatKg(totalWaterRainKg);$('evapLast').textContent=formatKg(lastEvaporationKg);
+ $('windVector').textContent=Math.hypot(windVX,windVY).toFixed(2)+' cellule/pas · '+((Math.atan2(windVY,windVX)*180/Math.PI+360)%360).toFixed(0)+'°';
+ $('meanDeflect').textContent=(windMeanTurn*180/Math.PI).toFixed(1)+'° moy.';
+ $('upliftStats').textContent=windLiftedCells+' / '+windShadowCells+' cellules';
+ $('solarRemain').textContent=(solarEnergy/1e15).toFixed(2)+' ×10¹⁵ J';
+ let plantKg=0,substrate=0,roots=0,seeds=0;for(let i=0;i<SIZE;i++){
+  plantKg+=plantBiomass[i];substrate+=substrateKg[i];roots+=plantWaterKg[i];seeds+=seedBank[i];}
+ $('treeCells').textContent=plantCoveredCells.toLocaleString('fr-FR');$('treeBiomass').textContent=formatKg(plantKg);
+ $('drySubstrate').textContent=formatKg(substrate);$('treeWater').textContent=formatKg(roots);
+ $('treeSeeds').textContent=seeds.toLocaleString('fr-FR');$('treeBirths').textContent=plantSeedBirths.toLocaleString('fr-FR');
+ $('treeStable').textContent=stableHabitatCells.toLocaleString('fr-FR');$('treeStress').textContent=stressedCells.toLocaleString('fr-FR');
+ $('treeTranspiration').textContent=lastTranspirationKg.toFixed(2)+' kg';$('treeGrowth').textContent=lastPlantGrowthKg.toFixed(2)+' kg';
+ $('animalPopulation').textContent=animals.length.toLocaleString('fr-FR');
+ const remaining=Math.max(0,ANIMAL_SPAWN_STEP-tickCount);
+ $('animalFloating').textContent=remaining?'🐾 dans '+remaining.toLocaleString('fr-FR'):'🐾 '+animals.length;
+ const status=!animalsIntroduced?'Arrivée programmée au pas '+ANIMAL_SPAWN_STEP:initialAnimalsPlaced===0?'Aucun habitat compatible au pas 2 000':initialAnimalsPlaced+' herbivores initialement introduits';
+ $('animalStatus').textContent=status;
+ $('animalArrival').textContent=remaining?'Introduction unique dans '+remaining.toLocaleString('fr-FR')+' pas. Utilise le bouton pour avancer.':status+'. Pas de repeuplement artificiel.';
+ $('toAnimals').disabled=remaining===0;
+ $('animalBirths').textContent=totalBirths.toLocaleString('fr-FR');$('animalDeaths').textContent=totalDeaths.toLocaleString('fr-FR');
+ $('animalGrazed').textContent=lastGrazedKg.toFixed(3)+' kg';$('animalDrunk').textContent=lastDrunkKg.toFixed(3)+' kg';
+ $('animalWater').textContent=animals.reduce((s,a)=>s+a.waterKg,0).toFixed(2)+' kg';
+ $('animalEnergy').textContent=(animalChemical()/1e6).toFixed(2)+' MJ';
+ $('animalTriangles').textContent=gl?(animalVertexCount/3).toLocaleString('fr-FR'):'Canvas';
+ const selectedAnimal=animals.find(a=>a.id===selectedAnimalId);
+ $('animalSelected').textContent=selectedAnimal?'#'+selectedAnimal.id+' · génération '+selectedAnimal.generation+' · âge '+selectedAnimal.age+' pas · énergie '+(selectedAnimal.energyJ/1e6).toFixed(2)+' MJ · eau '+selectedAnimal.waterKg.toFixed(2)+' kg · '+selectedAnimal.action:'Aucun individu suivi. Cliquer un animal ou utiliser Suivre.';
+
+ $('treeMeshes').textContent=treeDrawnCount.toLocaleString('fr-FR');$('treeTriangles').textContent=gl?(treeVertexCount/3).toLocaleString('fr-FR'):'Canvas';
+ $('dryErr').textContent=(Math.abs(dryMass()-initialDryMass)/Math.max(1,initialDryMass)*100).toExponential(1)+' %';
+}
+function finishWaterRender(){refreshFollowCamera();createWaterMesh();createAnimalMesh();if(tickCount-lastTreeMeshStep>=(plantCoveredCells>1000?85:35)||lastTreeMeshStep<0)createTreeMesh();drawMinimap();updateWaterStats();updateSelectedInfo();mark();}
+
+let verticalScale=3,displayMode=0,contours=true,showGrid=false,showWater=true;
+const canvas=$('gl'), minimap=$('minimap'),vp=$('viewport'),cloudCanvas=$('cloudOverlay'),cloudCtx=cloudCanvas.getContext('2d');
+const gl=canvas.getContext('webgl2',{alpha:false,antialias:true,depth:true,preserveDrawingBuffer:true});
+const fallbackCtx=gl?null:canvas.getContext('2d');if(!gl){document.querySelector('.head-status').textContent='Mode Canvas 3D · rendu logiciel de secours';}
+const vs=`#version 300 es
+in vec3 aPos;in vec3 aNormal;in float aAlt;in float aSlope;in float aSide;
+uniform mat4 uPV;out vec3 vNorm;out float vAlt;out float vSlope;out float vSide;out vec3 vPos;
+void main(){gl_Position=uPV*vec4(aPos,1.0);vNorm=aNormal;vAlt=aAlt;vSlope=aSlope;vSide=aSide;vPos=aPos;}`;
+const fs=`#version 300 es
+precision highp float;in vec3 vNorm;in float vAlt;in float vSlope;in float vSide;in vec3 vPos;
+uniform float uMaxAlt;uniform int uMode;uniform bool uContours;out vec4 fragColor;
+vec3 ramp(float t){
+  vec3 a=vec3(.147,.291,.272),b=vec3(.237,.413,.342),c=vec3(.454,.563,.420),d=vec3(.668,.594,.454),e=vec3(.802,.793,.725);
+  if(t<.24)return mix(a,b,smoothstep(0.,.24,t));
+  if(t<.50)return mix(b,c,smoothstep(.24,.50,t));
+  if(t<.78)return mix(c,d,smoothstep(.50,.78,t));
+  return mix(d,e,smoothstep(.78,1.,t));
+}
+void main(){
+ float t=clamp(vAlt/uMaxAlt,0.,1.);vec3 col=ramp(t);
+ if(uMode==1){col=mix(vec3(.14,.34,.49),vec3(.95,.73,.44),pow(t,.8));}
+ if(uMode==2){col=mix(vec3(.13,.48,.43),vec3(.87,.38,.28),clamp(vSlope/.62,0.,1.));}
+ if(vSide>.5){col=mix(col,vec3(.085,.145,.158),.72);}
+ vec3 n=normalize(vNorm);vec3 sun=normalize(vec3(-.35,1.0,.58));
+ float light=.50+.50*max(0.,dot(n,sun));light+=.11*max(0.,dot(n,normalize(vec3(.4,1.,-.3))));
+ col*=light;
+ if(uContours && vSide<.5){float level=vAlt/10.;float c=abs(fract(level+.5)-.5);float w=fwidth(level)*1.3;float line=1.0-smoothstep(0.,max(w,.009),c);col=mix(col,col*.48,line*.48);}
+ float radial=length(vPos.xz)/1500.;col=mix(col,vec3(.29,.43,.44),clamp(radial*.11,0.,.15));
+ fragColor=vec4(pow(col,vec3(.95)),1.);
+}`;
+const waterVS=`#version 300 es
+in vec3 aPos;in float aDepth;in float aFace;uniform mat4 uPV;
+out float vDepth;out float vFace;out vec3 vPos;
+void main(){gl_Position=uPV*vec4(aPos,1.);vDepth=aDepth;vFace=aFace;vPos=aPos;}`;
+const waterFS=`#version 300 es
+precision highp float;in float vDepth;in float vFace;in vec3 vPos;
+uniform float uOpacity;uniform float uTime;out vec4 fragColor;
+void main(){float deep=clamp(vDepth/12.,0.,1.);
+ vec3 shallow=vec3(.15,.65,.70),middle=vec3(.10,.42,.65),dark=vec3(.034,.19,.38);
+ vec3 col=mix(mix(shallow,middle,smoothstep(0.,.42,deep)),dark,smoothstep(.38,1.,deep));
+ float ripple=sin(vPos.x*.11+uTime*.48)*cos(vPos.z*.13-uTime*.35);
+ col+=vec3(.033,.067,.078)*ripple*(vFace>.5?.12:.50);
+ if(vFace>.5)col*=.66;else col+=vec3(.06,.10,.12)*.27;
+ float alpha=clamp(uOpacity*(.78+.17*deep),.10,.98);
+ fragColor=vec4(col,alpha);}`;
+let waterProg=null,waterUni=null,waterVAO=null,waterVBO=null,waterIBO=null,waterIndexCount=0;
+const treeVS=`#version 300 es
+in vec3 aPos;in vec3 aNormal;in vec3 aColor;uniform mat4 uPV;
+out vec3 vNormal;out vec3 vColor;out float vDepth;
+void main(){gl_Position=uPV*vec4(aPos,1.0);vNormal=aNormal;vColor=aColor;vDepth=length(aPos.xz);}`;
+const treeFS=`#version 300 es
+precision highp float;in vec3 vNormal;in vec3 vColor;in float vDepth;
+uniform float uDay;out vec4 fragColor;
+void main(){vec3 n=normalize(vNormal);
+ float light=(.53+.47*max(0.,dot(n,normalize(vec3(-.4,1.0,.55)))))*(.64+.36*uDay);
+ vec3 c=vColor*light;float fog=clamp(vDepth/1600.,0.,.22);
+ c=mix(c,vec3(.24,.37,.38),fog);fragColor=vec4(c,1.0);}`;
+let treeProg=null,treeVAO=null,treeVBO=null,treeUni=null,treeVertexCount=0;
+let animalVAO=null,animalVBO=null;
+
+
+const lvs=`#version 300 es
+in vec3 aPos;uniform mat4 uPV;void main(){gl_Position=uPV*vec4(aPos,1.);}`;
+const lfs=`#version 300 es
+precision mediump float;uniform vec4 uColor;out vec4 col;void main(){col=uColor;}`;
+function shader(type,src){const sh=gl.createShader(type);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(sh));return sh;}
+function program(v,f){const p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,v));gl.attachShader(p,shader(gl.FRAGMENT_SHADER,f));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p;}
+let prog=null,lineProg=null,uni=null,luni=null;
+let meshVAO=null,meshVBO=null,meshIBO=null,gridVAO=null,gridVBO=null;
+let meshIndexCount=0,gridCount=0;
+if(gl){
+ try{prog=program(vs,fs);lineProg=program(lvs,lfs);waterProg=program(waterVS,waterFS);treeProg=program(treeVS,treeFS);}catch(e){$('error').textContent='Erreur moteur graphique : '+e.message;$('error').classList.add('show');return;}
+ uni={pv:gl.getUniformLocation(prog,'uPV'),max:gl.getUniformLocation(prog,'uMaxAlt'),mode:gl.getUniformLocation(prog,'uMode'),cont:gl.getUniformLocation(prog,'uContours')};
+ luni={pv:gl.getUniformLocation(lineProg,'uPV'),color:gl.getUniformLocation(lineProg,'uColor')};
+ waterUni={pv:gl.getUniformLocation(waterProg,'uPV'),opacity:gl.getUniformLocation(waterProg,'uOpacity'),time:gl.getUniformLocation(waterProg,'uTime')};waterVAO=gl.createVertexArray();waterVBO=gl.createBuffer();waterIBO=gl.createBuffer();
+ treeUni={pv:gl.getUniformLocation(treeProg,'uPV'),day:gl.getUniformLocation(treeProg,'uDay')};treeVAO=gl.createVertexArray();treeVBO=gl.createBuffer();animalVAO=gl.createVertexArray();animalVBO=gl.createBuffer();
+ meshVAO=gl.createVertexArray();meshVBO=gl.createBuffer();meshIBO=gl.createBuffer();
+ gridVAO=gl.createVertexArray();gridVBO=gl.createBuffer();
+}
+const coords={yaw:.7,pitch:.65,dist:1620,target:[0,54,0]},pointer={down:false,lastX:0,lastY:0,which:0,dragged:0};let selected=-1;
+let dirty=true,viewMode='perspective',followMode=false;
+function mark(){dirty=true;}
+// Column-major 4x4 matrices, OpenGL convention.
+function multiply(a,b){let o=new Float32Array(16);for(let col=0;col<4;col++)for(let row=0;row<4;row++){
+ o[col*4+row]=a[row]*b[col*4]+a[4+row]*b[col*4+1]+a[8+row]*b[col*4+2]+a[12+row]*b[col*4+3];
+}return o;}
+function perspective(fov,aspect,near,far){const f=1/Math.tan(fov/2),o=new Float32Array(16);o[0]=f/aspect;o[5]=f;o[10]=(far+near)/(near-far);o[11]=-1;o[14]=2*far*near/(near-far);return o;}
+function lookAt(eye,center,up){
+ const norm=v=>{let len=Math.hypot(...v)||1;return v.map(x=>x/len)};
+ const sub=(a,b)=>a.map((x,i)=>x-b[i]);const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+ const f=norm(sub(center,eye)),s=norm(cross(f,up)),u=cross(s,f);const o=new Float32Array(16);
+ o[0]=s[0];o[1]=u[0];o[2]=-f[0];o[4]=s[1];o[5]=u[1];o[6]=-f[1];o[8]=s[2];o[9]=u[2];o[10]=-f[2];
+ o[12]=-(s[0]*eye[0]+s[1]*eye[1]+s[2]*eye[2]);o[13]=-(u[0]*eye[0]+u[1]*eye[1]+u[2]*eye[2]);o[14]=f[0]*eye[0]+f[1]*eye[1]+f[2]*eye[2];o[15]=1;return o;
+}
+function eyePos(){const c=Math.cos(coords.pitch);return [coords.target[0]+coords.dist*c*Math.sin(coords.yaw),coords.target[1]+coords.dist*Math.sin(coords.pitch),coords.target[2]+coords.dist*c*Math.cos(coords.yaw)];}
+function viewProj(){const eye=eyePos();return multiply(perspective(Math.PI*44/180,Math.max(.1,canvas.width/canvas.height),.5,8000),lookAt(eye,coords.target,[0,1,0]));}
+function project(p,pv){const out=[0,0,0,0];for(let row=0;row<4;row++)out[row]=pv[row]*p[0]+pv[4+row]*p[1]+pv[8+row]*p[2]+pv[12+row];
+ if(out[3]<=0)return null;return [(out[0]/out[3]+1)*.5*canvas.clientWidth,(1-out[1]/out[3])*.5*canvas.clientHeight];}
+
+// Low-poly 3D models: geometry depends on local *real* biomass and hereditary crown type.
+// No sprites, 3D package or network dependencies. Density/size sliders affect rendering only.
+// Every biologically active tree is represented. Only the OPTIONAL density slider can thin the view.
+// The 1,500 tree cap was removed: at 100%, visibleTrees() matches the ecological tree count.
+function visibleTrees(){
+ if(!showTrees)return [];
+ const items=[];for(let i=0;i<SIZE;i++){
+  const b=plantBiomass[i];if(b<=.025)continue;
+  const x=i%N,y=(i/N)|0;
+  if(forestDensity<100&&hash2(x,y,seed+9574)>forestDensity/100)continue;
+  items.push({i,biomass:b,x:(x*L-495)+(hash2(x,y,seed+712)-.5)*4.2,
+   z:(y*L-495)+(hash2(x,y,seed+713)-.5)*4.2,
+   kind:plantFormGene[i]>.64?'conifer':'broadleaf'});
+ }
+ return items;
+}
+function treeShape(t){
+ const growth=clamp(t.biomass/13,0,1),v=Math.pow(growth,.55),k=treeSize;
+ const h=(2.4+20*v)*k;
+ const base=terrain[t.i]*verticalScale;
+ const trunkH=h*(t.kind==='conifer'?.56:.52);
+ const radius=(.16+.40*v)*k*.53;
+ const crown=(1.0+4.2*v)*k*.61;
+ const green=plantStress[t.i]>280?.72:1;
+ return {h,base,trunkH,radius,crown,green};
+}
+// Distance-based LOD changes triangle count, never the number of individual trees.
+// This prevents unnecessary CPU/GPU cost as population approaches 10,000 plants.
+function createTreeMesh(){
+ lastTreeMeshStep=tickCount;treeMeshDirty=false;
+ const trees=visibleTrees();treeDrawnCount=trees.length;
+ if(!gl){treeVertexCount=0;return;}
+ const vertices=[],eye=eyePos();
+ function triangle(a,b,c,color){
+  const ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2];
+  const vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
+  let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
+  const len=Math.hypot(nx,ny,nz)||1;nx/=len;ny/=len;nz/=len;
+  for(const pt of [a,b,c])vertices.push(pt[0],pt[1],pt[2],nx,ny,nz,...color);
+ }
+ function segment(a,b,ra,rb,color,sides=6){
+  const axis=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],len=Math.hypot(...axis)||1;
+  const d=axis.map(x=>x/len),ref=Math.abs(d[1])>.90?[1,0,0]:[0,1,0];
+  let u=[d[1]*ref[2]-d[2]*ref[1],d[2]*ref[0]-d[0]*ref[2],d[0]*ref[1]-d[1]*ref[0]];
+  let norm=Math.hypot(...u)||1;u=u.map(v=>v/norm);
+  const v=[d[1]*u[2]-d[2]*u[1],d[2]*u[0]-d[0]*u[2],d[0]*u[1]-d[1]*u[0]];
+  const p=(origin,r,ang)=>origin.map((o,k)=>o+r*(u[k]*Math.cos(ang)+v[k]*Math.sin(ang)));
+  for(let j=0;j<sides;j++){
+   const t=j/sides*Math.PI*2,q=(j+1)/sides*Math.PI*2;
+   const a0=p(a,ra,t),a1=p(a,ra,q),b0=p(b,rb,t),b1=p(b,rb,q);
+   triangle(a0,a1,b1,color);triangle(a0,b1,b0,color);
+  }
+ }
+ function blob(x,y,z,rx,ry,rz,color,lod){
+  const sides=lod===0?7:lod===1?5:4;
+  const profile=lod===0?[[-1,0],[-.65,.65],[-.08,1],[.53,.8],[1,0]]:[[-1,0],[0,1],[1,0]];
+  const point=(k,j)=>{const [height,r]=profile[k],a=j/sides*Math.PI*2;return [x+rx*r*Math.cos(a),y+ry*height,z+rz*r*Math.sin(a)];};
+  for(let k=0;k<profile.length-1;k++)for(let j=0;j<sides;j++){
+   const a=point(k,j),b=point(k,(j+1)%sides),c=point(k+1,j),d=point(k+1,(j+1)%sides);
+   triangle(a,b,c,color);triangle(b,d,c,color);
+  }
+ }
+ function cone(x,y,z,rad,height,color,lod){const sides=lod===0?8:lod===1?6:4;
+  const top=[x,y+height,z];for(let j=0;j<sides;j++){
+   const a=j/sides*Math.PI*2,b=(j+1)/sides*Math.PI*2;
+   triangle([x+Math.cos(a)*rad,y,z+Math.sin(a)*rad],[x+Math.cos(b)*rad,y,z+Math.sin(b)*rad],top,color);
+  }
+ }
+ for(const t of trees){
+  const q=treeShape(t),base=[t.x,q.base,t.z],top=[t.x,q.base+q.trunkH,t.z];
+  const d=Math.hypot(t.x-eye[0],q.base-eye[1],t.z-eye[2]);
+  const lod=treeDetail==='detail'?0:d>1100?2:d>550?1:0;
+  const bark=hash2(t.i,7,seed+800)>.5?[.37,.26,.19]:[.32,.25,.21];
+  segment(base,top,q.radius,q.radius*.54,bark,lod===0?6:lod===1?5:4);
+  const stress=q.green;
+  const foliage=t.kind==='conifer'?[.16*stress,.31*stress,.24*stress]:
+   [.22*stress+.055*plantGrowthGene[t.i],(.40+.16*plantDrought[t.i])*stress,.23*stress];
+  if(t.kind==='conifer'){
+   const start=q.base+q.h*.26,levels=lod===2?2:3;
+   for(let k=0;k<levels;k++){
+    const f=levels===2?k*1.3:k;
+    cone(t.x,start+f*q.h*.19,t.z,q.crown*(1.15-f*.25),q.h*.46,foliage.map(v=>v*(1-f*.075)),lod);
+   }
+  }else{
+   const angle=hash2(t.i,17,seed+221)*Math.PI*2;
+   const count=lod===0?3:lod===1?1:0;
+   for(let k=0;k<count;k++){
+    const a=angle+k*Math.PI*2/3,off=q.crown*.56;
+    const end=[t.x+Math.cos(a)*off,q.base+q.h*(.72+(k%2)*.055),t.z+Math.sin(a)*off];
+    segment([t.x,q.base+q.trunkH*.79,t.z],end,q.radius*.27,q.radius*.08,bark,lod===0?5:4);
+    blob(end[0],end[1],end[2],q.crown*.67,q.crown*.72,q.crown*.67,foliage.map(v=>clamp(v*(.90+.07*k),0,1)),lod);
+   }
+   blob(t.x,q.base+q.h*.78,t.z,q.crown*.85,q.crown*.82,q.crown*.85,foliage,lod);
+  }
+ }
+ gl.bindVertexArray(treeVAO);gl.bindBuffer(gl.ARRAY_BUFFER,treeVBO);
+ gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.DYNAMIC_DRAW);
+ const stride=9*4;
+ for(const [name,n,offset] of [['aPos',3,0],['aNormal',3,3*4],['aColor',3,6*4]]){
+  const loc=gl.getAttribLocation(treeProg,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,n,gl.FLOAT,false,stride,offset);
+ }
+ gl.bindVertexArray(null);treeVertexCount=vertices.length/9;
+}
+
+// Each herbivore has an independently transformed, animated low-poly 3D body.
+// Geometry uses the same lit WebGL2 shader as the trees but a separate dynamic buffer.
+function animalWorldPosition(a){const px=a.x-500,pz=a.y-500;return {x:px,z:pz,y:heightAtWorld(px,pz)};}
+function createAnimalMesh(){
+ animalVertexCount=0;if(!gl||!showAnimals||!animals.length)return;
+ const vertices=[];
+ function tri(a,b,c,col){const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],v=[c[0]-a[0],c[1]-a[1],c[2]-a[2]];
+ let n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],l=Math.hypot(...n)||1;n=n.map(x=>x/l);
+ for(const p of [a,b,c])vertices.push(...p,...n,...col);
+ }
+ function quad(a,b,c,d,col){tri(a,b,c,col);tri(a,c,d,col);}
+ for(const a of animals){const pos=animalWorldPosition(a);if(!Number.isFinite(pos.y))continue;
+  const sn=Math.sin(a.heading),cs=Math.cos(a.heading),sc=animalScale*(.76+.24*clamp((a.structureKg+a.energyJ/PLANT_CHEM_J_PER_KG)/.4,.3,1.2));
+  const F=(f,s,h)=>[pos.x+(f*cs-s*sn)*sc,pos.y+h*sc,pos.z+(f*sn+s*cs)*sc];
+  const coat=a.generation?[.79,.60,.36]:[.76,.43,.25],shade=coat.map(v=>v*.78),head=[.83,.65,.44],hoof=[.22,.22,.20];
+  function box(f,s,h,l,w,d,col){const v=[];for(const z of [-d/2,d/2])for(const y of [-w/2,w/2])for(const x of [-l/2,l/2])v.push(F(f+x,s+z,h+y));
+   for(const [i,j,k,m] of [[0,1,3,2],[4,6,7,5],[0,4,5,1],[2,3,7,6],[0,2,6,4],[1,5,7,3]])quad(v[i],v[j],v[k],v[m],col);
+  }
+  function beam(f0,s0,h0,f1,s1,h1,r0,r1,col){const steps=5;for(let k=0;k<steps;k++){
+    const t=k/steps*Math.PI*2,t2=(k+1)/steps*Math.PI*2;
+    const p=F(f0+Math.cos(t)*r0,s0+Math.sin(t)*r0,h0),q=F(f0+Math.cos(t2)*r0,s0+Math.sin(t2)*r0,h0);
+    const r=F(f1+Math.cos(t)*r1,s1+Math.sin(t)*r1,h1),s=F(f1+Math.cos(t2)*r1,s1+Math.sin(t2)*r1,h1);quad(p,q,s,r,col);
+   }}
+  const grazing=a.action==='graze'||a.action==='drink',phase=a.stepPhase||0,headY=grazing?1.20:2.04;
+  box(0,0,1.64,3.2,1.20,1.24,coat);box(1.64,0,1.87,.80,.89,.78,shade);
+  beam(1.56,0,1.74,2.18,0,headY,.38,.31,coat);box(2.43,0,headY,.97,.76,.68,head);
+  box(2.84,0,headY-.19,.49,.29,.48,[.69,.49,.36]);
+  for(const side of [-1,1]){
+   box(2.12,side*.42,headY+.48,.27,.34,.20,head);
+   for(const front of [-1.13,1.13]){
+    const offset=(front>0?0:Math.PI)+(side>0?Math.PI:0),swing=(a.action==='walk'?Math.sin(phase+offset)*.35:0);
+    const kneeF=front+swing*.5,hoofF=front+swing;
+    beam(front,side*.44,1.33,kneeF,side*.46,.70,.22,.17,shade);
+    beam(kneeF,side*.46,.70,hoofF,side*.48,.18,.17,.13,coat);
+    box(hoofF+.05,side*.48,.12,.46,.25,.30,hoof);
+   }
+  }
+  beam(-1.55,0,1.85,-2.16,0,1.0,.13,.05,shade);
+ }
+ gl.bindVertexArray(animalVAO);gl.bindBuffer(gl.ARRAY_BUFFER,animalVBO);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.DYNAMIC_DRAW);
+ for(const [name,n,offset] of [['aPos',3,0],['aNormal',3,12],['aColor',3,24]]){
+  const loc=gl.getAttribLocation(treeProg,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,n,gl.FLOAT,false,36,offset);
+ }
+ gl.bindVertexArray(null);animalVertexCount=vertices.length/9;
+}
+// Canvas software fallback: articulated 3D body represented by projected oriented polygonal volumes.
+function renderAnimalsFallback(pv){if(!showAnimals)return;
+ const ctx=fallbackCtx,eye=eyePos(),list=[];
+ for(const a of animals){const pos=animalWorldPosition(a);if(!Number.isFinite(pos.y))continue;
+  const sc=animalScale,cs=Math.cos(a.heading),sn=Math.sin(a.heading),F=(f,s,h)=>project([pos.x+(f*cs-s*sn)*sc,pos.y+h*sc,pos.z+(f*sn+s*cs)*sc],pv);
+  const p=F(0,0,1.6),head=F(2.45,0,a.action==='graze'||a.action==='drink'?1.2:2.1);
+  if(!p||!head)continue;
+  const legs=[],swing=a.action==='walk';
+  for(const side of [-1,1])for(const f of [-1.1,1.1]){
+   const ph=(a.stepPhase||0)+(f>0?0:Math.PI)+(side>0?Math.PI:0),shift=swing?Math.sin(ph)*.35:0;
+   const top=F(f,side*.5,1.34),knee=F(f+shift*.5,side*.5,.72),foot=F(f+shift,side*.5,0);
+   if(top&&knee&&foot)legs.push({top,knee,foot});
+  }
+  const depth=Math.hypot(pos.x-eye[0],pos.y-eye[1],pos.z-eye[2]);list.push({a,pos,p,head,legs,depth,sc,F});
+ }
+ list.sort((a,b)=>b.depth-a.depth);ctx.save();ctx.lineCap='round';
+ for(const {a,p,head,legs,F} of list){const left=F(0,-.75,1.6),right=F(0,.75,1.6),front=F(1.6,0,1.6),back=F(-1.6,0,1.6);if(!left||!right||!front||!back)continue;
+  const thick=clamp(Math.hypot(left[0]-right[0],left[1]-right[1]),2.5,25);
+  ctx.strokeStyle='#5e3926';ctx.lineWidth=Math.max(1,thick*.30);
+  for(const l of legs){ctx.beginPath();ctx.moveTo(...l.top);ctx.lineTo(...l.knee);ctx.lineTo(...l.foot);ctx.stroke();}
+  const body=[F(-1.6,-.6,2.02),F(1.6,-.6,2.02),F(1.6,.6,2.02),F(-1.6,.6,2.02)].filter(Boolean);
+  if(body.length===4){ctx.fillStyle=a.generation?'#be986b':'#a86c47';ctx.beginPath();ctx.moveTo(...body[0]);for(const pt of body.slice(1))ctx.lineTo(...pt);ctx.closePath();ctx.fill();}
+  ctx.strokeStyle='#b47b50';ctx.lineWidth=Math.max(2,thick*.9);ctx.beginPath();ctx.moveTo(...back);ctx.lineTo(...front);ctx.stroke();
+  ctx.strokeStyle='#ac7951';ctx.lineWidth=Math.max(2,thick*.55);ctx.beginPath();ctx.moveTo(...front);ctx.lineTo(...head);ctx.stroke();
+  ctx.fillStyle='#d5aa74';ctx.beginPath();ctx.arc(head[0],head[1],Math.max(2.1,thick*.46),0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#392d25';ctx.beginPath();ctx.arc(head[0]+2,head[1],1.4,0,Math.PI*2);ctx.fill();
+  if(a.id===selectedAnimalId){ctx.strokeStyle='#ffeaa2';ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(p[0],p[1],Math.max(7,thick*2.0),0,Math.PI*2);ctx.stroke();}
+ }
+ ctx.restore();
+}
+function pickAnimalOnScreen(px,py){const pv=viewProj();let best=23*23,found=null;
+ for(const a of animals){const pos=animalWorldPosition(a);const pt=project([pos.x,pos.y+1.7*animalScale,pos.z],pv);if(!pt)continue;
+ const d=(pt[0]-px)**2+(pt[1]-py)**2;if(d<best){best=d;found=a;}}
+ if(!found)return false;selectedAnimalId=found.id;followMode=true;updateWaterStats();mark();return true;
+}
+function refreshFollowCamera(){
+ if(!followMode||!animals.length)return;
+ const a=animals.find(v=>v.id===selectedAnimalId);
+ if(!a){followMode=false;return;}
+ const q=animalWorldPosition(a);
+ if(Number.isFinite(q.y))coords.target=[q.x,q.y+13,q.z];
+}
+function followAnimal(){if(!animals.length)return;followMode=true;const a=animals.find(x=>x.id===selectedAnimalId)||animals[0];selectedAnimalId=a.id;
+ const p=animalWorldPosition(a);coords.target=[p.x,p.y+13,p.z];coords.dist=180;coords.pitch=.50;coords.yaw=a.heading+2.25;
+ scheduleTreeLODRefresh();updateWaterStats();mark();
+}
+
+function scheduleTreeLODRefresh(){
+ if(!gl||treeDetail!=='auto')return;
+ if(treeMeshRefreshTimer!==null)clearTimeout(treeMeshRefreshTimer);
+ treeMeshRefreshTimer=setTimeout(()=>{treeMeshRefreshTimer=null;createTreeMesh();updateWaterStats();mark();},240);
+}
+function renderTreesFallback(pv){
+ if(!showTrees)return;
+ const ctx=fallbackCtx,eye=eyePos(),list=[];
+ for(const t of visibleTrees()){
+  const q=treeShape(t),bottom=project([t.x,q.base,t.z],pv),top=project([t.x,q.base+q.h,t.z],pv);
+  const mid=project([t.x+q.crown,q.base+q.h*.72,t.z],pv);
+  if(!bottom||!top||!mid)continue;
+  const r=Math.max(2,Math.hypot(mid[0]-top[0],mid[1]-top[1])*.83);
+  if(top[0]<-100||top[0]>canvas.clientWidth+100||top[1]<-100||top[1]>canvas.clientHeight+100)continue;
+  list.push({t,q,bottom,top,r,depth:Math.hypot(t.x-eye[0],q.base-eye[1],t.z-eye[2])});
+ }
+ list.sort((a,b)=>b.depth-a.depth); // Count all trees independently of camera framing.
+ ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+ for(const v of list){const {t,q,bottom,top,r}=v;const far=v.depth>1050;
+  const grad=plantStress[t.i]>280?.7:1;
+  ctx.strokeStyle='#715541';ctx.lineWidth=Math.max(1,r*.22);ctx.beginPath();ctx.moveTo(bottom[0],bottom[1]);
+  ctx.lineTo(top[0],bottom[1]+(top[1]-bottom[1])*.47);ctx.stroke();
+  if(t.kind==='conifer'){
+   for(let j=0;j<(far?2:3);j++){
+    const y=bottom[1]+(top[1]-bottom[1])*(.48+.17*j),base=y+r*(.75-j*.08),tip=y-r*(.75+j*.07);
+    ctx.fillStyle=['#235244','#276a51','#31795d'][j];ctx.beginPath();ctx.moveTo(top[0],tip);ctx.lineTo(top[0]-r*(1.3-j*.19),base);ctx.lineTo(top[0]+r*(1.3-j*.19),base);ctx.closePath();ctx.fill();
+   }
+  }else{
+   const cx=bottom[0]+(top[0]-bottom[0])*.78,cy=bottom[1]+(top[1]-bottom[1])*.78;
+   for(const [dx,dy,m,col] of (far?[[0,0,1.03,'#398061']]:[[-.6,.14,.74,'#245d46'],[.6,.12,.7,'#327954'],[0,-.25,.83,'#418865'],[0,.22,.65,'#398061']])){
+    ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(cx+dx*r,cy+dy*r,r*m,r*m*.8,0,0,Math.PI*2);ctx.fill();
+   }
+  }
+ }
+ ctx.restore();
+}
+
+function heightAtWorld(x,z){const fx=x/L+49.5,fy=z/L+49.5;if(fx<0||fy<0||fx>99||fy>99)return -Infinity;const xx=Math.min(98,Math.floor(fx)),yy=Math.min(98,Math.floor(fy)),tx=fx-xx,ty=fy-yy;
+ const a=terrain[yy*N+xx],b=terrain[yy*N+xx+1],c=terrain[(yy+1)*N+xx],d=terrain[(yy+1)*N+xx+1];return ((a*(1-tx)+b*tx)*(1-ty)+(c*(1-tx)+d*tx)*ty)*verticalScale;}
+function surfaceAtWorld(x,z){const h=heightAtWorld(x,z);if(!Number.isFinite(h))return h;
+ const fx=clamp(Math.round(x/L+49.5),0,99),fy=clamp(Math.round(z/L+49.5),0,99);return Math.max(h,(terrain[fy*N+fx]+water[fy*N+fx])*verticalScale);}
+function pick(px,py){const eye=eyePos();const f=[coords.target[0]-eye[0],coords.target[1]-eye[1],coords.target[2]-eye[2]];
+ const norm=v=>{const n=Math.hypot(...v)||1;return v.map(x=>x/n)};
+ const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+ const forward=norm(f),right=norm(cross(forward,[0,1,0])),up=cross(right,forward);
+ const qx=(px/canvas.clientWidth*2-1)*Math.tan(Math.PI*44/360)*(canvas.clientWidth/canvas.clientHeight),qy=(1-py/canvas.clientHeight*2)*Math.tan(Math.PI*44/360);
+ const ray=norm(forward.map((v,i)=>v+qx*right[i]+qy*up[i]));let before=0,found=false,a=0,b=0;
+ for(let t=0;t<4200;t+=7){const x=eye[0]+ray[0]*t,z=eye[2]+ray[2]*t,y=eye[1]+ray[1]*t;const alt=surfaceAtWorld(x,z);
+ if(Number.isFinite(alt)&&y<=alt){a=before;b=t;found=true;break;}before=t;}
+ if(!found)return;
+ for(let k=0;k<15;k++){const m=(a+b)/2,x=eye[0]+ray[0]*m,z=eye[2]+ray[2]*m,y=eye[1]+ray[1]*m;const h=surfaceAtWorld(x,z);if(Number.isFinite(h)&&y<=h)b=m;else a=m;}
+ const t=b,x=eye[0]+ray[0]*t,z=eye[2]+ray[2]*t;
+ const ix=clamp(Math.round(x/L+49.5),0,99),iy=clamp(Math.round(z/L+49.5),0,99);selected=iy*N+ix;
+ const types=['Plaine','Colline','Montagne','Plateau','Vallée'];const i=selected;updateSelectedInfo();drawMinimap();mark();
+}
+function updateSelectedInfo(){if(selected<0)return;const i=selected,x=i%N,y=(i/N)|0;
+ const h=water[i],s=soilWater[i],label=h>.6?'Lac / eau profonde':h>.035?'Eau peu profonde':'Terrain émergé';
+ $('selectionInfo').innerHTML=`<strong class="contrast">${label}</strong><br>Cellule : (${x}, ${y}) · ${(x*10+5)} × ${(y*10+5)} m<br>Altitude : <b>${terrain[i].toFixed(2)} m</b><br>Profondeur d’eau : <b>${h.toFixed(3)} m</b><br>Altitude de l’eau : <b>${(terrain[i]+h).toFixed(3)} m</b><br>Eau dans le sol : <b>${(s*1000).toFixed(1)} mm</b><br>Température du sol : <b>${tempSoil(i).toFixed(1)} °C</b><br>Vent local : <b>${(windFieldX[i]*L).toFixed(1)}, ${(windFieldY[i]*L).toFixed(1)} m/pas</b><br>Soulèvement : <b>${windLift[i].toFixed(2)}</b> · Abri : <b>${windShadow[i].toFixed(2)}</b><br>Vapeur : <b>${vaporKg[i].toFixed(1)} kg</b><br>Nuages : <b>${cloudKg[i].toFixed(1)} kg</b><br>Pluie cumulée : <b>${rainAccumKg[i].toFixed(1)} kg</b><br>Arbre : <b>${plantBiomass[i]>.025?'vivant':seedBank[i]?'graine':'absent'}</b><br>Biomasse : <b>${plantBiomass[i].toFixed(3)} kg</b><br>Eau racinaire : <b>${plantWaterKg[i].toFixed(2)} kg</b><br>Stress : <b>${plantStress[i].toFixed(0)} pas</b><br>Tolérance sécheresse : <b>${plantDrought[i].toFixed(2)}</b><br>Forme : <b>${plantFormGene[i]>.64?'conifère':'feuillu'}</b><br>Pente : <b>${(localSlopes[i]*100).toFixed(1)} %</b>`;}
+function updateMarker(pv){const dot=$('pickmarker');if(selected<0){dot.style.display='none';return;}const i=selected,x=(i%N)*L-495,z=Math.floor(i/N)*L-495;
+ const pt=project([x,(terrain[i]+water[i])*verticalScale+4,z],pv);if(!pt||pt[0]<0||pt[0]>canvas.clientWidth||pt[1]<0||pt[1]>canvas.clientHeight){dot.style.display='none';return;}dot.style.display='block';dot.style.left=pt[0]+'px';dot.style.top=pt[1]+'px';}
+function createMesh(){const attrs=[],indices=[],h=terrain;function append(x,y,z,nx,ny,nz,alt,slope,side){attrs.push(x,y,z,nx,ny,nz,alt,slope,side);}
+ for(let row=0;row<N;row++)for(let col=0;col<N;col++){
+   const i=row*N+col,x=col*L-495,z=row*L-495;
+   const x0=Math.max(0,col-1),x1=Math.min(99,col+1),y0=Math.max(0,row-1),y1=Math.min(99,row+1);
+   const dx=(h[row*N+x1]-h[row*N+x0])*verticalScale/((x1-x0)*L);
+   const dz=(h[y1*N+col]-h[y0*N+col])*verticalScale/((y1-y0)*L);
+   const nn=1/Math.hypot(dx,1,dz);append(x,h[i]*verticalScale,z,-dx*nn,nn,-dz*nn,h[i],localSlopes[i],0);
+ }
+ for(let row=0;row<N-1;row++)for(let col=0;col<N-1;col++){
+   const k=row*N+col;indices.push(k,k+N,k+1,k+1,k+N,k+N+1);
+ }
+ // Visible skirts around the height field make the terrain into an actual volume.
+ const bottom=-35;const sideSegments=[];
+ for(let col=0;col<N-1;col++){sideSegments.push([col,col+1,[0,0,-1]]);sideSegments.push([(N-1)*N+col+1,(N-1)*N+col,[0,0,1]]);}
+ for(let row=0;row<N-1;row++){sideSegments.push([(row+1)*N,row*N,[-1,0,0]]);sideSegments.push([row*N+N-1,(row+1)*N+N-1,[1,0,0]]);}
+ for(const [i,j,normal] of sideSegments){const old=attrs.length/9;
+   for(const idx of [i,j]){const col=idx%N,row=Math.floor(idx/N),x=col*L-495,z=row*L-495;append(x,h[idx]*verticalScale,z,...normal,h[idx],localSlopes[idx],1)}
+   for(const idx of [j,i]){const col=idx%N,row=Math.floor(idx/N),x=col*L-495,z=row*L-495;append(x,bottom,z,...normal,h[idx],localSlopes[idx],1)}
+   indices.push(old,old+2,old+1,old+1,old+2,old+3);
+ }
+ if(!gl){meshIndexCount=indices.length;createGrid();mark();return;}
+ gl.bindVertexArray(meshVAO);gl.bindBuffer(gl.ARRAY_BUFFER,meshVBO);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(attrs),gl.STATIC_DRAW);
+ const stride=9*4;for(const [name,size,offset] of [['aPos',3,0],['aNormal',3,3],['aAlt',1,6],['aSlope',1,7],['aSide',1,8]]){const loc=gl.getAttribLocation(prog,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,stride,offset*4);}
+ gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,meshIBO);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(indices),gl.STATIC_DRAW);meshIndexCount=indices.length;gl.bindVertexArray(null);
+ createGrid();mark();
+}
+function createWaterMesh(){
+ // Quads 10×10 m above wet cells; the water level is a genuine physical scalar.
+ // Vertical boundary faces show depth without changing the water state.
+ if(!gl){waterIndexCount=water.reduce((n,h)=>n+(h>.025?1:0),0);return;}
+ const vertices=[],indices=[];
+ const push=(x,y,z,depth,side)=>{vertices.push(x,y,z,depth,side);};
+ const quad=(a,b,c,d,depth,side)=>{const k=vertices.length/5;
+  push(...a,depth,side);push(...b,depth,side);push(...c,depth,side);push(...d,depth,side);
+  indices.push(k,k+1,k+2,k,k+2,k+3);};
+ for(let row=0;row<N;row++)for(let col=0;col<N;col++){
+  const i=row*N+col,h=water[i];if(h<=.025)continue;
+  const x=col*L-495,z=row*L-495,top=(terrain[i]+h)*verticalScale+.22,low=terrain[i]*verticalScale;
+  quad([x-5,top,z-5],[x-5,top,z+5],[x+5,top,z+5],[x+5,top,z-5],h,0);
+  const sides=[[-1,0,[x-5,z-5],[x-5,z+5]],[1,0,[x+5,z+5],[x+5,z-5]],
+               [0,-1,[x+5,z-5],[x-5,z-5]],[0,1,[x-5,z+5],[x+5,z+5]]];
+  for(const [dx,dy,a,b] of sides){const xx=col+dx,yy=row+dy,inside=xx>=0&&yy>=0&&xx<N&&yy<N;
+   const j=inside?yy*N+xx:-1,nlevel=inside?terrain[j]+water[j]:terrain[i],bottom=Math.max(low,nlevel*verticalScale);
+   if(bottom<top-.25)quad([a[0],top,a[1]],[b[0],top,b[1]],[b[0],bottom,b[1]],[a[0],bottom,a[1]],h,1);
+  }
+ }
+ gl.bindVertexArray(waterVAO);gl.bindBuffer(gl.ARRAY_BUFFER,waterVBO);
+ gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.DYNAMIC_DRAW);
+ const stride=5*4;for(const [name,size,offset] of [['aPos',3,0],['aDepth',1,3],['aFace',1,4]]){
+  const loc=gl.getAttribLocation(waterProg,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,stride,offset*4);}
+ gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,waterIBO);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(indices),gl.DYNAMIC_DRAW);
+ waterIndexCount=indices.length;gl.bindVertexArray(null);
+}
+
+function createGrid(){const v=[];const push=(x,z)=>v.push(x,heightAtWorld(x,z)+1.6,z);
+ for(let k=0;k<100;k+=10){const x=k*10-495,z=k*10-495;for(let row=0;row<99;row++){const za=row*10-495,zb=(row+1)*10-495;push(x,za);push(x,zb);}for(let col=0;col<99;col++){const xa=col*10-495,xb=(col+1)*10-495;push(xa,z);push(xb,z);}}
+ if(!gl){gridCount=v.length/3;return;}
+ gl.bindVertexArray(gridVAO);gl.bindBuffer(gl.ARRAY_BUFFER,gridVBO);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(v),gl.STATIC_DRAW);const loc=gl.getAttribLocation(lineProg,'aPos');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);gridCount=v.length/3;gl.bindVertexArray(null);
+}
+function resize(){const dpr=Math.min(2,window.devicePixelRatio||1),w=Math.floor(canvas.clientWidth*dpr),h=Math.floor(canvas.clientHeight*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;if(gl)gl.viewport(0,0,w,h);mark();}if(cloudCanvas.width!==w||cloudCanvas.height!==h){cloudCanvas.width=w;cloudCanvas.height=h;mark();}}
+
+function colorForAlt(alt,slope,light,side){
+ let t=clamp(alt/Math.max(1,maxAltitude),0,1);
+ let palette;
+ if(displayMode===1)palette=[Math.round(32+205*t),Math.round(100+88*t),Math.round(125-59*t)];
+ else if(displayMode===2){const q=clamp(slope/.62,0,1);palette=[Math.round(37+190*q),Math.round(128-38*q),Math.round(110-30*q)];}
+ else{
+  const stops=[[39,75,70],[60,106,86],[115,144,107],[170,151,115],[207,204,187]];
+  const index=t<.24?0:t<.50?1:t<.78?2:3;
+  const a=[0,.24,.50,.78][index],b=[.24,.50,.78,1][index],q=clamp((t-a)/(b-a),0,1);
+  palette=stops[index].map((v,i)=>Math.round(v*(1-q)+stops[index+1][i]*q));
+ }
+ return 'rgb('+palette.map(c=>Math.round(clamp(c*(side?.62:light),0,255))).join(',')+')';
+}
+function renderFallback(){
+ // Low-cost perspective rendering in Canvas 2D for browsers with no WebGL2.
+ const ctx=fallbackCtx,w=canvas.clientWidth,h=canvas.clientHeight,dpr=canvas.width/Math.max(1,w);
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ const bg=ctx.createLinearGradient(0,0,0,h);bg.addColorStop(0,sunlight(tickCount)>.1?'#304456':'#0a1b29');bg.addColorStop(1,sunlight(tickCount)>.1?'#24434a':'#19404a');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+ const pv=viewProj(),eye=eyePos(),step=2,polys=[];
+ const vertex=(xx,yy)=>{const i=yy*N+xx,px=xx*L-495,pz=yy*L-495,py=terrain[i]*verticalScale;
+  return {x:px,y:py,z:pz,h:terrain[i],pt:project([px,py,pz],pv)};};
+ function add(poly,alt,slope,side=false,waterDepth=0){if(poly.some(v=>!v.pt))return;
+ const x=poly.reduce((sum,v)=>sum+v.x,0)/poly.length, y=poly.reduce((sum,v)=>sum+v.y,0)/poly.length,z=poly.reduce((sum,v)=>sum+v.z,0)/poly.length;
+ const depth=(x-eye[0])**2+(y-eye[1])**2+(z-eye[2])**2;
+ const minX=Math.min(...poly.map(v=>v.pt[0])),maxX=Math.max(...poly.map(v=>v.pt[0])),minY=Math.min(...poly.map(v=>v.pt[1])),maxY=Math.max(...poly.map(v=>v.pt[1]));
+ if(maxX<0||maxY<0||minX>w||minY>h)return;
+ let light=.91;if(!side){const dx=poly[1].h-poly[0].h,dz=poly[3].h-poly[0].h;light=clamp(1.06-.020*dx-.021*dz,.61,1.18);}
+ polys.push({poly,depth,alt,slope,side,light,waterDepth});}
+ for(let yy=0;yy<99;yy+=step)for(let xx=0;xx<99;xx+=step){const x1=Math.min(99,xx+step),y1=Math.min(99,yy+step),a=vertex(xx,yy),b=vertex(x1,yy),c=vertex(x1,y1),d=vertex(xx,y1),i=yy*N+xx;
+ add([a,b,c,d],(a.h+b.h+c.h+d.h)*.25,localSlopes[i]);
+ const samples=[water[yy*N+xx],water[yy*N+x1],water[y1*N+x1],water[y1*N+xx]];
+ if(showWater && samples.some(v=>v>.04)){
+  const base=[a,b,c,d],quad=base.map((v,k)=>{const y=(v.h+samples[k])*verticalScale+.6;
+   return {...v,y,pt:project([v.x,y,v.z],pv)};});
+  const avg=samples.reduce((p,q)=>p+q,0)/4;
+  add(quad,(a.h+b.h+c.h+d.h)*.25,localSlopes[i],false,Math.max(.03,avg));
+ }}
+ const base=-35;
+ for(let k=0;k<99;k+=2){
+  const j=Math.min(99,k+2);
+  for(const seg of [[[k,0],[j,0]],[[j,99],[k,99]],[[0,j],[0,k]],[[99,k],[99,j]]]){
+   const a=vertex(...seg[0]),b=vertex(...seg[1]);const botB={...b,y:base,pt:project([b.x,base,b.z],pv)},botA={...a,y:base,pt:project([a.x,base,a.z],pv)};add([a,b,botB,botA],(a.h+b.h)/2,0,true);
+  }
+ }
+ polys.sort((a,b)=>b.depth-a.depth);
+ for(const {poly,alt,slope,side,light,waterDepth} of polys){ctx.beginPath();ctx.moveTo(...poly[0].pt);for(let j=1;j<poly.length;j++)ctx.lineTo(...poly[j].pt);ctx.closePath();
+  if(waterDepth){const deep=clamp(waterDepth/12,0,1);ctx.fillStyle=`rgba(${Math.round(45-16*deep)},${Math.round(154-65*deep)},${Math.round(186+18*deep)},${waterOpacity*.94})`;}
+  else ctx.fillStyle=colorForAlt(alt,slope,light,side);
+  ctx.fill();ctx.strokeStyle=waterDepth?'rgba(100,180,196,.06)':ctx.fillStyle;ctx.lineWidth=.75;ctx.stroke();
+  if(!side && !waterDepth && contours){
+   const min=Math.min(...poly.map(v=>v.h)),max=Math.max(...poly.map(v=>v.h));
+   ctx.strokeStyle='rgba(15,38,38,.42)';ctx.lineWidth=.65;
+   for(let level=Math.ceil(min/10)*10;level<=max;level+=10){const pts=[];
+    for(let k=0;k<4;k++){const a=poly[k],b=poly[(k+1)%4];if((a.h<=level&&b.h>level)||(b.h<=level&&a.h>level)){
+      const f=(level-a.h)/(b.h-a.h);pts.push([a.pt[0]+f*(b.pt[0]-a.pt[0]),a.pt[1]+f*(b.pt[1]-a.pt[1])]);
+    }}if(pts.length>=2){ctx.beginPath();ctx.moveTo(...pts[0]);ctx.lineTo(...pts[1]);ctx.stroke();}
+   }
+  }
+ }
+ if(showGrid){ctx.strokeStyle='rgba(220,245,225,.30)';ctx.lineWidth=.7;
+  for(let i=0;i<100;i+=10){for(const fixed of ['x','z']){ctx.beginPath();let began=false;for(let j=0;j<100;j+=2){const x=fixed==='x'?i*10-495:j*10-495,z=fixed==='z'?i*10-495:j*10-495,pt=project([x,heightAtWorld(x,z)+2.5,z],pv);if(!pt)continue;if(!began){ctx.moveTo(...pt);began=true;}else ctx.lineTo(...pt);}if(began)ctx.stroke();}}
+ }
+}
+
+function drawAtmosphere(pv){
+ const ctx=cloudCtx,w=cloudCanvas.clientWidth,h=cloudCanvas.clientHeight,dpr=cloudCanvas.width/Math.max(1,w);
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ if(!showClouds&&!showRain)return;
+ const eye=eyePos(),cloudY=maxAltitude*verticalScale+28; // couche visuelle comprimée, sans changer l’altitude physique des échanges
+ // Projected cloud cells: located in 3D world space, drawn with soft halos.
+ // Painter sorts by distance; weather is visual only and does not feed back into the model.
+ const tiles=[];
+ for(let y=1;y<N-5;y+=5)for(let x=1;x<N-5;x+=5){
+  const i=y*N+x;let cm=0,rm=0;
+  for(let dy=0;dy<5;dy++)for(let dx=0;dx<5;dx++){const k=(y+dy)*N+x+dx;cm+=cloudKg[k];rm+=rainCellKg[k];}
+  if((!showClouds||cm<270)&&(!showRain||rm<12))continue;
+  const px=(x+2)*L-495,pz=(y+2)*L-495;
+  const pt=project([px,cloudY,pz],pv);if(!pt)continue;
+  if(pt[0]<-90||pt[0]>w+90||pt[1]<-100||pt[1]>h+100)continue;
+  const dist=Math.hypot(px-eye[0],cloudY-eye[1],pz-eye[2]);
+  tiles.push({i,px,pz,pt,cm,rm,dist});
+ }
+ tiles.sort((a,b)=>b.dist-a.dist);
+ for(const t of tiles){
+  const size=clamp(21500/Math.max(360,t.dist),7,26);
+  if(showClouds&&t.cm>270){
+   const a=clamp((t.cm/25-8)/36,.015,.23),x=t.pt[0],y=t.pt[1];
+   const g=ctx.createRadialGradient(x,y,1,x,y,size*1.7);
+   g.addColorStop(0,`rgba(239,249,251,${a})`);g.addColorStop(.48,`rgba(217,238,245,${a*.55})`);g.addColorStop(1,'rgba(202,234,241,0)');
+   ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,size*1.7,0,2*Math.PI);ctx.fill();
+  }
+  if(showRain&&t.rm>12){
+   const ground=project([t.px,terrain[t.i]*verticalScale+4,t.pz],pv);
+   if(ground){ctx.strokeStyle=`rgba(113,202,235,${clamp(t.rm/180,.10,.56)})`;
+    ctx.lineWidth=clamp(1100/t.dist,.6,1.7);
+    for(let p=-1;p<=1;p++){const offset=p*size*.24;ctx.beginPath();ctx.moveTo(t.pt[0]+offset,t.pt[1]+size*.3);ctx.lineTo(ground[0]+offset*.4,ground[1]);ctx.stroke();}
+   }
+  }
+ }
+}
+
+function render(now){
+ const dt=clamp((now-simFrame)/1000,0,.10);simFrame=now;
+ if(running){simAccum+=dt*simSpeed*12;let done=0;while(simAccum>=1&&done<16){hydroTick();simAccum--;done++;if(!running)break;}
+  if(done){refreshFollowCamera();createWaterMesh();createAnimalMesh();if(tickCount-lastTreeMeshStep>=(plantCoveredCells>1000?85:35))createTreeMesh();if(tickCount%6<done)drawMinimap();updateWaterStats();updateSelectedInfo();mark();}}
+ resize();if(!dirty){requestAnimationFrame(render);return;}dirty=false;
+ if(!gl){renderFallback();const pv=viewProj();renderTreesFallback(pv);renderAnimalsFallback(pv);drawAtmosphere(pv);updateMarker(pv);$('compassAngle').textContent=Math.round(((coords.yaw*180/Math.PI)%360+360)%360)+'°';requestAnimationFrame(render);return;}
+ gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.clearColor(.045+.10*sunlight(tickCount),.105+.11*sunlight(tickCount),.143+.14*sunlight(tickCount),1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ const pv=viewProj();gl.useProgram(prog);gl.uniformMatrix4fv(uni.pv,false,pv);gl.uniform1f(uni.max,maxAltitude);gl.uniform1i(uni.mode,displayMode);gl.uniform1i(uni.cont,contours?1:0);gl.bindVertexArray(meshVAO);gl.drawElements(gl.TRIANGLES,meshIndexCount,gl.UNSIGNED_INT,0);
+ if(showWater && waterIndexCount && waterOpacity>0){
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  gl.depthMask(false);gl.disable(gl.CULL_FACE);gl.useProgram(waterProg);gl.uniformMatrix4fv(waterUni.pv,false,pv);
+  gl.uniform1f(waterUni.opacity,waterOpacity);gl.uniform1f(waterUni.time,tickCount*.12);
+  gl.bindVertexArray(waterVAO);gl.drawElements(gl.TRIANGLES,waterIndexCount,gl.UNSIGNED_INT,0);
+  gl.depthMask(true);gl.disable(gl.BLEND);gl.enable(gl.CULL_FACE);
+ }
+ if(showTrees&&treeVertexCount){gl.useProgram(treeProg);gl.uniformMatrix4fv(treeUni.pv,false,pv);gl.uniform1f(treeUni.day,sunlight(tickCount));gl.bindVertexArray(treeVAO);gl.disable(gl.CULL_FACE);gl.drawArrays(gl.TRIANGLES,0,treeVertexCount);gl.enable(gl.CULL_FACE);}
+ if(showAnimals&&animalVertexCount){gl.useProgram(treeProg);gl.uniformMatrix4fv(treeUni.pv,false,pv);gl.uniform1f(treeUni.day,sunlight(tickCount));gl.bindVertexArray(animalVAO);gl.disable(gl.CULL_FACE);gl.drawArrays(gl.TRIANGLES,0,animalVertexCount);gl.enable(gl.CULL_FACE);}
+ if(showGrid){gl.useProgram(lineProg);gl.uniformMatrix4fv(luni.pv,false,pv);gl.uniform4f(luni.color,.85,.92,.88,.6);gl.bindVertexArray(gridVAO);gl.drawArrays(gl.LINES,0,gridCount);}gl.bindVertexArray(null);
+ drawAtmosphere(pv);updateMarker(pv);$('compassAngle').textContent=Math.round(((coords.yaw*180/Math.PI)%360+360)%360)+'°';
+ requestAnimationFrame(render);
+}
+function drawMinimap(){let rainScale=0;if(miniMode==='rain')for(let i=0;i<SIZE;i++)rainScale=Math.max(rainScale,rainAccumKg[i]);const mx=minimap.getContext('2d'),small=document.createElement('canvas');small.width=N;small.height=N;const ctx=small.getContext('2d'),img=ctx.createImageData(N,N);
+ for(let i=0;i<SIZE;i++){let alt=terrain[i]/maxAltitude,r,g,b;if(alt<.2){r=39;g=73;b=68;}else if(alt<.5){r=76;g=120;b=95;}else if(alt<.75){r=151;g=147;b=107;}else{r=204;g=196;b=168;}
+ if(water[i]>.025){const v=clamp(water[i]/10,0,1);r=Math.round(31-5*v);g=Math.round(159-88*v);b=Math.round(183+30*v);}
+ if(miniMode==='wind'){const f=clamp(Math.hypot(windFieldX[i],windFieldY[i])/2.5,0,1);r=Math.round(26+85*f);g=Math.round(63+156*f);b=Math.round(81+124*f);}
+ else if(miniMode==='uplift'){const f=clamp(windLift[i]/2,0,1),d=clamp(windShadow[i]/1.5,0,1);r=Math.round(66+178*d);g=Math.round(78+155*f);b=Math.round(91-30*f-34*d);}
+ else if(miniMode==='clouds'){const f=clamp(cloudKg[i]/120,0,1);r=Math.round(21+211*f);g=Math.round(42+201*f);b=Math.round(67+181*f);}
+ else if(miniMode==='rain'){const f=clamp(rainAccumKg[i]/(Math.max(1,rainScale)),0,1);r=Math.round(23+225*f);g=Math.round(37+167*f);b=Math.round(56+73*f);}
+ else if(miniMode==='temperature'){const f=clamp((tempSoil(i)+5)/45,0,1);r=Math.round(36+212*f);g=Math.round(132-52*f);b=Math.round(209-156*f);}
+ else if(miniMode==='vegetation'||miniMode==='herbivores'){const f=clamp(plantBiomass[i]/13,0,1);r=Math.round(21+47*f);g=Math.round(41+152*f);b=Math.round(38+57*f);}
+ else if(miniMode==='soil'){const cap=Math.max(.001,SOIL_CAPACITY_M*retentionPct/100),f=clamp(soilWater[i]/cap,0,1);r=Math.round(103-59*f);g=Math.round(91+70*f);b=Math.round(62+125*f);}
+ let k=i*4;img.data[k]=r;img.data[k+1]=g;img.data[k+2]=b;img.data[k+3]=255;}
+ ctx.putImageData(img,0,0);mx.imageSmoothingEnabled=false;mx.clearRect(0,0,160,160);mx.drawImage(small,0,0,160,160);
+ if(showWindArrows || miniMode==='wind'){
+  mx.strokeStyle='rgba(244,251,229,.88)';mx.fillStyle='rgba(244,251,229,.90)';mx.lineWidth=1.25;
+  for(let gy=5;gy<N;gy+=10)for(let gx=5;gx<N;gx+=10){const i=gy*N+gx;
+   const vx=windFieldX[i],vy=windFieldY[i],speed=Math.hypot(vx,vy);if(speed<.025)continue;
+   const xx=(gx+.5)*1.6,yy=(gy+.5)*1.6,len=clamp(speed*5,2,8),vx0=vx/speed,vy0=vy/speed;
+   mx.beginPath();mx.moveTo(xx-vx0*len*.50,yy-vy0*len*.50);mx.lineTo(xx+vx0*len*.50,yy+vy0*len*.50);mx.stroke();
+   const tipX=xx+vx0*len*.50,tipY=yy+vy0*len*.50;
+   mx.beginPath();mx.moveTo(tipX,tipY);mx.lineTo(tipX-vx0*2-vy0*1.5,tipY-vy0*2+vx0*1.5);mx.lineTo(tipX-vx0*2+vy0*1.5,tipY-vy0*2-vx0*1.5);mx.closePath();mx.fill();
+  }
+ }
+ if(animals.length){mx.fillStyle='#f5b368';mx.strokeStyle='#5b321e';mx.lineWidth=.55;for(const a of animals){mx.beginPath();mx.arc(a.x*.16,a.y*.16,2,0,Math.PI*2);mx.fill();mx.stroke();}}
+ if(selected>=0){const x=(selected%N)*1.6,y=Math.floor(selected/N)*1.6;mx.beginPath();mx.arc(x,y,4,0,2*Math.PI);mx.lineWidth=1.5;mx.strokeStyle='#ffedbf';mx.stroke();}
+}
+function refresh(){seed=(Number($('seed').value)||0)>>>0;roughness=Number($('rough').value);basinDepth=Number($('basin').value);landform=$('preset').value;verticalScale=Number($('scale').value);
+ waterPct=Number($('waterAmount').value);distribution=$('waterDistribution').value;fluidity=Number($('fluidity').value);retentionPct=Number($('retention').value);solarStrength=Number($('solarStrength').value);radiationStrength=Number($('radiationStrength').value);evaporationRateMm=Number($('evaporation').value);rainfallStrength=Number($('rainStrength').value);windStrength=Number($('windStrength').value);windMode=$('windMode').value;terrainWind=Number($('terrainWind').value);windFieldDirty=true;seedDensity=Number($('seedDensity').value);stabilityDuration=Number($('stabilityDuration').value);growthStrength=Number($('growthStrength').value);plantMutation=Number($('plantMutation').value);forestDensity=Number($('forestDensity').value);treeSize=Number($('treeSize').value);treeDetail=$('treeDetail').value;
+ generateTerrain();buildLandClasses();generateWater();determineAutoWind();initialWater=Float64Array.from(water);selected=-1;
+ $('selectionInfo').textContent='Clique sur une région pour afficher ses propriétés hydrologiques.';
+ createMesh();resetWater();windVector();buildWindField(windVX,windVY);windFieldTick=tickCount;windFieldDirty=false;drawMinimap();updateWaterStats();const avg=terrain.reduce((a,b)=>a+b,0)/SIZE;$('maxHeight').textContent=maxAltitude.toFixed(1)+' m';$('avgHeight').textContent=avg.toFixed(1)+' m';mark();}
+function download(name,text,type){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+$('exportCsv').onclick=()=>{const output=['x_m,y_m,altitude_m,profondeur_eau_surface_m,altitude_surface_libre_m,eau_sol_m_equivalent,vapeur_kg,nuage_kg,pluie_cumulee_kg,temperature_sol_C,vent_x_m_par_pas,vent_y_m_par_pas,soulevement_indice,abri_indice,volume_surface_m3,volume_sol_m3,pente_ratio,classe,biomasse_arbre_kg,substrat_sec_kg,graines_dormantes,masse_graine_kg,eau_racines_kg,stress_arbre_pas,trait_secheresse,trait_eau,trait_temperature,trait_croissance,trait_forme,humidite_stable_pas,herbivores_cellule'];const types=['plaine','colline','montagne','plateau','vallee'];
+ for(let i=0;i<SIZE;i++){const x=(i%N)*L+5,y=Math.floor(i/N)*L+5;output.push(`${x},${y},${terrain[i].toFixed(7)},${water[i].toFixed(7)},${(terrain[i]+water[i]).toFixed(7)},${soilWater[i].toFixed(7)},${vaporKg[i].toFixed(4)},${cloudKg[i].toFixed(4)},${rainAccumKg[i].toFixed(4)},${tempSoil(i).toFixed(3)},${(windFieldX[i]*L).toFixed(4)},${(windFieldY[i]*L).toFixed(4)},${windLift[i].toFixed(4)},${windShadow[i].toFixed(4)},${(water[i]*L*L).toFixed(5)},${(soilWater[i]*L*L).toFixed(5)},${localSlopes[i].toFixed(6)},${types[baseClasses[i]]},${plantBiomass[i].toFixed(6)},${substrateKg[i].toFixed(5)},${seedBank[i]},${seedDryKg[i].toFixed(6)},${plantWaterKg[i].toFixed(5)},${plantStress[i].toFixed(2)},${plantDrought[i].toFixed(4)},${plantWaterUse[i].toFixed(4)},${plantHeatTol[i].toFixed(4)},${plantGrowthGene[i].toFixed(4)},${plantFormGene[i].toFixed(4)},${wetStreak[i]},${animals.filter(a=>animalCell(a)===i).length}`)}
+ download('monde_vj_atlas3d_couche03_seed'+seed+'_climat_pas'+tickCount+'.csv',output.join('\n'),'text/csv;charset=utf-8');};
+$('exportObj').onclick=()=>{const lines=['# Monde VJ - Couche 01, maillage 3D identique a V2.11','# metres, resolution 10 m','# 10000 sommets / 19602 triangles','o MondeVJ_Relief'];
+ for(let i=0;i<SIZE;i++)lines.push(`v ${((i%N)*L-495).toFixed(3)} ${(terrain[i]*verticalScale).toFixed(5)} ${(Math.floor(i/N)*L-495).toFixed(3)}`);
+ for(let y=0;y<N-1;y++)for(let x=0;x<N-1;x++){const k=y*N+x+1;lines.push(`f ${k} ${k+N} ${k+1}`);lines.push(`f ${k+1} ${k+N} ${k+N+1}`)}
+ download('monde_vj_3d_couche01_seed'+seed+'_relief.obj',lines.join('\n'),'text/plain;charset=utf-8');};
+$('generate').onclick=refresh;
+$('newseed').onclick=()=>{$('seed').value=(Math.floor(Math.random()*2**30)).toString();refresh();};
+$('scale').oninput=()=>{$('scaleVal').textContent=Number($('scale').value).toFixed(1).replace('.',',');verticalScale=Number($('scale').value);createMesh();createWaterMesh();createTreeMesh();createAnimalMesh();mark();};
+$('rough').oninput=()=>{$('roughVal').textContent=$('rough').value;};$('basin').oninput=()=>{$('basinVal').textContent=$('basin').value+' %';};
+$('waterAmount').oninput=()=>{$('waterVal').textContent=$('waterAmount').value+' %';};
+$('fluidity').oninput=()=>{fluidity=Number($('fluidity').value);$('fluidityVal').textContent=fluidity.toFixed(2).replace('.',',');};
+$('retention').oninput=()=>{$('retentionVal').textContent=$('retention').value+' %';};
+$('opacity').oninput=()=>{waterOpacity=Number($('opacity').value)/100;$('opacityVal').textContent=$('opacity').value+' %';mark();};
+for(const [id,varName,label] of [['solarStrength','solarStrength','solarVal'],['radiationStrength','radiationStrength','radiationVal'],['windStrength','windStrength','windVal'],['rainStrength','rainfallStrength','rainVal']]){
+ $(id).oninput=()=>{const num=Number($(id).value);if(varName==='solarStrength')solarStrength=num;
+ else if(varName==='radiationStrength')radiationStrength=num;else if(varName==='windStrength'){windStrength=num;windFieldDirty=true;}else rainfallStrength=num;
+ $(label).textContent=num+' %';mark();};
+}
+$('evaporation').oninput=()=>{evaporationRateMm=Number($('evaporation').value);$('evapVal').textContent=evaporationRateMm.toFixed(3).replace('.',',')+' mm/pas';};
+$('windMode').onchange=()=>{windMode=$('windMode').value;windFieldDirty=true;mark();};
+$('terrainWind').oninput=()=>{terrainWind=Number($('terrainWind').value);$('terrainWindVal').textContent=terrainWind+' %';windFieldDirty=true;mark();};
+$('showWindArrows').onchange=()=>{showWindArrows=$('showWindArrows').checked;drawMinimap();mark();};
+$('showClouds').onchange=()=>{showClouds=$('showClouds').checked;mark();};
+$('showRain').onchange=()=>{showRain=$('showRain').checked;mark();};
+$('miniMode').onchange=()=>{miniMode=$('miniMode').value;drawMinimap();mark();};
+$('play').onclick=()=>{if($('toAnimals').textContent.startsWith('Calcul'))return;setPlaying(!running);};$('playFloating').onclick=()=>$('play').click();
+$('step').onclick=()=>{setPlaying(false);advance(1);};
+$('advance').onclick=()=>{setPlaying(false);advance(100);};$('advanceFloating').onclick=()=>$('advance').click();
+$('growForest').onclick=()=>{setPlaying(false);advance(1000);};$('growForestFloating').onclick=()=>$('growForest').click();
+let fastAdvanceToken=0;
+function fastForwardToAnimals(){
+ if(tickCount>=ANIMAL_SPAWN_STEP)return;
+ setPlaying(false);const token=++fastAdvanceToken;
+ $('toAnimals').disabled=true;$('toAnimals').textContent='Calcul du monde…';
+ const work=()=>{
+  if(token!==fastAdvanceToken)return;
+  for(let k=0;k<120&&tickCount<ANIMAL_SPAWN_STEP;k++){
+   hydroTick();if($('error').classList.contains('show'))break;
+  }
+  refreshFollowCamera();drawMinimap();updateWaterStats();mark();
+  if(tickCount<ANIMAL_SPAWN_STEP&&!$('error').classList.contains('show')){
+   $('toAnimals').textContent='Calcul '+Math.round(tickCount/ANIMAL_SPAWN_STEP*100)+' %';
+   setTimeout(work,0);
+  }else{
+   $('toAnimals').textContent='✓ Animaux introduits';finishWaterRender();
+  }
+ };
+ setTimeout(work,0);
+}
+$('toAnimals').onclick=fastForwardToAnimals;
+$('followAnimal').onclick=followAnimal;
+$('showAnimals').onchange=()=>{showAnimals=$('showAnimals').checked;createAnimalMesh();updateWaterStats();mark();};
+$('animalScale').oninput=()=>{animalScale=Number($('animalScale').value);$('animalScaleVal').textContent=animalScale.toFixed(1).replace('.',',')+'×';createAnimalMesh();mark();};
+for(const [field,label,suffix] of [['animalCount','animalCountVal',''],['animalForage','animalForageVal',' %'],['animalMutation','animalMutationVal',' %']])$(field).oninput=()=>{const n=Number($(field).value);$(label).textContent=n+suffix;if(field==='animalCount')animalCount=n;if(field==='animalForage')animalForage=n;if(field==='animalMutation')animalMutation=n;};
+$('exportAnimals').onclick=()=>{const lines=['id,x_m,y_m,z_sol_m,orientation_rad,age_pas,generation,energie_J,eau_kg,structure_kg,stamina,action'];for(const a of animals)lines.push([a.id,a.x.toFixed(3),a.y.toFixed(3),terrain[animalCell(a)].toFixed(3),a.heading.toFixed(5),a.age,a.generation,a.energyJ.toFixed(2),a.waterKg.toFixed(3),a.structureKg.toFixed(5),a.stamina.toFixed(4),a.action].join(','));download('monde_vj_atlas3d_couche05_animaux_pas'+tickCount+'.csv',lines.join('\n'),'text/csv;charset=utf-8');};
+$('speed').onchange=()=>{simSpeed=Number($('speed').value);};
+$('resetWater').onclick=resetWater;
+$('showWater').onchange=()=>{showWater=$('showWater').checked;mark();};
+$('showTrees').onchange=()=>{showTrees=$('showTrees').checked;createTreeMesh();updateWaterStats();mark();};
+$('treeDetail').onchange=()=>{treeDetail=$('treeDetail').value;createTreeMesh();updateWaterStats();mark();};
+for(const [field,label,suffix] of [['seedDensity','seedDensityVal',' %'],['stabilityDuration','stabilityVal',' pas'],['growthStrength','growthVal',' %'],['plantMutation','mutationVal',' %'],['forestDensity','forestDensityVal',' %'],['treeSize','treeSizeVal','×']]){
+ $(field).oninput=()=>{const val=Number($(field).value);$(label).textContent=(field==='treeSize'?val.toFixed(1).replace('.',','):val)+suffix;
+  if(field==='growthStrength')growthStrength=val;
+  if(field==='plantMutation')plantMutation=val;
+  if(field==='forestDensity'){forestDensity=val;createTreeMesh();updateWaterStats();mark();}
+  if(field==='treeSize'){treeSize=val;createTreeMesh();updateWaterStats();mark();}
+ };}
+
+$('mode').onchange=()=>{displayMode={nature:0,elevation:1,slope:2}[$('mode').value];mark()};$('contours').onchange=()=>{contours=$('contours').checked;mark();};$('grid').onchange=()=>{showGrid=$('grid').checked;mark();};
+$('orbit').onclick=()=>{followMode=false;coords.yaw=.7;coords.pitch=.65;coords.dist=1780;coords.target=[0,54,0];viewMode='perspective';$('viewTag').textContent='PERSPECTIVE 3D';scheduleTreeLODRefresh();mark();};
+$('top').onclick=()=>{followMode=false;coords.yaw=0;coords.pitch=Math.PI/2-.008;coords.dist=1450;coords.target=[0,60,0];viewMode='top';$('viewTag').textContent='PLAN / DESSUS';scheduleTreeLODRefresh();mark();};
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('pointerdown',e=>{pointer.down=true;followMode=false;pointer.which=e.button;pointer.lastX=e.clientX;pointer.lastY=e.clientY;pointer.dragged=0;canvas.setPointerCapture(e.pointerId);canvas.classList.add('dragging');});
+canvas.addEventListener('pointermove',e=>{if(!pointer.down)return;const dx=e.clientX-pointer.lastX,dy=e.clientY-pointer.lastY;pointer.lastX=e.clientX;pointer.lastY=e.clientY;pointer.dragged+=Math.abs(dx)+Math.abs(dy);if(pointer.which===2||e.shiftKey){const f=coords.dist/900;coords.target[0]-=dx*f*Math.cos(coords.yaw);coords.target[2]+=dx*f*Math.sin(coords.yaw);coords.target[0]+=dy*f*Math.sin(coords.yaw);coords.target[2]+=dy*f*Math.cos(coords.yaw);}else{coords.yaw-=dx*.006;coords.pitch=clamp(coords.pitch+dy*.006,.10,Math.PI/2-.006);}mark();});
+canvas.addEventListener('pointerup',e=>{if(!pointer.down)return;pointer.down=false;canvas.classList.remove('dragging');if(pointer.dragged<8&&pointer.which!==2){const rect=canvas.getBoundingClientRect(),px=e.clientX-rect.left,py=e.clientY-rect.top;if(!pickAnimalOnScreen(px,py))pick(px,py);}else scheduleTreeLODRefresh();});
+canvas.addEventListener('wheel',e=>{e.preventDefault();followMode=false;coords.dist=clamp(coords.dist*Math.exp(e.deltaY*.001),300,4000);scheduleTreeLODRefresh();mark();},{passive:false});
+canvas.addEventListener('dblclick',()=>{$('orbit').click();});
+window.addEventListener('resize',mark);window.addEventListener('keydown',e=>{if(e.target?.tagName==='INPUT'||e.target?.tagName==='SELECT')return;if(e.key==='r'||e.key==='R')$('orbit').click();});
+// Read-only diagnostics for parity testing with V2.11.
+window.__VJ3D_TEST__={getAnimals:()=>animals.map(a=>({id:a.id,x:a.x,y:a.y,age:a.age,waterKg:a.waterKg,energyJ:a.energyJ,structureKg:a.structureKg,generation:a.generation,heading:a.heading,genes:Array.from(a.genes),stepPhase:a.stepPhase})),getAnimalStats:()=>({tick:tickCount,spawnStep:ANIMAL_SPAWN_STEP,introduced:animalsIntroduced,initialPlaced:initialAnimalsPlaced,population:animals.length,births:totalBirths,deaths:totalDeaths,lastGrazedKg,lastDrunkKg,bodyWaterKg:animals.reduce((s,a)=>s+a.waterKg,0),bodyDryKg:animals.reduce((s,a)=>s+a.structureKg+a.energyJ/PLANT_CHEM_J_PER_KG,0),animalEnergy:animalChemical()}),getState:()=>({seed,roughness,basinDepth,landform,verticalScale,maxAltitude,selected,meshIndexCount,gridCount,waterIndexCount,tickCount,running,distribution,waterPct,fluidity,retentionPct,initialMass,currentMass,currentPotential,dissipatedHeat,initialEnergy,solarEnergy,radiatedEnergy,latentEnergy,airTemperature:tempAir(),windVX,windVY,terrainWind,windMeanTurn,windLiftedCells,windShadowCells,lastRainKg,totalRainKg,totalLandRainKg,totalWaterRainKg,lastEvaporationKg,atmosphereMass:atmosphereMass(),energyTotal:totalEnergy(),massError:Math.abs(currentMass-initialMass)/Math.max(1,initialMass),energyError:Math.abs(totalEnergy()-initialEnergy)/Math.max(1,initialEnergy),dryError:Math.abs(dryMass()-initialDryMass)/Math.max(1,initialDryMass),plantCells:plantCoveredCells,treeMeshes:treeDrawnCount,treeVertexCount,treeDetail,forestDensity,treeTriangles:treeVertexCount/3,treeEligible:plantBiomass.filter(b=>b>.025).length,plantSeeds:seedBank.reduce((a,b)=>a+b,0),plantSeedBirths,plantStress:stressedCells,lastTranspirationKg,lastPlantGrowthKg,plantChemicalEnergy,animalPopulation:animals.length,animalsIntroduced,initialAnimalsPlaced,totalBirths,totalDeaths,animalVertexCount,animalChemicalEnergy:animalChemical(),plantWaterKgTotal:plantWaterMass(),plantDryKg:plantBiomass.reduce((a,b)=>a+b,0),substrateDryKg:substrateKg.reduce((a,b)=>a+b,0),wetCells:water.filter(h=>h>.035).length,maximumDepth:Math.max(...water)}),getHeightmap:()=>Array.from(terrain),getSlopes:()=>Array.from(localSlopes),getClasses:()=>Array.from(baseClasses),getWater:()=>Array.from(water),getSoil:()=>Array.from(soilWater),getVapor:()=>Array.from(vaporKg),getClouds:()=>Array.from(cloudKg),getRainAccum:()=>Array.from(rainAccumKg),getTemperature:()=>Array.from(soilHeat,v=>v/SOIL_HEAT_CAP_J_K+BASE_TEMP_C),getPlants:()=>Array.from(plantBiomass),getPlantWater:()=>Array.from(plantWaterKg),getSeeds:()=>Array.from(seedBank),getSubstrate:()=>Array.from(substrateKg),getPlantTraits:()=>({drought:Array.from(plantDrought),waterUse:Array.from(plantWaterUse),form:Array.from(plantFormGene)}),getWindField:()=>({x:Array.from(windFieldX),y:Array.from(windFieldY),lift:Array.from(windLift),shadow:Array.from(windShadow)}),setTerrainWind:(v)=>{$('terrainWind').value=v;terrainWind=v;windFieldDirty=true;},step:(n)=>advance(n),reset:resetWater,regen:refresh,setCamera:(v)=>{Object.assign(coords,v);mark();}};
+refresh();requestAnimationFrame(render);
+})();
+</script></body></html>
