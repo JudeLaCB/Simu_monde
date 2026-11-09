@@ -145,3 +145,43 @@ Ce n'est **pas une atmosphère physiquement volumique** : champs de vapeur et nu
 Le champ de vitesse est **horizontal et dépend du relief**, pas un solveur d'air volumique 3D. L'indice de soulèvement ne correspond pas à un calcul explicite de vitesse verticale ni à une pression atmosphérique. Le vent dominant et son énergie cinétique sont des forçages externes non inclus dans les bilans mécaniques. Les déviations et la pluie orographique ne sont **pas calibrées météorologiquement**. Pas de tourbillons turbulents résolus, couches d'altitude, fronts ni Navier–Stokes ; bords atmosphériques périodiques. La conservation comptable de l'eau et de l'énergie de la couche 03 demeure.
 
 La version est archivée séparément ; **aucune modification des versions précédentes ni du moteur Python historique**. PR empilée sur #33.
+
+
+## Couche 04 — Végétation et arbres 3D
+
+**Prototype HTML autonome :** [layer04_vegetation_trees.html](layer04_vegetation_trees.html). Bâti sur la couche 03b (vents orographiques). Terrain, hydrologie, jour/nuit, nuages et pluie sont préservés ; les autres prototypes HTML et le cœur Python ne sont pas modifiés.
+
+### Biologie et ressources (modèle expérimental)
+
+- Conditions initiales : graines dormantes distribuées par seed (60 % par défaut), prélevées sur **un stock local fini de matière sèche** (38 à 100 kg/cellule). Chaque graine contient 4 g de matière sèche et de l'énergie chimique correspondante.
+- Germination après **160 pas de sol suffisamment humide et stable** (réglable 40–500), si la température, la pente et la profondeur d'eau sont favorables. Une plante adulte n'est plus conditionnée à ce compteur de stabilité ; elle dispose d'une résistance à la sécheresse et peut dépérir si le stress persiste.
+- Photosynthèse idéalisée : prélèvement de matière du substrat vers la biomasse, financé par une fraction finie de l'énergie solaire reçue. Mort : transfert de la matière végétale vers le substrat et de l'énergie chimique en chaleur. **Le modèle ne calcule pas la véritable fixation du CO₂.**
+- Racines : retrait de l'eau du sol vers l'eau corporelle de la plante ; transpiration vers le champ local de vapeur avec consommation de chaleur latente et paiement de l'énergie potentielle de la vapeur. La pluie retourne dans les lacs et sols selon la physique atmosphérique de la couche 03b.
+- Une plante porte cinq traits héréditaires (résistance à la sécheresse, consommation d'eau, tolérance thermique, taux de croissance, silhouette de feuillage). Les plantes suffisamment développées peuvent disperser des graines vers les cellules voisines, avec des mutations paramétrables. Les graines coûtent réellement 4 g de biomasse au parent.
+- Pas encore de carbone/oxygène explicites, de saisons, de compétition radiative inter-arbres, de reproduction sexuée, de diversité d'espèces ou de faune en 3D.
+
+### Rendu 3D procédural
+
+- Un arbre par cellule au maximum ; **tronc cylindrique effilé**, branches et **couronnes feuillues lobées en volumes** ou **conifères étagés**. L'âge géométrique (hauteur et couronne) découle de la biomasse ; les arbres ne sont pas pré-positionnés.
+- Géométrie triangulaire colorée et éclairée en WebGL2 ; moteur de secours Canvas avec projection des arbres selon la caméra. Le rendu logiciel est testé ; **le chemin WebGL2/GPU n'a pas pu être exécuté dans notre navigateur de test** (indisponible dans l'environnement).
+- Densité de rendu (65 % par défaut) et facteur de taille visuelle (2,2× par défaut) indépendants des stocks physiques. Un plafond de 1 500 arbres dessinés limite l'utilisation du GPU mais ne limite **pas** le nombre de plantes simulées.
+- Le bouton **🌳 + 1 000 pas** permet d'observer les premiers arbres sans plusieurs dizaines de clics. Les arbres sont absents du terrain initial : seules les graines sont présentes.
+- Mini-cartes **Végétation** et **Humidité du sol**, télémetrie biomasse, eau racinaire, graines, mutations, stress et bilans, inspection d'une cellule. CSV complet par cellule, export OBJ du relief inchangé.
+
+### Bilans et tests Chromium
+
+```text
+M_eau = surface + sol + vapeur + nuages + eau des plantes
+M_sèche = substrat + graines + biomasse végétale
+E_totale = E_gravitationnelle + E_sensible + E_latente + E_solaire_restante
+            + E_rayonnement_comptabilisé + E_chimique_plantes
+```
+
+- Seed 42, paramètres par défaut : à **250 pas : 528 cellules végétalisées**, à **600 : 908**, à **1 100 : 972**, à **2 300 : 1 187** ; dont **640 arbres visibles** au pas 2 300 avec densité graphique 65 %.
+- À 2 300 pas : biomasse végétale ~**18 503 kg**, erreur relative de conservation eau, masse sèche et énergie **~10⁻¹⁵**.
+- **Sans graines (densité 0 %), parité exacte au bit près** avec la couche 03b pour les 10 000 valeurs de surface, sol, vapeur, nuages après 300 pas ; même énergie totale.
+- Réinitialisation après 400 pas : reproductibilité des états et compteurs biologiques ; sans Soleil ou avec rétention 0 %, aucune pousse.
+- Test seed 517 / relief montagneux / vent 300 % / mutation 100 % / croissance 200 % sur 1 200 pas : bilans conservés. CSV : 10 000 lignes de données vérifiées ; rendu de secours et écran mobile 390 px sans débordement.
+- Les paramètres de croissance, stocks biologiques et formes d'arbres sont **idéalisés** ; il ne s'agit pas d'une prédiction écologique ni d'une représentation volumique des réactions chimiques.
+
+**Prochaine étape :** observer les peuplements 3D et leur répartition selon l'humidité, puis envisager les herbivores de V2.11 projetés sur ce terrain (couche 05). PR empilée sur #34.
