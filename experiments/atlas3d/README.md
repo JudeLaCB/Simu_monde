@@ -185,3 +185,27 @@ E_totale = E_gravitationnelle + E_sensible + E_latente + E_solaire_restante
 - Les paramètres de croissance, stocks biologiques et formes d'arbres sont **idéalisés** ; il ne s'agit pas d'une prédiction écologique ni d'une représentation volumique des réactions chimiques.
 
 **Prochaine étape :** observer les peuplements 3D et leur répartition selon l'humidité, puis envisager les herbivores de V2.11 projetés sur ce terrain (couche 05). PR empilée sur #34.
+
+
+## Couche 04b — Tous les arbres visibles (sans réduction biologique)
+
+**Prototype :** [layer04b_all_trees_lod.html](layer04b_all_trees_lod.html). Les mêmes lois d'eau, d'énergie, de photosynthèse, de génétique et de croissance que la couche 04 sont conservées.
+
+### Modification graphique
+
+- **100 % des arbres par défaut**, au lieu de 65 %. Toute cellule contenant un arbre vivant (biomasse >0,025 kg, seuil du compteur écologique) reçoit sa propre géométrie dans la scène, y compris en sol temporairement inondé.
+- **Suppression du plafond graphique de 1 500 arbres** : le monde comporte au maximum 10 000 cellules, avec au plus un arbre par cellule.
+- L'option **Auto / LOD adaptatif** simplifie la géométrie des arbres lointains pour économiser les triangles sans supprimer aucun individu. Rafraîchissement après modification de la caméra et mise à jour progressive lors de la croissance.
+- L'option **Détaillé partout** reproduit les couronnes et branches complètes même au loin ; plus coûteuse pour le processeur, la mémoire GPU et la fréquence d'images.
+- Le rendu Canvas de secours conserve toutes les silhouettes et simplifie les arbres éloignés. La densité 10–100 % reste un **réglage graphique optionnel**, pas une modification de la simulation.
+- Compteur de triangles en mode WebGL2, comptage indépendant des arbres affichés.
+
+### Tests Chromium
+
+- Seed 42, **2 300 pas** : 1 187 cellules portant des arbres et **1 187 arbres dessinables** ; version 04 précédente : **640 arbres** sur les mêmes 1 187 cellules.
+- Curseur 30 % : 348 arbres, puis retour 100 % : 1 187 ; mode détaillé : nombre d'arbres inchangé.
+- **5 600 pas** : 1 319 cellules portant des arbres / **1 319 arbres** dans la version 04b, avec affichage mobile 390 px sans débordement ni exception JS.
+- Avec les mêmes paramètres, la biomasse, l'eau, la masse sèche et l'énergie de la couche 04 sont numériquement **identiques** à 2 300 pas. Erreurs relatives de conservation autour de 10⁻¹⁵.
+- Le rendu de secours Canvas a été testé. **WebGL2/GPU reste non vérifié dans l'environnement Chromium de test**, qui ne l'expose pas. La présence de 32 Go de RAM ne garantit pas une fluidité élevée : les performances dépendent aussi du GPU, du nombre de triangles et du coût de mise à jour des meshes.
+
+**PR empilée sur #35 (Atlas 3D couche 04).** Aucun autre fichier de prototype ni le moteur Python ne sont modifiés.
