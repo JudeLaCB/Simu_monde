@@ -209,3 +209,48 @@ E_totale = E_gravitationnelle + E_sensible + E_latente + E_solaire_restante
 - Le rendu de secours Canvas a été testé. **WebGL2/GPU reste non vérifié dans l'environnement Chromium de test**, qui ne l'expose pas. La présence de 32 Go de RAM ne garantit pas une fluidité élevée : les performances dépendent aussi du GPU, du nombre de triangles et du coût de mise à jour des meshes.
 
 **PR empilée sur #35 (Atlas 3D couche 04).** Aucun autre fichier de prototype ni le moteur Python ne sont modifiés.
+
+
+## Couche 05 — Herbivores quadrupèdes 3D (introduction au pas 2 000)
+
+**Prototype HTML autonome :** [layer05_herbivores_3d.html](layer05_herbivores_3d.html). Basé sur la couche 04b (affichage des arbres à 100 %) et compatible avec la suite du simulateur sans modifier les versions précédentes ni `src/`.
+
+### Introduction de la faune
+
+- **Aucun animal au pas 0…1 999.** Au **pas 2 000 exactement**, après les deux premiers cycles de 1 000 pas de végétation et de climat, une population initiale de **50 herbivores par défaut** (0–150 réglable) est tirée dans les **cellules réellement habitables** : terrain accessible, eau libre peu profonde, pente faible, végétation vivante et ressources suffisantes.
+- Cette apparition est **unique** : aucun repeuplement artificiel si les individus meurent ; le reste de la dynamique vient uniquement des naissances et des décès. Si aucun habitat convenable, aucun individu n'est créé. La date 2 000 est un **délai conventionnel**, non une démonstration d'équilibre écologique.
+- Les animaux sont fabriqués à partir d'**eau et de substrat pris sur leur cellule locale**. L'énergie chimique initiale est équilibrée en retranchant le surplus de chaleur comptabilisé. Les autres réservoirs conservent leurs stocks initiaux.
+- Bouton **« ⏩ Atteindre le pas 2 000 »** : simulation par blocs avec retour de contrôle au navigateur, indicateur de progression et annulation au reset. Bouton **« Suivre un herbivore »**, sélection d'un individu dans la vue, caméra poursuivant ses mouvements.
+
+### Cerveaux, physiologie et rendu 3D
+
+- Réseau neuronal héréditaire repris de Monde VJ **V2.11** (17 entrées, 19 neurones cachés, 2 sorties), avec prédisposition de **recherche alimentaire 70 %** et mutations des descendants **14 %**, réglables. Sans prédateur dans cette couche, les signaux de menace restent nuls.
+- Chaque individu : position continue dans le plan horizontal, orientation, hauteur interpolée sur le terrain, énergie, eau, matière sèche structurelle, âge, génération, gènes. Localement : pâturage sur la biomasse végétale, abreuvement dans les eaux peu profondes, pertes de matière/énergie/urine vers les sols, vieillissement, mort, reproduction avec partage des réserves et mutations.
+- **Quadrupède polygonal 3D** construit entièrement en JavaScript : torse, tête, cou, oreilles, museau, queue, quatre pattes avec articulations de marche, sabots et variations de couleur entre générations. Géométrie reconstruite selon la position/orientation et la phase de pas, dessinée en **WebGL2** ; fallback Canvas par projection de parties articulées.
+- **Taille d'affichage** réglable de 1× à 6×, **3× par défaut** pour rendre les petits animaux discernables dans une forêt de 1 km². Cette échelle est purement visuelle, sans effet biologique.
+- **Tous les individus sont représentés** sans filtrage graphique, limite biologique/technique de **150 herbivores**. Position des animaux sur la mini-carte, inspections individuelle et par cellule, CSV individu et CSV environnement enrichi du nombre d'animaux par cellule.
+
+### Comptabilité conservée
+
+```text
+M_eau = eau_surface + eau_sol + vapeur + nuages + eau_plantes + eau_animaux
+M_sèche = substrat + graines + biomasse_plantes + structure_animaux + énergie_animaux / 18 MJ/kg
+E_totale = gravité + chaleur sensible + chaleur latente + Soleil restant
+          + rayonnement sorti comptabilisé + énergie chimique plantes + énergie chimique animaux
+```
+
+Les mécanismes sont **idéalisés** : par exemple, la nutrition ne représente pas une digestion chimique réaliste, et la conversion d'énergie à l'introduction est un choix de comptabilité fermé.
+
+### Contrôles Chromium
+
+- **Seed 42, pas 1 999** : 0 individu, **identité stricte** des 10 000 valeurs de chacun des huit champs eau libre, eau du sol, vapeur, nuages, biomasse végétale, substrat, graines et eau végétale avec la couche 04b ; même total d'énergie.
+- **Pas 2 000** : 50 individus exactement ; erreurs relatives de bilan eau **1,8×10⁻¹⁵**, matière sèche **2,2×10⁻¹⁵**, énergie **1,2×10⁻¹⁵**.
+- **Pas 2 500 : 50 vivants**. **Pas 6 000 : 150 vivants**, 163 naissances et 63 décès cumulés ; bilans respectés avec erreurs relatives **< 10⁻¹⁴**, aucune alerte moteur. Le plafond 150 n'est pas un équilibre naturel.
+- Contrôle de la commande d'introduction asynchrone sur écran mobile 390 px : progression jusqu'à 2 000, 50 animaux, pas de débordement horizontal ; caméra de suivi et état individuel fonctionnels.
+- **WebGL2/GPU non testé** dans l'environnement de test, même en mode SwiftShader. Le fallback Canvas a été visualisé ; vérifier le moteur polygonal WebGL2 dans le navigateur local avec GPU activé.
+
+### Limites et étapes futures
+
+La physique reste une simulation **2.5D** sur grille de terrain, représentée avec des corps en 3D. Il manque la collision géométrique avec les troncs, la consommation de feuilles par hauteur, les sources de nourriture distinctes (herbe/arbres), l'apprentissage neuronal individuel et les prédateurs 3D. La prédation ne doit donc pas encore être évaluée. Le choix du pas 2 000 ne garantit pas que les conditions écologiques sont stables.
+
+**PR empilée sur #36 (couche 04b), puis #35, #34, #33, #32, #31.**
