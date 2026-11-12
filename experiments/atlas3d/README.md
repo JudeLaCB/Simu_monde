@@ -359,3 +359,32 @@ Quatre fois plus de cellules demandent davantage de CPU pour chaque pas, d'autan
 La couche 06 et toutes les autres versions sont conservées. Cette couche est destinée à être **validée seule** avant d'étendre la variété des biomes.
 
 **Architecture des PR :** empilée sur #38 (carnivores 3D), puis #37 à #31. Les autres versions HTML et le moteur Python restent intacts.
+
+
+## Couche 08 — Vent adiabatique, effet de foehn et indicateurs d'aridité
+
+**Prototype autonome :** [layer08_adiabatic_foehn.html](layer08_adiabatic_foehn.html). Reprend exactement la carte **2 km × 2 km** (40 000 cellules de 10 m), eau, arbres, herbivores et carnivores de la couche 07. **Aucun biome désertique n'est encore ajouté**.
+
+### Correction physique
+
+- Le modèle 03b/07 comportait **déjà un vent horizontal dévié par le terrain**. Les débits de pluie et la condensation utilisaient toutefois des indices directs de soulèvement / abri, sans trajectoire verticale des masses d'air.
+- La version 08 calcule pour chaque cellule un **profil approché de l'altitude franchie par un courant d'air** selon le vent local et les crêtes situées jusqu'à 150 m en amont, puis une descente progressive sous le vent. Sa dérivée spatiale fournit une vitesse verticale estimée en m/pas.
+- Correction de température effective à partir du **gradient adiabatique sec nominal 9,8 °C/km**, avec une capacité de saturation de la colonne atmosphérique qui varie exponentiellement avec la température. Les nuages se forment sur excès de vapeur et se dissipent plus facilement sous le vent. La pluie est prélevée sur l'eau nuageuse existante, **sans multiplicateur imposant directement la sécheresse sous le vent**.
+- L'évaporation réelle reste contrainte par la disponibilité d'eau et la chaleur, mais dépend aussi modérément de la vitesse locale du vent et de l'humidité relative, pour permettre une dessiccation différentielle. Les bilans comptables restent conservés.
+- Un sélecteur **modèle heuristique (témoin) / nouveau modèle adiabatique** permet de comparer à seed égale. Le curseur 0–400 % vaut **100 % par défaut** ; les valeurs supérieures sont volontairement une **amplification non physique** pour exploration.
+- Mini-cartes supplémentaires **écart thermique adiabatique**, **humidité relative** et **rapport exploratoire P / demande évaporative potentielle cumulée**, visible après 1 000 pas. L'inspection et le CSV exportent les mêmes nouveaux indicateurs.
+
+### Validation Chromium
+
+- Seed 42 et réglages par défaut, **1 500 pas** : pluie cumulée ~**9,01 millions de kg**, dont **5,55 millions sur les terres**, ~**5 111 cellules végétalisées** ; erreurs de conservation eau / matière sèche / énergie proches de 10⁻¹⁵ et pas d'exception JavaScript.
+- Seed 42 après 220 pas : corrections effectives de température entre **−0,211 et +0,220 °C**, |vitesse verticale| jusqu'à **3,25 m/pas**. Hauteur maximale du relief : seulement **69,6 m**, donc pas de refroidissement spectaculaire attendu à 9,8 °C/km.
+- **Mode heuristique identique à la couche 07** après 400 pas pour les 11 grandeurs physiques et biologiques comparées. Réinitialisation et 210 pas reproductibles pour la pluie et l'aridité ; vent 0 % → vitesses verticales et horizontales nulles.
+- Export CSV **40 000 cellules × 37 champs**, affichage mobile 390 px sans débordement ; mode Canvas de secours contrôlé. **WebGL2/GPU toujours non testé** dans l'environnement Chromium.
+
+### Limites scientifiques
+
+Ce n'est pas un solveur compressible ou volumique 3D de l'air : champs horizontaux et **trajectoire verticale approchée**, sans champ de pression calculé, sans conservation explicite de la quantité de mouvement ni couches d'énergie verticale. Le gradient intervient dans une **température de saturation effective** ; la température globale atmosphérique reste celle du modèle de base. La loi absolue de saturation (kg/cellule) est calibrée à la colonne du simulateur et **non au profil réel de pression**. Le ratio P/demande évaporative sur quelques journées est seulement un diagnostic exploratoire et ne démontre pas un climat désertique.
+
+Références : [Météo-France : effet de foehn](https://meteofrance.com/meteo-a-z/leffet-de-foehn), [Met Office : Foehn effect](https://weather.metoffice.gov.uk/learn-about/weather/types-of-weather/wind/foehn-effect), [NASA GPM : précipitations orographiques](https://gpm.nasa.gov/resources/faq/what-effect-do-mountainous-orographic-regions-have-measuring-precipitation).
+
+**PR empilée sur #39**, sans changement des couches précédentes ni du moteur Python `src/`.
