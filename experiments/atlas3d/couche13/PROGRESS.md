@@ -1,33 +1,52 @@
-# Monde VJ — Couche 13 : météorologie dynamique (Atlas 3D)
+# Monde VJ — Couche 13 : météo dynamique — bilan du prototype
 
-> Branche expérimentale isolée de la simulation 2D historique. Le pilote 3D est un HTML autonome ; ce dossier conserve les décisions, preuves et limites. **Le prototype HTML est livré séparément dans la conversation, pas encore versionné ici.**
+**Statut : prototype standalone implémenté et testé (12 novembre 2026).**  
+**Branche :** `prototype/couche-13-meteo-dynamique`. Ce développement 3D expérimental ne modifie pas le moteur 2D de `main`.
 
-## Décisions validées — 12 novembre 2026
+## Source versionnée
 
-- **2 000 pas = 24 h simulées**, soit **43,2 s/pas**.
-- Herbivores introduits au **pas 4 000** et carnivores au **pas 6 000**, pour conserver les jalons en jours simulés.
-- Couche 13 limitée aux neuf chantiers approuvés : horloge, calibrage écologique et hydrologique, régimes persistants, rotations/rafales, brises thermiques, couplage climat, tableau de bord et validation.
-- Préserver la carte 2 × 2 km, les nuages de la couche 11 et la pluie fusionnée de la couche 12 ; ne pas confondre les régimes synoptiques heuristiques avec un solveur de pression 3D.
+- [Ouvrir le HTML autonome de la couche 13](Monde_VJ_Atlas_3D_Couche_13_Meteo_Dynamique.html).
+- Les livrables Windows (ZIP + aperçu) sont également fournis dans la conversation.
+- Le code historique de la couche 12 a servi de base. Le HTML ne dépend pas d'un serveur ou de bibliothèques à télécharger.
 
-## Avancement (en cours)
+## Décisions validées
 
-- [x] Reprise du prototype standalone couche 12.
-- [x] Remplacement des constantes d'horloge et recalibrage des principaux flux par pas (facteur 0,5).
-- [x] Météo régionale seedée : régimes persistants de 2–7 jours et interpolation progressive.
-- [x] Brises locales des pentes jour/nuit ; champ local déjà raccordé au transport nuage/pluie.
-- [x] Interface de choix dynamique/manuel, variabilité, brise, bulletin.
-- [x] Vérification de syntaxe JavaScript ; ouverture sous Chromium, 20 pas sans erreur de page.
-- [ ] Simulation longue jusqu'aux apparitions des deux populations et vérification des invariants.
-- [ ] Vérification de reproductibilité et de continuité aux limites de régimes.
-- [ ] ZIP Windows, rapport final des tests et validations visuelles.
+- **2 000 pas = 24 h**, soit **43,2 s/pas**, à partir de la couche 13.
+- Les herbivores naissent une fois au pas **4 000**, les carnivores au pas **6 000**.
+- Aucune saison, aucun changement pluriannuel et aucun solveur synoptique 3D de pression dans cette couche.
 
-## Invariants à surveiller
+## Les neuf chantiers approuvés
 
-- Conservation de l'eau totale, énergie (y compris les réserves et puits de bilan) et matière sèche.
-- Pas de nouvel apport de masse par le vent ou les régimes météorologiques.
-- Même seed et mêmes paramètres => même trajectoire météorologique.
-- Les réglages de visualisation des nuages et de la pluie ne modifient pas les réservoirs.
+- [x] **C13.1 Horloge** : journée 2 000 pas, lever et coucher du soleil recalibrés, affichage.
+- [x] **C13.2 Écologie** : cadence végétale, stress, dispersion, maturité, reproduction et vieillissement animaux recalibrés en jours simulés.
+- [x] **C13.3 Flux physiques** : transport d'eau, infiltration, évaporation, énergie solaire, rayonnement, chaleur, condensation et pluie ramenés à la nouvelle durée par pas.
+- [x] **C13.4 Régimes** : séquences seedées de types anticyclonique, dépressionnaire et transition, de 2 à 7 jours.
+- [x] **C13.5 Vent régional** : direction / vitesse interpolées sur la frontière des régimes ; fluctuations courtes sans discontinuité angulaire.
+- [x] **C13.6 Brises thermiques** : vents de pente montants le jour, descendants la nuit, ajoutés au vent synoptique local.
+- [x] **C13.7 Couplage** : le champ de vent local existant pilote le transport de vapeur/nuages, les précipitations et l'orographie.
+- [x] **C13.8 Tableau de bord** : mode dynamique / manuel, variabilité, activation des brises, jour, régime, direction, vitesse numérique et prochain changement.
+- [x] **C13.9 Validation** : test JavaScript de syntaxe, rendu dans Chromium, test d'interface, simulation à 6 200 pas, invariants et déterminisme.
 
-## Risques et limites
+## Résultats observés — seed 42, réglages par défaut
 
-La météo régionale est imposée par une loi temporelle stochastique déterministe (seed), **pas** par un solveur des équations primitives. Les vitesses de transport sont données en cellules/pas, pas en m/s mesurés. Les changements de cadence peuvent modifier des détails de comportement neuronaux malgré le recalibrage des flux.
+| Pas | Herbivores | Carnivores | Eau (erreur relative) | Énergie (erreur relative) | Matière sèche (erreur relative) |
+|---:|---:|---:|---:|---:|---:|
+| 2 000 | 0 | 0 | 2,58e-15 | 5,32e-16 | 1,69e-15 |
+| 4 000 | 50 | 0 | 1,80e-15 | 1,20e-15 | 2,70e-15 |
+| 6 000 | 64 | 4 | 2,06e-15 | 1,73e-15 | 3,04e-15 |
+| 6 200 | 67 | 4 | 3,61e-15 | 1,33e-15 | 2,70e-15 |
+
+- Les 14 checkpoints ont passé le seuil d'invariant (< 1e-9).
+- Le code est compatible Chromium en rendu Canvas de secours dans l'environnement de test, sans erreur JavaScript observée.
+- Le vent est continu au changement de régime testé, et les sorties météorologiques pour une seed sont identiques après réinitialisation.
+- Les commandes de variabilité, mode régional manuel et activation des brises ont été vérifiées.
+
+## Limites connues et points à surveiller
+
+1. Les régimes régionaux sont une approximation temporelle seedée, **pas** une simulation de pression. La vitesse donnée en cellules/pas est une vitesse numérique de transport, non une prévision instrumentale en m/s.
+2. Les budgets sont conservés mais le comportement biologique ne doit pas être supposé identique à l'ancienne couche à temps réel égal : la cadence de décision neuronale est plus fine.
+3. Les tests graphiques ont couvert le rendu Canvas de secours ; tester séparément WebGL2 matériel sur le PC Windows.
+4. La couche 13 ne met pas en œuvre les saisons et n'entraîne pas la création d'eau aux frontières. Le mouvement atmosphérique reste périodique sur la grille.
+5. Ne pas fusionner ce prototype autonome dans le cœur 2D historique sans décision d'architecture explicite.
+
+**Suite proposée :** essais sur Windows, validation visuelle de l'évolution météorologique à 2–7 jours, puis décision produit avant tout merge.
