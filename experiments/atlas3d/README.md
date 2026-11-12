@@ -254,3 +254,55 @@ Les mécanismes sont **idéalisés** : par exemple, la nutrition ne représente 
 La physique reste une simulation **2.5D** sur grille de terrain, représentée avec des corps en 3D. Il manque la collision géométrique avec les troncs, la consommation de feuilles par hauteur, les sources de nourriture distinctes (herbe/arbres), l'apprentissage neuronal individuel et les prédateurs 3D. La prédation ne doit donc pas encore être évaluée. Le choix du pas 2 000 ne garantit pas que les conditions écologiques sont stables.
 
 **PR empilée sur #36 (couche 04b), puis #35, #34, #33, #32, #31.**
+
+
+## Couche 06 — Carnivores 3D et chaîne trophique
+
+**Prototype :** [layer06_carnivores_3d.html](layer06_carnivores_3d.html). Aucune modification des couches 01–05 ou du moteur Python. Herbivores introduits **une fois au pas 2 000** ; carnivores **une fois au pas 3 000**, sans repeuplement automatique.
+
+# Monde VJ — Atlas 3D / Couche 06 : carnivores
+
+## Lancer
+
+Ouvrir `Monde_VJ_Atlas_3D_Couche_06_Carnivores.html` avec Chrome ou Edge. Ce fichier est **autonome** et fonctionne **hors ligne**. Pas de dépendance CDN ou de serveur à installer.
+
+Utiliser « Atteindre le pas 3 000 » pour calculer les premiers jours : herbivores à **2 000 pas**, carnivores à **3 000 pas**, en une introduction initiale unique. Le bouton « Suivre un carnivore » permet de rapprocher la caméra de l'animal. La mini-carte, les compteurs et les exports CSV séparent les deux populations.
+
+## Mécanismes ajoutés
+
+- Carnivores en coordonnées continues 2D sur terrain 3D (altitude interpolée) : corps polygonal allongé, tête, museau, oreilles, queue et quatre pattes articulées en WebGL2, projection Canvas de secours.
+- Un réseau neuronal propre à chaque carnivore (**12 entrées, 8 neurones cachés, 2 sorties, 122 coefficients**) commande direction et vitesse à partir des signaux gauche/devant/droite de présence de proies, eau, obstacles et besoins internes. **Instinct initial 90 %** par défaut, réglable de 0 à 100 % : prédispositions codées dans les poids initiaux, puis hérédité avec mutation. **Pas d'apprentissage au cours de la vie** et pas de suivi scripté de la proie la plus proche.
+- Détection jusqu'à 155 mètres ; vitesse jusqu'à 10,3 m/pas. Capture seulement à distance <5,4 mètres **et dans un cône frontal** (0,80 rad par rapport à la tête), puis période de digestion de 250 pas pendant laquelle aucune nouvelle prise n'est possible. La réussite au contact frontal reste **déterministe**, et non un combat probabiliste.
+- Eau, matière sèche et énergie de la proie transférées à son prédateur ou aux réservoirs du sol et de chaleur. Métabolisme, déplacement, eau corporelle, reproduction, mort et déchets respectent la comptabilité de masse et d'énergie idéalisée.
+- L'instinct de fuite herbivore est fonctionnel en présence de carnivores et l'endurance diminue pendant le sprint. Le curseur « Instinct neuronal de fuite » est disponible. Les arbres continuent de s'afficher à 100 %.
+- Population initiale configurable **0–30** (4 par défaut), plafond technique biologique de **55 carnivores**, plafond de **150 herbivores** hérité de la couche précédente. Les deux plafonds sont des limites de calcul, **pas un mécanisme d'équilibre écologique naturel**.
+
+## Tests Chromium (rendu logiciel)
+
+Seed 42 :
+
+| Pas | Herbivores | Carnivores | Captures cumulées |
+|---:|---:|---:|---:|
+| 1 999 | 0 | 0 | 0 |
+| 2 000 | 50 | 0 | 0 |
+| 2 999 | 71 | 0 | 0 |
+| 3 000 | 71 | 4 | 0 |
+| 5 000 | 150 | 8 | 17 |
+| 7 000 | 150 | 11 | 35 |
+| 9 000 | 150 | 18 | 62 |
+| 11 000 | 150 | 23 | 102 |
+
+Seed 517 : pas 3 000 : 65 herbivores et 4 carnivores ; pas 5 000 : 107 et 7 (17 captures) ; pas 6 500 : 150 et 10 (29 captures). Pas d'erreur JS, de masse négative ni d'alerte de conservation ; écarts relatifs d'eau, matière sèche et énergie de l'ordre de 10^-15 à 10^-14 dans les scénarios testés.
+
+- **Témoin 0 carnivore, seed 42, 4 300 pas : identité bit-à-bit** avec la couche 05 pour les herbivores et leurs gènes, eau libre/sol, vapeur/nuages, végétation/graines/substrat et comptabilité énergétique.
+- **Réinitialisation 3 400 pas** : les états complets des carnivores et herbivores, génomes inclus, ainsi que les bilans sont reproduits exactement.
+- Mobile **390 px** : aucun débordement horizontal, simulation et suivi fonctionnels.
+- Le navigateur de test n'expose pas WebGL2, même en tentant SwiftShader. **Le rendu Canvas de secours a été examiné**, mais **la géométrie WebGL2/GPU 3D n'a pas encore été validée sur un PC équipé**.
+
+## Ce que ce modèle ne prouve pas
+
+La cohabitation constatée sur ces deux seeds et ces durées **n'est pas** une preuve de stabilité écologique. Il faut tester davantage de seeds, périodes longues et scénarios de ressources ; le plafond de 150 herbivores altère les dynamiques. Les réseaux commencent avec des comportements prédisposés : aucune intelligence de chasse n'a spontanément émergé sans règles initiales. La physique reste une carte à hauteurs (2.5D), sans collision volumique avec les troncs, fluides 3D résolus, combat probabiliste ou chaîne de décomposition différée.
+
+Le code de la couche 05 et les versions précédentes sont conservés.
+
+La PR de la couche 06 est empilée sur la PR #37 (herbivores 3D), elle-même empilée sur #36 et toutes les couches précédentes. Le prototype est un modèle 2.5D à rendu 3D, pas une simulation de locomotion volumique ou un modèle zoologique calibré.
