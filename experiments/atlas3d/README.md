@@ -306,3 +306,56 @@ La cohabitation constatée sur ces deux seeds et ces durées **n'est pas** une p
 Le code de la couche 05 et les versions précédentes sont conservés.
 
 La PR de la couche 06 est empilée sur la PR #37 (herbivores 3D), elle-même empilée sur #36 et toutes les couches précédentes. Le prototype est un modèle 2.5D à rendu 3D, pas une simulation de locomotion volumique ou un modèle zoologique calibré.
+
+
+## Couche 07 — Agrandissement à 4 km² (sans nouveaux biomes)
+
+**Prototype HTML :** [layer07_world_4km2.html](layer07_world_4km2.html).
+
+# Monde VJ — Atlas 3D — Couche 07 : carte de 4 km²
+
+## Objectif et périmètre
+
+Cette version est **strictement un agrandissement de la surface simulée**. La carte couvre **2 000 × 2 000 mètres (4 km²)**, avec une grille **200 × 200 cellules**, de **10 × 10 mètres** chacune. Elle remplace la carte précédente de 1 × 1 km (100 × 100 cellules) sans ajouter de biomes, de nouvelles espèces ou de nouvelles lois écologiques. Ouvre directement `Monde_VJ_Atlas_3D_Couche_07_4km2.html` dans Chrome ou Edge, sans dépendance externe.
+
+### Changements techniques
+
+- Coordonnées métriques, orientation des corps et arbres, centres du maillage, limites de sélection, raycasting, mini-carte et grille 3D étendus à 200 × 200 cellules.
+- Adaptation des vues perspective et de dessus pour cadrer la carte deux fois plus large. Résolution du terrain, règles d'écoulement, champs thermiques, vents orographiques, cycle jour/nuit, végétation et réseaux neuronaux **inchangés** dans leur formulation.
+- Réserves thermiques atmosphériques, puissance solaire totale, réserve solaire initiale et refroidissement atmosphérique multipliés par **4**, proportionnellement à la surface, afin de préserver leur intensité par mètre carré.
+- Les mêmes presets de terrain sont étalés sur une surface double de chaque côté. Cette étape **ne** crée **pas** quatre régions géographiques indépendantes : la diversité des reliefs et des biomes sera une étape séparée.
+- Affichage de **100 % des arbres** lorsque la densité graphique est réglée à 100 %, même avec plus de 5 000 arbres. En mode Canvas sans WebGL, le relief éloigné est simplifié graphiquement pour limiter le coût du rendu, **sans supprimer les végétaux simulés**. Accélération WebGL2 implémentée mais **non vérifiée** sur GPU dans l'environnement d'essai.
+- Export OBJ : **40 000 sommets**, **79 202 triangles** ; CSV : **40 000 lignes de cellules**. L'export CSV calcule maintenant les effectifs par cellule en une seule passe pour éviter 40 000 × population comparaisons.
+
+### Faune et écologie inchangées
+
+- Aucune création d'animaux avant **2 000 pas** ; introduction initiale de **50 herbivores** par défaut au pas 2 000.
+- Aucune création de carnivores avant **3 000 pas** ; introduction de **4 carnivores** par défaut au pas 3 000.
+- Naissances, morts, chasse, fuite et transferts de matière et d'énergie gardent les mêmes règles que la couche 06.
+- **Important : les effectifs initiaux et plafonds techniques des populations ne sont pas quadruplés**. La densité animale initiale est donc mécaniquement plus faible sur 4 km². Les ajustements de populations seront réalisés séparément après validation de cette couche.
+
+### Tests Chromium (seed 42, paramètres par défaut)
+
+| Pas | Arbres 3D | Herbivores | Carnivores |
+|---:|---:|---:|---:|
+| 0 | 0 | 0 | 0 |
+| 500 | 3 709 | 0 | 0 |
+| 1 999 | 5 056 | 0 | 0 |
+| 2 000 | 5 056 | 50 | 0 |
+| 2 999 | 5 709 | 63 | 0 |
+| 3 000 | 5 709 | 63 | 4 |
+| 3 500 | 6 163 | 66 | 4 |
+
+- Eau totale initiale : **7,400 milliards de kg** ; correspond à quatre fois la réserve du scénario 1 km² à paramètres équivalents.
+- Conservation eau, matière sèche et énergie : **erreurs relatives sous 1e-14** jusqu'au pas 3 500, sans alerte JavaScript ; reset puis 100 pas sans anomalie.
+- Vérification de l'export OBJ : exactement 40 000 lignes `v`, 79 202 faces `f`, coordonnées -995 à +995 m en X et Z (maillage des centres de cellules, soit une emprise de 2 000 m avec demi-cellule de bordure).
+- CSV : 40 001 lignes, en comptant l'en-tête.
+- Mobile 390 px : aucun débordement horizontal ni erreur JS. Vue logiciel Canvas inspectée visuellement ; **rendu GPU WebGL2 non exécuté** sur le banc de test.
+
+### Limites
+
+Quatre fois plus de cellules demandent davantage de CPU pour chaque pas, d'autant que le rendu peut afficher plusieurs milliers d'arbres. Les **32 Go de RAM** ne garantissent pas un bon framerate (GPU et CPU importants). C'est encore un modèle physique **2.5D avec rendu en volume**, non une simulation volumique des fluides. Les presets gardent les mêmes formes géographiques normalisées, maintenant étirées sur 2 km ; aucun biome ni nouvelle hétérogénéité climatique n'est introduit.
+
+La couche 06 et toutes les autres versions sont conservées. Cette couche est destinée à être **validée seule** avant d'étendre la variété des biomes.
+
+**Architecture des PR :** empilée sur #38 (carnivores 3D), puis #37 à #31. Les autres versions HTML et le moteur Python restent intacts.
