@@ -51,3 +51,18 @@ Produire un *état géologique initial crédible* avant la simulation du climat 
 - Pas d'érosion évolutive sur des millénaires ; la géologie est figée au cours des journées simulées.
 
 **Statut final :** HTML et ZIP Windows livrés, branche conservée pour validation visuelle utilisateur avant merge.
+
+## Correctif 15.1 — Occlusion de la pluie (13 novembre 2026)
+
+**Statut : corrigé et testé**, sans modification des équations environnementales.
+- Avant : la pluie de couche 12 était toujours visible au premier plan, dessinée sur un Canvas 2D au-dessus du terrain.
+- Maintenant : rubans de pluie en 3D WebGL2, shader transparent, test matériel de profondeur contre terrain/arbre et passe de profondeur des surfaces des lacs ; aucune pluie rendue sur le Canvas des nuages.
+- Canvas fallback sans GPU : segments de pluie triés avec les polygones du relief. Précision inférieure au pixel, mais comportement nettement amélioré.
+- Le mode « Traits droits ancien » utilise également l'occlusion nouvelle.
+
+**Essais :** Chromium WebGL2 (SwiftShader sous Xvfb) : 700 pas, 40 cellules d'ancrage pluvieux et 248 rubans ; shader compilé, profondeur activée et lac inclus, aucune erreur. Commandes nouveau/ancien, pluie on/off, eau on/off, nuages anciens et caméra déplacée validées. Canvas : 2 000 pas, invariants <1e-14. Comparaison des tableaux eau/nuages/pluie/végétation anciens/correctifs à pas 700 : **identité exacte**.
+
+- [Fichier HTML corrigé de la couche 15 (chemin stable)](Monde_VJ_Atlas_3D_Couche_15_Relief_Geomorphologique.html)
+- [Version explicitement nommée 15.1](Monde_VJ_Atlas_3D_Couche_15_1_Pluie_Occlusion_3D.html)
+
+**Limites :** la pluie reste une approximation visuelle de rideaux de gouttes. Le mode Canvas n'a qu'une occultation approximative ; le mode WebGL2 est à privilégier. Les nuages sont toujours en overlay 2D et ne bénéficient pas de l'occultation.
